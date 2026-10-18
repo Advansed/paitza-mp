@@ -1,0 +1,367 @@
+.field {
+  margin-bottom: 1.5em;
+  position: relative;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: 0.02em;
+}
+
+.selectContainer {
+  position: relative;
+  width: 100%;
+}
+
+/* Триггер (основная кнопка) */
+.selectTrigger {
+  width: 100%;
+  padding: 0.85em 2.5em 0.85em 1em;
+  font-size: 1em;
+  font-family: inherit;
+  color: #333;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  user-select: none;
+}
+
+.selectTrigger:hover:not(.disabled) {
+  border-color: #b0b0b0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.selectTrigger:focus {
+  border-color: var(--main-color, #086CA2);
+  box-shadow: 0 0 0 3px rgba(8, 108, 162, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.selectTrigger.open {
+  border-color: var(--main-color, #086CA2);
+  box-shadow: 0 0 0 3px rgba(8, 108, 162, 0.1), 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.selectTrigger.placeholder .selectValue {
+  color: #999;
+}
+
+.selectTrigger.disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.selectTrigger.error {
+  border-color: #ff4444;
+}
+
+.selectValue {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Иконка стрелки */
+.iconWrapper {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+
+.iconWrapper.rotated {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.icon {
+  font-size: 1.2em;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.selectTrigger:hover:not(.disabled) .icon {
+  color: #333;
+}
+
+.selectTrigger.open .icon {
+  color: var(--main-color, #086CA2);
+}
+
+/* Выпадающий список */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 0;
+  overflow: hidden;
+  background: white;
+  border: 2px solid var(--main-color, #086CA2);
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdownOpen {
+  max-height: 250px;
+  overflow-y: auto;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Элементы списка */
+.dropdownItem {
+  padding: 0.75em 1em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  user-select: none;
+}
+
+.dropdownItem::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--main-color, #086CA2);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background: #f8f9fa;
+}
+
+.dropdownItem.highlighted {
+  background: #e8f4fa;
+}
+
+.dropdownItem.selected {
+  background: #e8f4fa;
+  color: var(--main-color, #086CA2);
+  font-weight: 600;
+}
+
+.dropdownItem.selected::after {
+  transform: scaleX(1);
+}
+
+.optionText {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkIcon {
+  color: var(--main-color, #086CA2);
+  font-size: 1.2em;
+  margin-left: 0.5em;
+  animation: checkIn 0.3s ease;
+}
+
+@keyframes checkIn {
+  from {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.emptyMessage {
+  padding: 1em;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}
+
+/* Скроллбар для dropdown */
+.dropdownOpen::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdownOpen::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.dropdownOpen::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.dropdownOpen::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* Ошибки */
+.errorMessage {
+  display: block;
+  margin-top: 0.3em;
+  font-size: 0.85em;
+  color: #ff4444;
+  font-weight: 500;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  .label {
+    color: #e0e0e0;
+  }
+  
+  .selectTrigger {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+  }
+  
+  .selectTrigger:hover:not(.disabled) {
+    border-color: #666;
+    background: #333;
+  }
+  
+  .selectTrigger.placeholder .selectValue {
+    color: #888;
+  }
+  
+  .icon {
+    color: #999;
+  }
+  
+  .selectTrigger:hover:not(.disabled) .icon {
+    color: #e0e0e0;
+  }
+  
+  .dropdown {
+    background: #2a2a2a;
+    border-color: #666;
+  }
+  
+  .dropdownItem {
+    color: #e0e0e0;
+  }
+  
+  .dropdownItem:hover {
+    background: #333;
+  }
+  
+  .dropdownItem.highlighted {
+    background: #3a3a3a;
+  }
+  
+  .dropdownItem.selected {
+    background: #3a3a3a;
+    color: #4fc3f7;
+  }
+  
+  .checkIcon {
+    color: #4fc3f7;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 480px) {
+  .field {
+    margin-bottom: 1.2em;
+  }
+  
+  .label {
+    font-size: 0.85em;
+    margin-bottom: 0.4em;
+  }
+  
+  .selectTrigger {
+    padding: 0.75em 2.2em 0.75em 0.9em;
+    font-size: 0.95em;
+    border-radius: 8px;
+  }
+  
+  .selectTrigger.open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .iconWrapper {
+    right: 0.6em;
+  }
+  
+  .icon {
+    font-size: 1.1em;
+  }
+  
+  .dropdown {
+    border-radius: 0 0 8px 8px;
+  }
+  
+  .dropdownOpen {
+    max-height: 200px;
+  }
+  
+  .dropdownItem {
+    padding: 0.65em 0.9em;
+    font-size: 0.95em;
+  }
+}
+
+/* Анимация появления поля */
+.field {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

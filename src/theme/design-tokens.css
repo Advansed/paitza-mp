@@ -1,0 +1,60 @@
+/* Design tokens — макет «Груз в рейс» / Панель перевозчика */
+:root {
+  --gvr-primary: #2b5adc;
+  --gvr-primary-soft: #e8eefc;
+  --gvr-primary-hover: #234bc0;
+  --gvr-brand-legacy: #086ca2;
+
+  --gvr-bg: #f0f3f8;
+  --gvr-surface: #ffffff;
+  --gvr-border: #e6ebf2;
+  --gvr-border-strong: #d0d7e2;
+
+  --gvr-text: #1a1f2e;
+  --gvr-text-secondary: #5c6578;
+  --gvr-text-muted: #8b93a7;
+
+  --gvr-success: #22a06b;
+  --gvr-success-soft: #e6f7ef;
+  --gvr-warning: #f5a524;
+  --gvr-warning-soft: #fff4e0;
+  --gvr-danger: #e5484d;
+
+  --gvr-radius-sm: 8px;
+  --gvr-radius: 12px;
+  --gvr-radius-lg: 16px;
+  --gvr-radius-pill: 999px;
+
+  --gvr-shadow: 0 1px 3px rgba(26, 31, 46, 0.06), 0 4px 12px rgba(26, 31, 46, 0.04);
+  --gvr-shadow-sm: 0 1px 2px rgba(26, 31, 46, 0.05);
+
+  --gvr-sidebar-width: 260px;
+  --gvr-header-height: 64px;
+  --gvr-content-max: 1400px;
+  --gvr-mobile-tab-height: 56px;
+
+  --gvr-bp-tablet: 768px;
+  --gvr-bp-desktop: 1024px;
+
+  /* Align legacy vars with new design */
+  --main-color: var(--gvr-primary);
+  --ion-color-primary: var(--gvr-primary);
+  --background-color: var(--gvr-bg);
+  --dop-color: #ffba00;
+}
+
+html[lang='zh-CN'] {
+  --landing-font: 'Noto Sans SC', 'Manrope', 'Segoe UI', sans-serif;
+  --landing-display: 'Noto Sans SC', 'Sora', sans-serif;
+}
+
+html[lang='zh-CN'] body,
+html[lang='zh-CN'] ion-app {
+  font-family: 'Noto Sans SC', 'Manrope', 'Segoe UI', sans-serif;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --safe-area-inset-top: 0px;
+  }
+}

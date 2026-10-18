@@ -1,0 +1,284 @@
+/* Desktop / web layout helpers for content inside AppShell */
+
+html,
+body,
+#root,
+ion-app {
+  height: 100%;
+}
+
+body {
+  background: var(--gvr-bg);
+  color: var(--gvr-text);
+}
+
+/* Login: полноэкранный разворот промо + форма */
+@media (min-width: 768px) {
+  .login-page-wrap,
+  .login-root {
+    min-height: 100%;
+    height: 100%;
+    max-height: 100%;
+    padding: 0;
+    background: #fff;
+  }
+
+  .login-container {
+    max-width: 420px;
+    width: 100%;
+    box-shadow: var(--gvr-shadow);
+  }
+
+  .auth-page-reg {
+    max-width: 440px;
+  }
+}
+
+/* Чаты: мобильно — список ИЛИ переписка; десктоп — два столбца */
+.web-chats-layout {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 160px);
+  height: calc(100vh - 160px);
+  overflow: hidden;
+}
+
+.web-chats-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+.web-chats-main {
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+}
+
+.web-chats-open .web-chats-sidebar {
+  display: none;
+}
+
+.web-chats-open .web-chats-main {
+  display: flex;
+}
+
+.web-chats-empty {
+  display: none;
+}
+
+.web-vehicles-layout,
+.web-vehicles-page {
+  max-width: 1100px;
+  width: 100%;
+  padding: 20px 24px 48px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .web-vehicles-layout,
+  .web-vehicles-page {
+    padding: 16px 12px 32px;
+  }
+}
+
+/* Лента заказов (заказчик и исполнитель) — одна колонка карточек, страница скроллится целиком */
+.web-performer-feed {
+  width: 100%;
+  max-width: 840px;
+  margin: 0;
+  padding: 20px 24px 48px;
+  box-sizing: border-box;
+}
+
+.web-performer-feed:has([data-feed-view="map"]),
+.web-performer-feed:has([data-route-map]) {
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  padding: 16px 24px 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.web-performer-feed:has([data-feed-view="map"]) > *,
+.web-performer-feed:has([data-feed-view="map"]) .cargos-module,
+.web-performer-feed:has([data-feed-view="map"]) .w-100,
+.web-performer-feed:has([data-route-map]) > *,
+.web-performer-feed:has([data-route-map]) .cargos-module,
+.web-performer-feed:has([data-route-map]) .w-100 {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 767px) {
+  .web-performer-feed {
+    padding: 12px 10px 88px;
+    overflow-x: hidden;
+  }
+
+  .web-performer-feed:has([data-feed-view="map"]),
+  .web-performer-feed:has([data-route-map]) {
+    padding: 10px 10px 16px;
+  }
+}
+
+/* Лента заказов — слева, ограничение ширины двух колонок, фиксированная высота без общего скролла */
+.web-feed-layout {
+  width: 100%;
+  max-width: calc(340px + 16px + 800px + 1em);
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 1em;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.web-feed-layout > * {
+  min-height: 0;
+  height: 100%;
+  flex: 1;
+}
+
+@media (min-width: 1024px) {
+  /* Лента / списки — на всю ширину панели (2 колонки карточек) */
+  .web-list-layout {
+    max-width: none;
+  }
+
+  .web-feed-layout {
+    max-width: calc(340px + 16px + 800px + 1em);
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    margin-left: 0;
+    margin-right: auto;
+    padding-left: 1em;
+    overflow: hidden;
+  }
+
+  .web-finance-layout {
+    max-width: none;
+  }
+
+  .web-chats-frame {
+    max-width: none;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 16px;
+  }
+
+  .web-chats-layout {
+    max-width: none;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    flex: 1;
+    min-height: calc(100vh - var(--gvr-header-height) - 140px);
+    height: calc(100vh - var(--gvr-header-height) - 140px);
+    max-height: calc(100vh - var(--gvr-header-height) - 120px);
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: hidden;
+  }
+
+  .web-chats-sidebar {
+    display: flex !important;
+    flex-direction: column;
+    width: min(360px, 34%);
+    min-width: 280px;
+    flex-shrink: 0;
+    border: 1px solid var(--gvr-border);
+    border-radius: 18px;
+    background: var(--gvr-surface);
+    box-shadow: var(--gvr-shadow-sm);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .web-chats-main {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    border: 1px solid var(--gvr-border);
+    border-radius: 18px;
+    background: var(--gvr-surface);
+    box-shadow: var(--gvr-shadow-sm);
+    overflow: hidden;
+  }
+
+  .web-chats-layout .pageRoot,
+  .web-chats-layout .chat-container {
+    min-height: 0;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .web-chats-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 6px;
+    color: var(--gvr-text-muted);
+    text-align: center;
+    padding: 24px;
+  }
+
+  .web-chats-empty p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 650;
+    color: var(--gvr-text-secondary);
+  }
+
+  .web-chats-empty span {
+    font-size: 13px;
+  }
+
+  .web-chats-layout .chat-back-mobile-only {
+    display: none !important;
+  }
+
+  /* На десктопе «Назад» не нужен — список всегда слева */
+  .web-chats-layout .chat-page-header [class*='navButtonLeft'] {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .settingsContainer,
+  .settings-container {
+    max-width: 800px;
+  }
+
+  ion-page {
+    padding-top: 0 !important;
+  }
+}

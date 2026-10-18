@@ -1,0 +1,380 @@
+/* Настройки: компактные карточки как у профиля */
+
+.settingsContainer {
+  width: 100%;
+  max-width: 800px;
+}
+
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: stretch;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 0 1.5em;
+  box-sizing: border-box;
+}
+
+.section,
+.card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 calc(50% - 8px);
+  min-width: min(100%, 280px);
+  background: var(--gvr-surface, #fff);
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  border-radius: var(--gvr-radius-lg, 16px);
+  box-shadow: var(--gvr-shadow-sm, 0 1px 2px rgba(26, 31, 46, 0.05));
+  padding: 16px 18px;
+  box-sizing: border-box;
+}
+
+.spanFull {
+  flex: 1 1 100%;
+  min-width: 100%;
+}
+
+.sectionHeader,
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sectionIcon,
+.cardIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--gvr-primary-soft, #e8eefc);
+  color: var(--gvr-primary, #2b5adc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.sectionTitle,
+.cardTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.cardSub,
+.sectionDescription {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: var(--gvr-text-muted, #8b93a7);
+  line-height: 1.35;
+}
+
+.sectionDescription {
+  margin: 0 0 12px;
+}
+
+/* Вложенный блок согласий */
+.agreementsEmbed {
+  margin-top: 0;
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f7f9fc;
+}
+
+.walletPreview {
+  display: flex;
+  flex-direction: column;
+}
+
+.walletTopUpsHeader {
+  font-size: 0.85em;
+  color: #666;
+  font-weight: 600;
+  margin-top: 0.2em;
+  margin-bottom: 0.6em;
+}
+
+.walletTopUpList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+.walletTopUpItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8em;
+  padding: 0.55em 0.6em;
+  border-radius: 10px;
+  background: #f6f8ff;
+  cursor: pointer;
+}
+
+.walletTopUpItem:active {
+  transform: scale(0.99);
+}
+
+.walletTopUpLeft {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+
+.walletTopUpTitle {
+  font-size: 0.85em;
+  color: #333;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 55vw;
+}
+
+.walletTopUpDate {
+  font-size: 0.75em;
+  color: #999;
+}
+
+.walletTopUpAmount {
+  font-size: 0.85em;
+  color: var(--ion-color-primary, #1976d2);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.walletEmpty {
+  font-size: 0.8em;
+  color: #999;
+  padding: 0.4em 0.2em;
+}
+
+.walletAllLink {
+  margin-top: 0.9em;
+  text-align: center;
+  color: var(--ion-color-primary, #1976d2);
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.4em 0;
+}
+
+.settingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settingItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  margin: 0 -4px;
+  border-radius: 10px;
+  border-bottom: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.settingItem:hover {
+  background: #f5f7fb;
+}
+
+.settingItem:active {
+  background-color: #eef1f7;
+}
+
+.settingIcon {
+  font-size: 20px;
+  color: var(--gvr-text-muted, #8b93a7);
+  flex-shrink: 0;
+  width: 22px;
+}
+
+.settingIconVerified {
+  font-size: 20px;
+  color: #22a06b;
+  flex-shrink: 0;
+  width: 22px;
+}
+
+.settingContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settingLabel {
+  font-size: 14px;
+  color: var(--gvr-text, #1a1f2e);
+  font-weight: 600;
+}
+
+.settingSubtext {
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.chevronIcon {
+  font-size: 18px;
+  color: #b0b8c8;
+  flex-shrink: 0;
+}
+
+.toggle {
+  flex-shrink: 0;
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #eef9f3;
+  color: #1b7a4e;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.verifiedBadge ion-icon {
+  font-size: 18px;
+  color: #22a06b;
+}
+
+.roleSwitcher {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  background-color: #e8ebf0;
+  border: 1px solid #d5dae3;
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.roleContainer {
+  display: none;
+}
+
+.roleItem {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0.45em 0.7em;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.roleItem:hover {
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.roleActive {
+  background-color: #1e2a44;
+  border-color: #1e2a44;
+  box-shadow: 0 4px 12px rgba(30, 42, 68, 0.28);
+}
+
+.roleActive .roleText {
+  color: #fff;
+  font-weight: 700;
+}
+
+.roleActive .roleIcon {
+  color: #fff;
+}
+
+.roleIcon {
+  font-size: 1.15em;
+  color: #5a6478;
+  flex-shrink: 0;
+}
+
+.roleText {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #5a6478;
+  white-space: nowrap;
+}
+
+.roleSeparator {
+  display: none;
+}
+
+.instructionText {
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.logoutSection {
+  flex: 1 1 100%;
+  min-width: 100%;
+  padding: 0;
+}
+
+.logoutButton {
+  width: 100%;
+  --border-radius: 12px;
+  height: 2.75em;
+  font-weight: 650;
+  margin: 0;
+}
+
+/* Переключатель вкладок */
+.tabSwitcher {
+  margin-bottom: 1em;
+}
+
+.segment {
+  --background: #f0f0f0;
+  --indicator-color: #1976d2;
+  border-radius: 12px;
+  padding: 0.2em;
+}
+
+.segment ion-segment-button {
+  --color: #666;
+  --color-checked: #1976d2;
+  --indicator-color: transparent;
+  border-radius: 8px;
+  min-height: 2.5em;
+  font-weight: 500;
+}
+
+.segment ion-segment-button::part(indicator) {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 640px) {
+  .section,
+  .card {
+    flex: 1 1 100%;
+    min-width: 100%;
+    padding: 14px;
+  }
+
+  .roleItem {
+    min-height: 42px;
+  }
+}

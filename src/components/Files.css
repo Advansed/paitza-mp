@@ -1,0 +1,17 @@
+
+.f-icon {
+    border-radius: 5px;
+    padding: 0.5em;
+    width: 5em;
+    height: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var( --dop-color);
+}
+
+.f-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}

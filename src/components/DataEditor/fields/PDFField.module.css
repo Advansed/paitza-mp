@@ -1,0 +1,217 @@
+/* PdfField.module.css */
+.field {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.pdfWrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.pdfWrapper:hover {
+  border-color: #9ca3af;
+}
+
+.wrapperError {
+  border-color: #ef4444;
+}
+
+.pdfContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.pdfPreview {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.pdfPreview:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.pdfIcon {
+  font-size: 2rem;
+  color: #dc2626;
+  margin-right: 12px;
+}
+
+.pdfText {
+  font-weight: 500;
+  color: #374151;
+}
+
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.downloadButton,
+.removeButton {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  min-height: 32px;
+}
+
+.addButton {
+  --border-color: #d1d5db;
+  --color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.replaceButton {
+  --color: #6b7280;
+}
+
+.buttonIcon {
+  margin-right: 8px;
+}
+
+.errorMessage {
+  display: block;
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.25rem;
+}
+
+/* Модальное окно */
+.modal {
+  --width: 100%;
+  --height: 100%;
+}
+
+.modalContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.modalTitle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.modalBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #f5f5f5;
+}
+
+.pdfViewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.noPdf {
+  text-align: center;
+  color: #6b7280;
+}
+
+.noPdfIcon {
+  font-size: 3rem;
+  color: #9ca3af;
+  margin-bottom: 1rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .pdfContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .pdfPreview {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+  
+  .actions {
+    justify-content: center;
+  }
+  
+  .modalBody {
+    padding: 0;
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  .label {
+    color: #f3f4f6;
+  }
+  
+  .pdfWrapper {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .pdfPreview {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+  }
+  
+  .pdfPreview:hover {
+    background: #4b5563;
+  }
+  
+  .pdfText {
+    color: #f3f4f6;
+  }
+  
+  .modalContent {
+    background: #1f2937;
+  }
+  
+  .modalHeader {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .modalTitle {
+    color: #f3f4f6;
+  }
+  
+  .modalBody {
+    background: #374151;
+  }
+}

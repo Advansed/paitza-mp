@@ -1,0 +1,179 @@
+.mapPage {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.mapBar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--gvr-surface, #fff);
+  border-bottom: 1px solid var(--gvr-border, #e6ebf2);
+}
+
+.mapBack {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--gvr-text, #1a1f2e);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mapBack:hover {
+  background: rgba(43, 90, 220, 0.08);
+}
+
+.mapHeading {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.mapWrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapContainer {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.mapEmpty {
+  margin: 0;
+  padding: 2em 1em;
+  text-align: center;
+  color: #666;
+  font-size: 0.95em;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.feedMap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+.feedMapHint {
+  position: absolute;
+  z-index: 2;
+  left: 12px;
+  bottom: 12px;
+  margin: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.feedMapFrame {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--gvr-border, #e6ebf2);
+}
+
+.feedMapFrame .map {
+  min-height: 0;
+}
+
+.cargoLabel {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 10px));
+  background: #2563eb;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(26, 31, 46, 0.25);
+  pointer-events: auto;
+}
+
+.cargoLabel::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #2563eb;
+  border-bottom-width: 0;
+}
+
+.routeInfo {
+  padding: 1em;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5em;
+  font-size: 0.9em;
+}
+
+.infoRow:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  color: #666;
+}
+
+.value {
+  font-weight: bold;
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .map {
+    min-height: 250px;
+  }
+  
+  .routeInfo {
+    padding: 0.75em;
+  }
+  
+  .infoRow {
+    font-size: 0.85em;
+  }
+}

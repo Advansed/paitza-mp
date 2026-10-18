@@ -1,0 +1,33 @@
+.group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.btn,
+.active {
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gvr-text-secondary, #5c6578);
+  padding: 6px 7px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #f0f3f8;
+}
+
+.active {
+  color: var(--gvr-primary, #2b5adc);
+  background: var(--gvr-primary-soft, #e8eefc);
+}
+
+.inline .btn,
+.inline .active {
+  font-size: 12px;
+  padding: 4px 8px;
+}

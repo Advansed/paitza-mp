@@ -1,0 +1,338 @@
+/* Стили для карточки подписанного договора в стиле CounterOfferCard */
+
+.contractSignedCard {
+
+  width:          auto;
+  background:     linear-gradient(135deg, #27b03e 0%, #1ee91e 100%);
+  border-radius:  12px;
+  box-shadow:     0 4px 16px rgba(39, 176, 62, 0.3);
+  box-sizing:     border-box;
+  padding:        0.5em 0.5em 0.5em 0.5em;
+  margin-top:     0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 1.2em;
+}
+
+.headerIcon {
+  font-size: 1.3em;
+  color: white;
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.infoRow {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
+.infoField {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.label {
+  font-size: 0.85em;
+  color: white;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.value {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 0.7em 0.9em;
+  color: #333;
+  font-size: 0.9em;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.message {
+  font-size: 0.9em;
+  color: white;
+  margin-bottom: 1em;
+  padding: 0.5em 0;
+  line-height: 1.4;
+}
+
+.submitButton {
+  width: 100%;
+  background: white !important;
+  color: #333 !important;
+  border-radius: 10px;
+  padding: 0.9em 1em;
+  font-weight: 600;
+  font-size: 0.9em;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  margin-top: 0.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.submitButton:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.buttonIcon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+/* Стили для карточки предложения от водителя */
+.offerCard {
+  width: 100%;
+  max-width: 100%;
+  background: linear-gradient(135deg, #3880ff 0%, #5260ff 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(56, 128, 255, 0.3);
+  padding: 1em;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.offerHeader {
+  margin-bottom: 1.2em;
+  text-align: center;
+}
+
+.offerTitle {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: white;
+  margin: 0;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.offerInfoRow {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
+.offerInfoField {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.offerLabel {
+  font-size: 0.85em;
+  color: white;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.offerValue {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 0.7em 0.9em;
+  color: white;
+  font-size: 0.9em;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.offerActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
+  width: 100%;
+}
+
+.offerChatButton {
+  width: 100%;
+  background: white !important;
+  color: #333 !important;
+  border-radius: 10px;
+  padding: 0.9em 1em;
+  font-weight: 600;
+  font-size: 0.9em;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.offerChatButton:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.offerChatButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.offerButtonsRow {
+  display: flex;
+  flex-direction: row;
+  gap: 0.8em;
+  width: 100%;
+}
+
+.offerRejectButton,
+.offerAcceptButton {
+  flex: 1;
+  border-radius: 10px;
+  padding: 0.9em 1em;
+  font-weight: 600;
+  font-size: 0.9em;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.offerRejectButton:active,
+.offerAcceptButton:active {
+  transform: scale(0.98);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.offerRejectButton:disabled,
+.offerAcceptButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.offerButtonIcon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+/* Для очень маленьких экранов (< 360px) */
+@media (max-width: 360px) {
+  .contractSignedCard {
+    margin-top: 0.5em;
+    width:      auto;
+    padding: 0.8em 0.6em;
+    /* margin: 0.6em 0.5em; */
+    border-radius: 10px;
+  }
+
+  .header {
+    margin-bottom: 1em;
+    gap: 0.4em;
+  }
+
+  .headerIcon {
+    font-size: 1.2em;
+  }
+
+  .title {
+    font-size: 1em;
+  }
+
+  .infoRow {
+    gap: 0.8em;
+    margin-bottom: 0.8em;
+  }
+
+  .label {
+    font-size: 0.8em;
+  }
+
+  .value {
+    padding: 0.6em 0.8em;
+    font-size: 0.85em;
+    border-radius: 8px;
+  }
+
+  .message {
+    font-size: 0.85em;
+  }
+
+  .submitButton {
+    padding: 0.8em 0.9em;
+    font-size: 0.85em;
+    border-radius: 8px;
+  }
+
+  .buttonIcon {
+    font-size: 1em;
+  }
+
+  .offerCard {
+    padding: 0.8em 0.6em;
+    border-radius: 10px;
+    margin-top: 0.5em;
+  }
+
+  .offerHeader {
+    margin-bottom: 1em;
+  }
+
+  .offerTitle {
+    font-size: 1em;
+  }
+
+  .offerInfoRow {
+    gap: 0.8em;
+    margin-bottom: 0.8em;
+  }
+
+  .offerLabel {
+    font-size: 0.8em;
+  }
+
+  .offerValue {
+    padding: 0.6em 0.8em;
+    font-size: 0.85em;
+    border-radius: 8px;
+  }
+
+  .offerChatButton,
+  .offerRejectButton,
+  .offerAcceptButton {
+    padding: 0.8em 0.9em;
+    font-size: 0.85em;
+    border-radius: 8px;
+  }
+
+  .offerButtonIcon {
+    font-size: 1em;
+  }
+
+  .offerButtonsRow {
+    gap: 0.6em;
+  }
+}

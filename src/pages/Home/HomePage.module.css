@@ -1,0 +1,359 @@
+.page {
+  color: var(--gvr-text);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.statCard {
+  background: var(--gvr-surface);
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius-lg);
+  box-shadow: var(--gvr-shadow-sm);
+  padding: 18px 20px;
+}
+
+.statHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: var(--gvr-text-secondary);
+  font-weight: 500;
+}
+
+.trendBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gvr-success);
+  background: var(--gvr-success-soft);
+  padding: 3px 8px;
+  border-radius: var(--gvr-radius-pill);
+  white-space: nowrap;
+}
+
+.statValue {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.statValueRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.statSub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+}
+
+.spark {
+  margin-top: 12px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(34, 160, 107, 0.08),
+    rgba(34, 160, 107, 0.25) 40%,
+    rgba(34, 160, 107, 0.1)
+  );
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 28'%3E%3Cpath d='M0 22 L20 18 L40 20 L60 10 L80 14 L100 6 L120 12 L120 28 L0 28Z' fill='black'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 28'%3E%3Cpath d='M0 22 L20 18 L40 20 L60 10 L80 14 L100 6 L120 12 L120 28 L0 28Z' fill='black'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  background-color: #7dcea0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.sideCol {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--gvr-surface);
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius-lg);
+  box-shadow: var(--gvr-shadow-sm);
+  padding: 18px 20px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.cardSub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+  line-height: 1.35;
+}
+
+.linkBtn {
+  border: none;
+  background: none;
+  color: var(--gvr-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.activityList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.activityItem {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--gvr-border);
+}
+
+.activityItem:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.activityIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--gvr-primary-soft);
+  color: var(--gvr-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.activityTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gvr-text);
+  line-height: 1.4;
+}
+
+.activityTime {
+  font-size: 12px;
+  color: var(--gvr-text-muted);
+  white-space: nowrap;
+}
+
+.warnBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9a6700;
+  background: var(--gvr-warning-soft);
+  padding: 4px 10px;
+  border-radius: var(--gvr-radius-pill);
+  white-space: nowrap;
+}
+
+.progressBlock {
+  margin-bottom: 14px;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--gvr-text-secondary);
+  margin-bottom: 6px;
+}
+
+.progressTrack {
+  height: 8px;
+  border-radius: var(--gvr-radius-pill);
+  background: var(--gvr-bg);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--gvr-primary);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.progressHint {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+  line-height: 1.35;
+}
+
+.checkList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  border-radius: var(--gvr-radius-sm);
+  cursor: pointer;
+  text-align: left;
+  color: var(--gvr-text);
+}
+
+.checkItem:hover {
+  background: var(--gvr-bg);
+}
+
+.checkItem.done .checkLabel {
+  color: var(--gvr-text-secondary);
+}
+
+.doneBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--gvr-success);
+  background: var(--gvr-success-soft);
+  padding: 4px 8px;
+  border-radius: var(--gvr-radius-pill);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.checkIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--gvr-primary-soft);
+  color: var(--gvr-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.checkLabel {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.chevron {
+  color: var(--gvr-text-muted);
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--gvr-radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.primaryAction {
+  border: none;
+  background: var(--gvr-primary);
+  color: #fff;
+}
+
+.primaryAction:hover {
+  background: var(--gvr-primary-hover);
+}
+
+.secondaryAction {
+  border: 1px solid var(--gvr-border-strong);
+  background: var(--gvr-surface);
+  color: var(--gvr-text);
+  justify-content: flex-start;
+}
+
+.secondaryAction:hover {
+  background: var(--gvr-bg);
+}
+
+@media (max-width: 1023px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activityItem {
+    grid-template-columns: 36px 1fr;
+    gap: 10px;
+  }
+
+  .activityTime {
+    grid-column: 2;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

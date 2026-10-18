@@ -1,0 +1,257 @@
+.modal {
+  --width: 100%;
+  --height: 100%;
+  --max-width: 100%;
+  --border-radius: 0;
+}
+
+.toolbar {
+  --background: #ffffff;
+  --border-color: #e0e0e0;
+  min-height: 56px;
+}
+
+.toolbar ion-button {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.content {
+  --background: #e8ecf1;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.page {
+  padding: 16px 12px 28px;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sheet {
+  width: 210mm;
+  min-width: 210mm;
+  max-width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  background: #fff;
+  color: #111;
+  padding: 14mm 12mm;
+  box-shadow: 0 8px 28px rgba(26, 31, 46, 0.12);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.bankTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 16px;
+}
+
+.bankTable td {
+  border: 1px solid #222;
+  vertical-align: top;
+  padding: 4px 6px;
+}
+
+.bankCell {
+  width: auto;
+}
+
+.bankCellNarrow {
+  width: 56px;
+}
+
+.bankLabel {
+  font-size: 10px;
+  color: #444;
+  margin-bottom: 2px;
+}
+
+.bankValue {
+  font-size: 12px;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.title {
+  margin: 18px 0 14px;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2px solid #222;
+  padding-bottom: 8px;
+}
+
+.parties {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.partyRow {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 8px;
+}
+
+.partyLabel {
+  font-weight: 700;
+}
+
+.partyValue {
+  word-break: break-word;
+}
+
+.itemsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  table-layout: fixed;
+}
+
+.itemsTable th,
+.itemsTable td {
+  border: 1px solid #222;
+  padding: 5px 6px;
+  vertical-align: top;
+}
+
+.itemsTable th {
+  background: #f3f3f3;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.colNum {
+  width: 32px;
+  text-align: center;
+}
+
+.colName {
+  width: auto;
+  text-align: left;
+}
+
+.colQty,
+.colUnit {
+  width: 58px;
+  text-align: center;
+}
+
+.colPrice,
+.colSum {
+  width: 90px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin: 8px 0 12px;
+}
+
+.totalRow {
+  display: grid;
+  grid-template-columns: auto 120px;
+  gap: 16px;
+  min-width: 260px;
+  font-size: 13px;
+}
+
+.totalRow span {
+  text-align: right;
+}
+
+.totalRow strong {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.summary {
+  margin: 0 0 4px;
+}
+
+.words {
+  margin: 0 0 28px;
+}
+
+.signs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-top: 28px;
+}
+
+.signBlock {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.signRole {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.signLine {
+  border-bottom: 1px solid #222;
+  min-height: 18px;
+}
+
+.signName {
+  min-width: 90px;
+  text-align: right;
+  font-size: 11px;
+}
+
+.modal :global(ion-button) {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  margin: 0 2px;
+}
+
+.modal :global(ion-icon) {
+  font-size: 18px;
+}
+
+@media print {
+  .toolbar,
+  .modal :global(ion-header) {
+    display: none !important;
+  }
+
+  .content {
+    --background: #fff;
+  }
+
+  .page {
+    padding: 0;
+  }
+
+  .sheet {
+    width: 210mm;
+    min-width: 210mm;
+    max-width: 210mm;
+    min-height: 297mm;
+    box-shadow: none;
+    padding: 10mm;
+  }
+}

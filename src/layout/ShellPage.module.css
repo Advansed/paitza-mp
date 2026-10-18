@@ -1,0 +1,37 @@
+.page {
+  background: transparent;
+}
+
+.content {
+  --background: transparent;
+}
+
+.inner {
+  max-width: var(--gvr-content-max);
+  margin: 0 auto;
+  padding: 20px 24px 32px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.plain {
+  max-width: var(--gvr-content-max);
+  margin: 0 auto;
+  padding: 20px 24px 32px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  .inner,
+  .plain {
+    padding: 16px 12px 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inner.wide,
+  .plain.wide {
+    max-width: none;
+  }
+}

@@ -1,0 +1,144 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: var(--gvr-header-height);
+  min-height: var(--gvr-header-height);
+  padding: 0 20px;
+  background: var(--gvr-surface);
+  border-bottom: 1px solid var(--gvr-border);
+  box-sizing: border-box;
+}
+
+.search {
+  flex: 1;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--gvr-bg);
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius-pill);
+  padding: 0 14px;
+  height: 40px;
+  position: relative;
+}
+
+.searchIcon {
+  color: var(--gvr-text-muted);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: var(--gvr-text);
+  min-width: 0;
+}
+
+.searchInput::placeholder {
+  color: var(--gvr-text-muted);
+}
+
+.clearBtn {
+  border: none;
+  background: transparent;
+  color: var(--gvr-text-muted);
+  cursor: pointer;
+  display: flex;
+  padding: 2px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.roleWrap {
+  display: flex;
+}
+
+.iconBtn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--gvr-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconBtn:hover {
+  background: var(--gvr-bg);
+  color: var(--gvr-text);
+}
+
+.notifDot {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gvr-danger);
+  border: 2px solid var(--gvr-surface);
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--gvr-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 1023px) {
+  .header {
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .search {
+    max-width: none;
+  }
+
+  .roleWrap {
+    display: none;
+  }
+
+  .searchInput::placeholder {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search {
+    display: none;
+  }
+}

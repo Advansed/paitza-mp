@@ -1,0 +1,769 @@
+.pt-05{    padding-top: 0.5em;}
+.pt-1{    padding-top: 1em;}
+.pt-2{    padding-top: 2em;}
+.pt-3{    padding-top: 3em;}
+.pt-4{    padding-top: 4em;}
+
+.pb-05{    padding-bottom: 0.5em;}
+.pb-1{    padding-bottom: 1em;}
+.pb-2{    padding-bottom: 2em;}
+.pb-3{    padding-bottom: 3em;}
+.pb-4{    padding-bottom: 4em;}
+
+.pl-05{    padding-left: 0.5em;}
+.pl-1{    padding-left: 1em;}
+.pl-2{    padding-left: 2em;}
+.pl-3{    padding-left: 3em;}
+.pl-4{    padding-left: 4em;}
+
+.pr-05{    padding-right: 0.5em;}
+.p-05{    padding: 0.5em;}
+/* IonCard с DriverCard: внешние отступы — классы mt/ml/mr, внутри без лишнего padding (контент с p-05 в DriverCard) */
+ion-card.cargo-driver-card {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+.pr-1{    padding-right: 1em;}
+.pr-2{    padding-right: 2em;}
+.pr-3{    padding-right: 3em;}
+.pr-4{    padding-right: 4em;}
+
+.mt-05{    margin-top: 0.5em;}
+.mt-1{    margin-top: 1em;}
+.mt-2{    margin-top: 2em;}
+.mt-3{    margin-top: 3em;}
+.mt-4{    margin-top: 4em;}
+
+.ml-05{    margin-left: 0.5em;}
+.ml-1{    margin-left: 1em;}
+.ml-2{    margin-left: 2em;}
+.ml-3{    margin-left: 3em;}
+.ml-4{    margin-left: 4em;}
+
+.mr-05{    margin-right: 0.5em;}
+.mr-1{    margin-right: 1em;}
+.mr-2{    margin-right: 2em;}
+.mr-3{    margin-right: 3em;}
+.mr-4{    margin-right: 4em;}
+
+.ml-auto { margin-left: auto;}
+.mr-auto { margin-right: auto;}
+
+.a-center{    text-align: center;}
+.a-left {    text-align: left;}
+.a-right {    text-align: right;}
+.hidden {    display: none}
+
+.m-input {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    --placeholder-color:initial;
+    --placeholder-font-style:initial;
+    --placeholder-font-weight:initial;
+    --placeholder-opacity:.5;
+    --padding-top: 1em;
+    --padding-end:0;
+    --padding-bottom:1em;
+    --padding-start:0;
+    --background:transparent;
+    --color:initial;
+    position:relative;
+    -ms-flex-align:center;
+    align-items:center;
+    padding:0 !important;
+    z-index:2;
+
+    border-radius:var(--border-radius);
+    padding-left:var(--padding-start);
+    padding-right:var(--padding-end);
+    padding-top:var(--padding-top);
+    padding-bottom:var(--padding-bottom);
+    font-family:inherit;
+    font-size:inherit;
+    font-style:inherit;
+    font-weight:inherit;
+    letter-spacing:inherit;
+    text-decoration:inherit;
+    text-indent:inherit;
+    text-overflow:inherit;
+    text-transform:inherit;
+    white-space:inherit;
+    color:inherit;
+    display:inline-block;
+    -ms-flex:1;
+    flex:1;
+    width:100%;
+    max-width:100%;
+    max-height:100%;
+    border:0;
+    outline:none;
+    background:transparent;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none
+
+}
+
+.m-input-1 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    --placeholder-color:initial;
+    --placeholder-font-style:initial;
+    --placeholder-font-weight:initial;
+    --placeholder-opacity:.5;
+    --padding-top: 1em;
+    --padding-end:0;
+    --padding-bottom:1em;
+    --padding-start:0;
+    --background:transparent;
+    --color:initial;
+    position:relative;
+    -ms-flex-align:center;
+    align-items:center;
+    padding:0 !important;
+    z-index:2;
+
+    border-radius:var(--border-radius);
+    padding-left:var(--padding-start);
+    padding-right:var(--padding-end);
+    padding-top:var(--padding-top);
+    padding-bottom:var(--padding-bottom);
+    font-family:inherit;
+    font-size:inherit;
+    font-style:inherit;
+    font-weight:inherit;
+    letter-spacing:inherit;
+    text-decoration:inherit;
+    text-indent:inherit;
+    text-overflow:inherit;
+    text-transform:inherit;
+    white-space:inherit;
+    color:inherit;
+    display:inline-block;
+    -ms-flex:1;
+    flex:1;
+    width:100%;
+    max-width:100%;
+    max-height:100%;
+    border:0;
+    outline:none;
+    background:transparent;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none
+
+}
+
+.a-link{
+    color: white;
+}
+
+.cl-gray{
+    color: gray;
+}
+
+.cl-blue{
+    color: blue;
+}
+
+.cl-white{
+    color: white
+}
+
+.w-10 { width: 10% }
+.w-20 { width: 20% }
+.w-30 { width: 30% }
+.w-40 { width: 40% }
+.w-50 { width: 50% }
+.w-60 { width: 60% }
+.w-70 { width: 70% }
+.w-80 { width: 80% }
+.w-90 { width: 90% }
+.w-100 { width: 100% }
+.w-05 { width: 0.5em }
+.w-06 { width: 0.6em }
+.w-07 { width: 0.7em }
+.w-08 { width: 0.8em }
+.w-09 { width: 0.9em }
+.w-1 { width: 1em }
+.w-15 { width: 1.5em }
+.w-2 { width: 2em }
+.w-25 { width: 2.5em }
+.w-3 { width: 3em }
+.w-35 { width: 3.5em }
+.w-4 { width: 4em }
+.w-auto { width: auto }
+
+.h-10 { height: 10% }
+.h-20 { height: 20% }
+.h-30 { height: 30% }
+.h-40 { height: 40% }
+.h-50 { height: 50% }
+.h-60 { height: 60% }
+.h-70 { height: 70% }
+.h-80 { height: 80% }
+.h-90 { height: 90% }
+.h-100 { height: 100% }
+.h-05 { height: 0.5em }
+.h-06 { height: 0.6em }
+.h-07 { height: 0.7em }
+.h-08 { height: 0.8em }
+.h-09 { height: 0.9em }
+.h-1 { height: 1em }
+.h-15 { height: 1.5em }
+.h-2 { height: 2em }
+.h-25 { height: 2.5em }
+.h-3 { height: 3em }
+.h-35 { height: 3.5em }
+.h-4 { height: 4em }
+.h-auto { height: auto }
+
+.hs-10 { height: 10em }
+
+.flex { display: flex; align-items: center; }
+.flex-b { display: flex; align-items: end; }
+.flex-l { display: flex }
+.fl-center {   justify-content: center;}
+.fl-right {   justify-content: right;}
+.fl-space {   justify-content: space-between;}
+.fl-wrap  {   flex-wrap: wrap; }
+.fs-05 { font-size: 0.50em }
+.fs-06 { font-size: 0.60em }
+.fs-07 { font-size: 0.70em }
+.fs-08 { font-size: 0.80em }
+.fs-09 { font-size: 0.90em }
+.fs-1 { font-size: 1em }
+.fs-11 { font-size: 1.1em }
+.fs-12 { font-size: 1.2em }
+.fs-13 { font-size: 1.3em }
+.fs-14 { font-size: 1.4em }
+.fs-15 { font-size: 1.5em }
+.fs-2 { font-size: 1.5em }
+.fs-3 { font-size: 2em }
+.fs-4 { font-size: 2.5em }
+.fs-bold { font-weight: 700 }
+
+.borders {
+    border-radius: 0.5em;
+    border: 1px solid silver;
+    padding: 1em;
+    position: relative;
+}
+
+.borders-wp {
+    border-radius: 0.5em;
+    border: 1px solid silver;
+    position: relative;
+}
+
+.t-underline {
+    border-bottom: 1px solid silver;
+}
+
+.t-upperline {
+    border-top: 1px solid silver;
+}
+
+.bg-1 {
+    background: white;    
+}
+
+.bg-2 {
+    background: var(--main-color);
+    color: white; 
+}
+
+.bg-3 {
+    background: var(--dop-color);
+    color: #3f64a9;     
+    border-radius: 5px;
+}
+
+.cl-green {
+    color: yellowgreen
+}
+
+.cl-red {
+    color: rgb(252, 173, 3)
+}
+
+.cl-yellow {
+    color: yellow
+}
+
+.cl-red1 {
+    color: rgb(255, 0, 0)
+}
+
+.cl-prim {
+    color: var(--main-color);    
+}
+
+.cl-black {
+    color: black
+}
+
+.cl-white {
+    color: white
+}
+
+.scroll {
+    overflow-y: scroll;
+    overflow-x: scroll;
+}
+/* @font-face {
+    font-family: "OpenSans";
+    src: url('../public/assets/fonts/OpenSans/OpenSans-Bold.ttf'); 
+};
+ */
+
+ .checklist ion-item > input {
+    align-self: start;
+    margin-top: 0.3rem;
+    margin-right: 0.3rem;
+}
+
+.container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background: url("26785882.png") no-repeat center center/cover;
+}
+
+.a-container {
+    width: 100vw;
+    height: 100vh;
+    /* background: url("26785882.png") no-repeat center center/cover; */
+}
+
+
+/* Глобальные правила для отключения темной темы */
+/* Принудительно устанавливаем светлую тему для всех элементов */
+
+* {
+    color-scheme: light !important;
+}
+
+html {
+    color-scheme: light !important;
+}
+
+body {
+    background-color: white !important;
+    color: black !important;
+    color-scheme: light !important;
+    /* Обеспечиваем отступ сверху для body на устройствах без safe area */
+    padding-top: env(safe-area-inset-top, 0px);
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#root,
+#root ion-app,
+#root .ion-page {
+    background-color: #fff !important;
+    --ion-background-color: #fff !important;
+}
+
+/* Не ставим --background на ion-app: переменная наследуется ion-card/ion-item
+   и в части Chromium-форков (Comet) перекрывает локальный фон компонентов */
+#root ion-content {
+    background-color: #fff !important;
+    --background: #fff !important;
+    --ion-background-color: #fff !important;
+}
+
+/* Отключаем темную тему для всех медиа-запросов */
+@media (prefers-color-scheme: dark) {
+    * {
+        color-scheme: light !important;
+    }
+}
+
+/* Фон белым даже при dark mode (системная или Ionic палитра) */
+@media (prefers-color-scheme: dark) {
+    html,
+    body,
+    ion-app,
+    .ion-palette-dark,
+    .cargos-module,
+    .a-container {
+        background-color: #fff !important;
+        --ion-background-color: #fff !important;
+    }
+    ion-content {
+        --background: #fff !important;
+        --ion-background-color: #fff !important;
+        background: #fff !important;
+    }
+}
+
+body.ion-palette-dark,
+html.ion-palette-dark,
+ion-app.ion-palette-dark {
+    background-color: #fff !important;
+    --ion-background-color: #fff !important;
+}
+
+body.ion-palette-dark ion-content,
+.ion-palette-dark ion-content {
+    --background: #fff !important;
+    --ion-background-color: #fff !important;
+    background: #fff !important;
+}
+
+/* Для элементов Ionic (если используется) */
+ion-content {
+    --background: white !important;
+    --color: black !important;
+}
+
+ion-item {
+    --background: white !important;
+    --color: black !important;
+}
+
+/* ion-button {
+    --background: #f5f5f5 !important;
+    --color: black !important;
+} */
+
+/* Отключаем системные темные стили */
+meta[name="color-scheme"] {
+    content: "light" !important;
+}
+
+/* Принудительная светлая тема для веб-компонентов */
+:host {
+    color-scheme: light !important;
+}
+
+/* Отключаем CSS переменные темной темы */
+:root {
+    color-scheme:                   light !important;
+    --ion-color-primary:            #2b5adc !important;
+    --ion-color-secondary:          #ffba00 !important;
+    --main-color:                   #2b5adc;
+    --background-color:             #f0f3f8;
+    --dop-color:                    #ffba00;
+
+}
+
+ .circle {
+    background-color: #888;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+/* ДОБАВЬТЕ ЭТИ СТИЛИ В app.css */
+
+/* ============================================
+   SAFE AREA ПОДДЕРЖКА ДЛЯ ВСЕХ УСТРОЙСТВ
+   ============================================
+   Эти стили обеспечивают правильные отступы сверху для контента,
+   чтобы он не уходил под статус-бар (панель с часами, значками и батареей).
+   
+   Используется max(20px, ...) для обеспечения минимального отступа 20px
+   на старых устройствах, которые не поддерживают safe-area-inset.
+   ============================================ */
+
+/* Safe Area поддержка для всех устройств */
+:root {
+  /* Переменные для safe area с fallback для старых устройств */
+  --safe-area-inset-top: max(20px, env(safe-area-inset-top, 20px));
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  
+  /* Статус бар высота для разных устройств */
+  --status-bar-height: 20px; /* Fallback для старых устройств */
+}
+
+/* Для iPhone X и новее */
+@supports (padding: max(0px)) {
+  :root {
+    --status-bar-height: max(20px, env(safe-area-inset-top));
+  }
+}
+
+/* Основной контейнер приложения */
+.a-container {
+    /* Используем max() для обеспечения минимального отступа на старых устройствах */
+    padding-top: max(20px, var(--safe-area-inset-top));
+    /* Убраны боковые отступы */
+    /* НЕ добавляем padding-bottom, так как там табы */
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Альтернативный вариант с использованием статус-бара */
+.a-container.with-status-bar {
+    padding-top: var(--status-bar-height);
+}
+
+/* Для заголовков и хедеров */
+.page-header {
+    /* Используем max() для обеспечения минимального отступа на старых устройствах */
+    padding-top: calc(max(20px, var(--safe-area-inset-top)) + 0.5em);
+    /* Убраны боковые отступы */
+}
+
+/* Для модальных окон и полноэкранных элементов */
+.fullscreen-modal {
+    padding-top: var(--safe-area-inset-top);
+    /* Убраны боковые отступы */
+    padding-bottom: var(--safe-area-inset-bottom);
+}
+
+/* Фикс для контейнера логина */
+.container {
+    /* Используем max() для обеспечения минимального отступа на старых устройствах */
+    padding-top: max(20px, var(--safe-area-inset-top));
+    /* Убраны боковые отступы */
+}
+
+/* Фикс для пустого состояния с анимацией */
+.empty-state-container {
+    /* Учитываем safe area в высоте */
+    min-height: calc(100vh - 300px - max(20px, var(--safe-area-inset-top)) - var(--safe-area-inset-bottom));
+    padding-top: calc(2em + max(20px, var(--safe-area-inset-top)));
+    /* Убраны боковые отступы */
+}
+
+/* Специальные классы для разных типов устройств */
+
+/* iPhone с Dynamic Island */
+@media screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) {
+    :root {
+        --status-bar-height: 54px;
+    }
+}
+
+/* iPhone 14 Pro Max */
+@media screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    :root {
+        --status-bar-height: 54px;
+    }
+}
+
+/* iPhone с вырезом (notch) */
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    :root {
+        --status-bar-height: 44px;
+    }
+}
+
+/* Android устройства с вырезом */
+@media screen and (min-height: 800px) {
+    .android-notch {
+        --status-bar-height: 24px;
+    }
+}
+
+/* Дополнительные утилитарные классы */
+.safe-top {
+    padding-top: max(20px, var(--safe-area-inset-top)) !important;
+}
+
+.safe-bottom {
+    padding-bottom: var(--safe-area-inset-bottom) !important;
+}
+
+.safe-left {
+    padding-left: var(--safe-area-inset-left) !important;
+}
+
+.safe-right {
+    padding-right: var(--safe-area-inset-right) !important;
+}
+
+.safe-all {
+    padding: var(--safe-area-inset-top) var(--safe-area-inset-right) var(--safe-area-inset-bottom) var(--safe-area-inset-left) !important;
+}
+
+/* ДОБАВЬТЕ ЭТИ СТИЛИ В app.css ПОСЛЕ ОСНОВНЫХ СТИЛЕЙ */
+
+/* Ionic компоненты с учетом safe area */
+
+/* Основные контейнеры */
+ion-app {
+  /* Позволяем Ionic самому управлять safe area */
+  /* Используем max() для обеспечения минимального отступа на старых устройствах */
+  --ion-safe-area-top: max(20px, env(safe-area-inset-top, 20px));
+  --ion-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --ion-safe-area-left: env(safe-area-inset-left, 0px);
+  --ion-safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Вкладки снизу */
+ion-tab-bar {
+  padding-bottom: var(--ion-safe-area-bottom);
+}
+
+ion-tab-button .tab-bar-lucide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+ion-tab-button .tab-bar-lucide svg {
+  color: inherit;
+}
+
+/* Заголовки страниц */
+ion-header {
+  padding-top: max(20px, var(--ion-safe-area-top));
+}
+
+/* Страницы Ionic */
+ion-page {
+  /* Обеспечиваем отступ сверху для контента страницы */
+  padding-top: max(20px, env(safe-area-inset-top, 20px));
+}
+
+/* Контент страниц */
+ion-content {
+  /* Используем max() для обеспечения минимального отступа на старых устройствах */
+  --padding-top: max(20px, var(--ion-safe-area-top));
+  --padding-bottom: 0px; /* Не добавляем снизу, там табы */
+  --padding-start: env(safe-area-inset-left, 0px);
+  --padding-end: env(safe-area-inset-right, 0px);
+}
+
+/* Модальные окна */
+ion-modal {
+  --padding-top: max(20px, var(--ion-safe-area-top));
+  --padding-bottom: var(--ion-safe-area-bottom);
+  --padding-start: env(safe-area-inset-left, 0px);
+  --padding-end: env(safe-area-inset-right, 0px);
+}
+
+/* Для полноэкранных модалей */
+ion-modal.fullscreen {
+  --padding-top: 0px;
+  --padding-bottom: 0px;
+}
+
+/* Карточки с учетом безопасной зоны */
+.cr-card {
+  /* Убраны боковые отступы */
+}
+
+/* Флекс контейнеры в заголовках */
+.flex.ml-05.mt-05 {
+  margin-top: calc(0.5em + max(20px, var(--ion-safe-area-top)));
+  /* Убраны боковые отступы */
+}
+
+/* Специальные стили для разных платформ */
+
+/* iOS специфичные стили */
+.platform-ios {
+  /* Дополнительные отступы для iOS */
+}
+
+.platform-ios.device-notch .a-container {
+  /* Для устройств с вырезом добавляем больше отступа сверху */
+  padding-top: calc(var(--ion-safe-area-top) + 10px);
+}
+
+/* Android специфичные стили */
+.platform-android {
+  /* Для Android может потребоваться меньше отступов */
+}
+
+.platform-android .a-container {
+  padding-top: calc(var(--ion-safe-area-top) + 4px);
+}
+
+/* PWA стили */
+.platform-pwa .a-container {
+  /* Для PWA отступ может быть минимальным */
+  padding-top: max(20px, var(--ion-safe-area-top));
+}
+
+/* Дополнительные утилиты для отладки */
+.debug-safe-area::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--ion-safe-area-top);
+  background: rgba(255, 0, 0, 0.3);
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* Стили для статус бара с темным фоном */
+.dark-status-bar {
+  --ion-statusbar-style: light;
+}
+
+/* Стили для статус бара со светлым фоном */
+.light-status-bar {
+  --ion-statusbar-style: light;
+}
+
+ion-refresher {
+  --background: #086CA2; /* Прямое указание цвета */
+  --color: white;
+}
+
+/* Дублирующее правило удалено - используется правило выше для ion-content */
+
+/* Для iOS и Android безопасных зон */
+.safe-area-top {
+  padding-top: max(20px, env(safe-area-inset-top, 20px));
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Дополнительная поддержка для старых iOS устройств */
+ion-app {
+  /* Для iOS 11.0 */
+  padding-top: constant(safe-area-inset-top);
+  /* Для iOS 11.2+ и современных устройств */
+  padding-top: max(20px, env(safe-area-inset-top, 20px));
+}
+
+/* invoice-modal.css */
+.invoice-modal {
+  --width: 90%;
+  --max-width: 900px;
+  --height: 90%;
+  --border-radius: 12px;
+}
+
+@media print {
+  .invoice-modal ion-header,
+  .invoice-modal ion-toolbar {
+    display: none !important;
+  }
+  
+  .invoice-modal {
+    --width: 100%;
+    --height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  .invoice-content {
+    margin: 20px !important;
+    max-width: none !important;
+  }
+}

@@ -1,0 +1,455 @@
+/* Профиль: компактные карточки в стиле панели */
+
+.profileContainer {
+  width: 100%;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+  padding: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--gvr-surface, #fff);
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  border-radius: var(--gvr-radius-lg, 16px);
+  box-shadow: var(--gvr-shadow-sm, 0 1px 2px rgba(26, 31, 46, 0.05));
+  padding: 16px 18px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.embeddedBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.cardFooter .saveBtn {
+  flex: 1;
+  margin: 0;
+}
+
+.verifiedRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  min-height: 22px;
+  flex-shrink: 0;
+}
+
+.verifiedRow input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--gvr-primary, #2b5adc);
+}
+
+.verifiedRow span {
+  font-size: 13px;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.verifiedStatus {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.verifiedStatusOk {
+  color: #1b7a52;
+  font-weight: 600;
+}
+
+.verifiedStatusOk svg {
+  flex-shrink: 0;
+}
+
+.cardIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--gvr-primary-soft, #e8eefc);
+  color: var(--gvr-primary, #2b5adc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.cardSub {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: var(--gvr-text-muted, #8b93a7);
+  line-height: 1.35;
+}
+
+.cardDescription {
+  font-size: 0.85em;
+  color: #666;
+  margin: 0 0 1em 0;
+  line-height: 1.4;
+}
+
+/* Фото профиля — крупный блок */
+.photoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gvr-border, #e6ebf2);
+}
+
+.photoPlaceholder {
+  width: 160px;
+  height: 160px;
+  border-radius: 20px;
+  background: #f0f3f8;
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(26, 31, 46, 0.08);
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoIcon {
+  font-size: 64px;
+  color: #b0b8c8;
+}
+
+.uploadSection {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.fileInput {
+  display: none;
+}
+
+.uploadButton {
+  --border-radius: 12px;
+  font-size: 0.9em;
+  height: 2.4em;
+  margin: 0;
+  width: 100%;
+  font-weight: 650;
+}
+
+.uploadInfo {
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+  margin: 0;
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* Поля */
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gvr-text-muted, #8b93a7);
+  margin: 0;
+}
+
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 40px;
+  padding: 0.5em 0.7em;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--gvr-text, #1a1f2e);
+  background: #f7f9fc;
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input::placeholder {
+  color: #9aa3b5;
+  opacity: 1;
+}
+
+.input:hover:not(:disabled) {
+  border-color: #c5ccd8;
+}
+
+.input:focus {
+  border-color: var(--gvr-primary, #2b5adc);
+  box-shadow: 0 0 0 3px rgba(43, 90, 220, 0.12);
+  background: #fff;
+}
+
+.input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.sectionDivider {
+  margin: 4px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--gvr-border, #e6ebf2);
+}
+
+.sectionLabel {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.consentBlock {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gvr-border, #e6ebf2);
+}
+
+.consentBlockTop {
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+}
+
+.consentBlock .checkboxWrapper {
+  align-items: flex-start;
+  margin-top: 0;
+}
+
+.consentCheckboxText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.consentTextLink {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  color: var(--gvr-primary, #2b5adc);
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: left;
+}
+
+.checkboxWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.checkboxLabel {
+  font-size: 13px;
+  color: var(--gvr-text, #1a1f2e);
+  cursor: pointer;
+  line-height: 1.35;
+}
+
+.hintText {
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+  margin: 2px 0 0;
+  line-height: 1.3;
+}
+
+.saveBtn {
+  width: 100%;
+  margin: 14px 0 0;
+  --border-radius: 12px;
+  font-weight: 650;
+}
+
+/* Legacy (Cabinet / старые экраны) */
+.roleSwitcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  padding: 0.4em;
+  margin-bottom: 0.8em;
+  gap: 0.5em;
+}
+
+.roleContainer {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 0.3em;
+}
+
+.roleItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.5em 0.8em;
+  border-radius: 8px;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+
+.roleActive {
+  background-color: white;
+}
+
+.roleActive .roleText {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.roleActive .roleIcon {
+  color: #1976d2;
+}
+
+.roleIcon {
+  font-size: 1.2em;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.roleText {
+  font-size: 0.9em;
+  color: #666;
+  white-space: nowrap;
+}
+
+.roleSeparator {
+  width: 1px;
+  height: 1.5em;
+  background-color: #ddd;
+  flex-shrink: 0;
+}
+
+.toggle {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.instructionText {
+  font-size: 0.8em;
+  color: #999;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1em;
+  padding: 1em 0.5em;
+  background-color: #f5f5f5;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+}
+
+.actionButton {
+  flex: 1;
+  --border-radius: 10px;
+  height: 3em;
+  font-weight: 600;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .card {
+    padding: 14px;
+  }
+
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+
+  .photoPlaceholder {
+    width: 140px;
+    height: 140px;
+  }
+
+  .photoIcon {
+    font-size: 56px;
+  }
+}

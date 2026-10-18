@@ -1,0 +1,124 @@
+.root {
+  color: var(--gvr-text);
+  max-width: var(--gvr-content-max);
+  margin: 0 auto;
+  padding: 20px 24px 32px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.crumb {
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+  margin-bottom: 6px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--gvr-text-muted);
+  line-height: 1.4;
+}
+
+.actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.refreshBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius);
+  background: var(--gvr-surface);
+  color: var(--gvr-text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.refreshBtn:hover {
+  background: var(--gvr-bg, #f5f5f5);
+}
+
+.refreshBtn:active {
+  transform: translateY(1px);
+}
+
+.feedLeft {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.panel {
+  background: var(--gvr-surface);
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius-lg);
+  box-shadow: var(--gvr-shadow-sm);
+  padding: 20px;
+  min-height: 320px;
+  box-sizing: border-box;
+}
+
+/* Скрываем мобильные WizardHeader внутри панели — заголовок уже в PanelFrame */
+.panel :global([class*='stepHeader']) {
+  display: none !important;
+}
+
+/* Chat list inside panel */
+.panel :global([class*='pageRoot']) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+}
+
+.panel :global(.chat-container) {
+  height: min(70vh, 640px);
+  min-height: 420px;
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius);
+}
+
+/* Settings / wallet — без «телефонной» подложки */
+.panel :global([class*='settingsContainer']) {
+  background: transparent !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .root {
+    padding: 16px 12px 24px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .panel {
+    padding: 14px;
+    border-radius: var(--gvr-radius);
+  }
+}

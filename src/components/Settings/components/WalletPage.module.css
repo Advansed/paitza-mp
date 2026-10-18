@@ -1,0 +1,746 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr 1.05fr;
+  gap: 14px;
+}
+
+.statCard,
+.card {
+  background: var(--gvr-surface);
+  border: 1px solid var(--gvr-border);
+  border-radius: 18px;
+  box-shadow: var(--gvr-shadow-sm);
+  padding: 18px 18px 16px;
+}
+
+.statCardClickable {
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.statCardClickable:hover {
+  border-color: var(--gvr-primary, #2b5adc);
+  box-shadow: 0 10px 24px rgba(43, 90, 220, 0.12);
+}
+
+.statCardClickable:focus-visible {
+  outline: 2px solid var(--gvr-primary, #2b5adc);
+  outline-offset: 2px;
+}
+
+.statHero {
+  background: var(--gvr-primary, #2b5adc);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(43, 90, 220, 0.28);
+}
+
+.statHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.statIcon,
+.statIconHero {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.statIconHero {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.statIconGreen {
+  background: #e6f7ef;
+  color: #1b7a52;
+}
+
+.statIconOrange {
+  background: #fff4e0;
+  color: #c2410c;
+}
+
+.statIconBlue {
+  background: var(--gvr-primary-soft, #e8eefc);
+  color: var(--gvr-primary, #2b5adc);
+}
+
+.statLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gvr-text-secondary);
+}
+
+.statHero .statLabel,
+.statHero .statSub {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--gvr-text);
+}
+
+.statHero .statValue {
+  color: #fff;
+}
+
+.statSub {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+}
+
+.statActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.heroGhost,
+.heroPrimary {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.heroGhost {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.heroGhost:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.heroPrimary {
+  border: none;
+  background: #fff;
+  color: var(--gvr-primary, #2b5adc);
+}
+
+.heroPrimary:hover {
+  background: #f3f6ff;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  background: rgba(26, 31, 46, 0.45);
+}
+
+.modalDialog {
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(26, 31, 46, 0.22);
+  padding: 22px 24px 20px;
+}
+
+.dealsDialog {
+  max-width: 560px;
+}
+
+.dealList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dealItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-top: 1px solid var(--gvr-border, #e6ebf2);
+}
+
+.dealList li:first-child .dealItem {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.dealText {
+  min-width: 0;
+  flex: 1;
+}
+
+.dealTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.dealSub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--gvr-text-secondary, #5b6475);
+}
+
+.dealMeta {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.dealRight {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.dealDue {
+  font-size: 15px;
+  font-weight: 750;
+  color: #c2410c;
+  letter-spacing: -0.02em;
+}
+
+.dealPayBtn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 112px;
+  padding: 10px 12px;
+  border: 1px solid rgba(194, 65, 12, 0.28);
+  border-radius: 12px;
+  background: #fff7ed;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.dealPayBtn:hover:not(:disabled) {
+  background: #ffedd5;
+  border-color: #c2410c;
+}
+
+.dealPayBtn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.dealPayBtn :global(ion-spinner) {
+  width: 22px;
+  height: 22px;
+  color: #c2410c;
+}
+
+.dealPayLabel {
+  font-size: 12px;
+  font-weight: 650;
+  color: #9a3412;
+}
+
+.modalHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.modalSub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.modalClose {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--gvr-text-muted, #8b93a7);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.modalClose:hover:not(:disabled) {
+  background: #f0f3f8;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.modalClose:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.payMethods {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.payMethod {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  border-radius: 14px;
+  background: var(--gvr-surface, #fff);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.payMethod:hover:not(:disabled) {
+  background: #f7f9fc;
+  border-color: var(--gvr-primary, #2b5adc);
+}
+
+.payMethod:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.payMethodIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(43, 90, 220, 0.1);
+  color: var(--gvr-primary, #2b5adc);
+  font-size: 20px;
+}
+
+.payMethodText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.payMethodText strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.payMethodText span {
+  font-size: 12px;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.trendUp,
+.trendDown {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.trendUp {
+  color: #1b7a52;
+}
+
+.trendDown {
+  color: #c62828;
+}
+
+.depositBadge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.depositOn {
+  color: #1b7a52;
+  background: #e6f7ef;
+}
+
+.depositOff {
+  color: #8b93a7;
+  background: #f0f3f8;
+}
+
+.depositHint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--gvr-text-muted);
+}
+
+.midGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.9fr);
+  gap: 16px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cardSub {
+  margin: 4px 0 14px;
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+}
+
+.chartSvg {
+  display: block;
+  width: 100%;
+  height: 180px;
+}
+
+.chartSvgLabel {
+  fill: #8b93a7;
+  font-size: 12px;
+}
+
+.bankCard {
+  border-radius: 16px;
+  background: linear-gradient(145deg, #1a1f2e 0%, #2a3144 100%);
+  color: #fff;
+  padding: 16px 18px 18px;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bankCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chip {
+  width: 34px;
+  height: 24px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #f2d16b, #c9a227);
+}
+
+.bankBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.bankNumber {
+  margin-top: 18px;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+}
+
+.bankWho {
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.addCardBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--gvr-border);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--gvr-text);
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.addCardBtn:hover {
+  background: var(--gvr-bg);
+}
+
+.primaryBtn,
+.ghostBtn,
+.methodBtn,
+.quickChip {
+  border-radius: var(--gvr-radius-pill);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.amountWrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.amountInput {
+  --padding-start: 14px;
+  --padding-end: 36px;
+  --background: var(--gvr-bg);
+  border: 1px solid var(--gvr-border);
+  border-radius: var(--gvr-radius);
+  font-size: 20px;
+  font-weight: 650;
+}
+
+.amountCurrency {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gvr-text-muted);
+  font-weight: 650;
+}
+
+.quickRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.quickChip {
+  border: 1px solid var(--gvr-border);
+  background: var(--gvr-surface);
+  color: var(--gvr-text-secondary);
+  padding: 7px 12px;
+}
+
+.quickChipActive {
+  border-color: transparent;
+  background: var(--gvr-primary-soft);
+  color: var(--gvr-primary);
+}
+
+.methodList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.methodBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--gvr-border);
+  background: var(--gvr-surface);
+  color: var(--gvr-text);
+}
+
+.methodBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.methodBtn:not(:disabled):hover {
+  background: var(--gvr-bg);
+}
+
+.txList {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.txItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-top: 1px solid var(--gvr-border);
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: default;
+}
+
+.txList li:first-child .txItem {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.txItem:not(:disabled) {
+  cursor: pointer;
+}
+
+.txItem:not(:disabled):hover .txTitle {
+  color: var(--gvr-primary);
+}
+
+.txIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.txIconIn {
+  background: #e6f7ef;
+  color: #1b7a52;
+}
+
+.txIconOut {
+  background: #f0f3f8;
+  color: #5c6578;
+}
+
+.txIconInv {
+  background: var(--gvr-primary-soft, #e8eefc);
+  color: var(--gvr-primary, #2b5adc);
+}
+
+.txText {
+  min-width: 0;
+  flex: 1;
+}
+
+.txTitle {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--gvr-text);
+}
+
+.txSub {
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--gvr-text-muted);
+}
+
+.txRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.txPlus {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1b7a52;
+}
+
+.txMinus {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gvr-text);
+}
+
+.txNeutral {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gvr-text-secondary);
+}
+
+.txWhen {
+  font-size: 12px;
+  color: var(--gvr-text-muted);
+}
+
+.loadingWrap,
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 36px 16px;
+  color: var(--gvr-text-muted);
+  text-align: center;
+}
+
+.empty p {
+  margin: 0;
+  font-weight: 650;
+  color: var(--gvr-text);
+}
+
+.empty span {
+  font-size: 13px;
+}
+
+.empty ion-icon {
+  font-size: 28px;
+}
+
+@media (max-width: 1200px) {
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 1023px) {
+  .midGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .statValue {
+    font-size: 24px;
+  }
+}

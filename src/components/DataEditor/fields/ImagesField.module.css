@@ -1,0 +1,205 @@
+/* src/components/DataEditor/fields/ImageField.module.css */
+
+.field {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.imageWrapper {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.imageWrapper:hover {
+  border-color: #9ca3af;
+}
+
+.wrapperError {
+  border-color: #ef4444;
+}
+
+.imageGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.imageItem {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.imagePreview {
+  width: 10em;
+  height: 10em;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.imagePreview:hover {
+  transform: scale(1.05);
+}
+
+.removeButton {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ef4444;
+  color: white;
+  --padding-start: 0;
+  --padding-end: 0;
+  min-height: 24px;
+}
+
+.addButton {
+  --border-color: #d1d5db;
+  --color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.buttonIcon {
+  margin-right: 8px;
+}
+
+.counter {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-align: right;
+}
+
+/* На зелёном градиенте (Works ArrivedCard и т.п.) */
+.labelLight {
+  color: #ffffff !important;
+}
+
+.imageWrapperLight {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.imageWrapperLight:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.addButtonLight {
+  --color: #ffffff;
+  --border-color: rgba(255, 255, 255, 0.55);
+  --background: transparent;
+  --background-activated: rgba(255, 255, 255, 0.15);
+  --background-hover: rgba(255, 255, 255, 0.08);
+}
+
+.addButtonLight ion-icon {
+  color: #ffffff;
+}
+
+.counterLight {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.errorMessage {
+  display: block;
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: 0.25rem;
+}
+
+/* Модальное окно */
+.modal {
+  --width: 100%;
+  --height: 100%;
+}
+
+.modalContent {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.modalTitle {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.modalBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #000;
+}
+
+.modalImage {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .imageItem {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .modalBody {
+    padding: 8px;
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  .label {
+    color: #f3f4f6;
+  }
+  
+  .imageWrapper {
+    background: #1f2937;
+    border-color: #374151;
+  }
+  
+  .modalContent {
+    background: #1f2937;
+  }
+  
+  .modalHeader {
+    background: #111827;
+    border-bottom-color: #374151;
+  }
+  
+  .modalTitle {
+    color: #f3f4f6;
+  }
+}

@@ -1,0 +1,294 @@
+.field {
+  margin-bottom: 1.5em;
+  position: relative;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: 0.02em;
+}
+
+.dateWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.dateInput {
+  width: 100%;
+  padding: 0.85em 2.5em 0.85em 1em;
+  font-size: 1em;
+  font-family: inherit;
+  color: #333;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+/* Кастомизация календарной иконки */
+.dateInput::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0;
+  width: 2em;
+  height: 2em;
+}
+
+.dateInput::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.dateInput::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.dateInput::-webkit-datetime-edit-text {
+  color: #999;
+  padding: 0 0.3em;
+}
+
+.dateInput::-webkit-datetime-edit-month-field,
+.dateInput::-webkit-datetime-edit-day-field,
+.dateInput::-webkit-datetime-edit-year-field {
+  color: #333;
+  font-weight: 500;
+}
+
+.dateInput:hover:not(:disabled) {
+  border-color: #b0b0b0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dateInput:focus {
+  border-color: var(--main-color, #086CA2);
+  box-shadow: 0 0 0 3px rgba(8, 108, 162, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dateInput.placeholder {
+  color: #999;
+}
+
+.dateInput:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.inputError {
+  border-color: #ff4444 !important;
+}
+
+.inputError:focus {
+  box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1) !important;
+}
+
+/* Placeholder для пустого поля */
+.dateInput.placeholder::before {
+  content: attr(placeholder);
+  position: absolute;
+  left: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+  pointer-events: none;
+}
+
+.iconWrapper {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.icon {
+  font-size: 1.2em;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.dateInput:hover:not(:disabled) ~ .iconWrapper .icon {
+  color: #333;
+}
+
+.dateInput:focus ~ .iconWrapper .icon {
+  color: var(--main-color, #086CA2);
+  animation: pulse 0.3s ease;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Отображение форматированной даты */
+.displayValue {
+  position: absolute;
+  left: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #333;
+  font-weight: 500;
+  pointer-events: none;
+  background: white;
+  padding: 0 0.2em;
+  display: none; /* По умолчанию скрыто */
+}
+
+/* Для браузеров, которые не показывают дату красиво */
+@supports not (-webkit-calendar-picker-indicator: none) {
+  .displayValue {
+    display: block;
+  }
+  
+  .dateInput {
+    color: transparent;
+  }
+  
+  .dateInput:focus {
+    color: #333;
+  }
+  
+  .dateInput:focus ~ .displayValue {
+    display: none;
+  }
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 0.3em;
+  font-size: 0.85em;
+  color: #ff4444;
+  font-weight: 500;
+}
+
+/* Анимация появления */
+.field {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  .label {
+    color: #e0e0e0;
+  }
+  
+  .dateInput {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+    color-scheme: dark;
+  }
+  
+  .dateInput::-webkit-datetime-edit-text {
+    color: #888;
+  }
+  
+  .dateInput::-webkit-datetime-edit-month-field,
+  .dateInput::-webkit-datetime-edit-day-field,
+  .dateInput::-webkit-datetime-edit-year-field {
+    color: #e0e0e0;
+  }
+  
+  .dateInput:hover:not(:disabled) {
+    border-color: #666;
+    background: #333;
+  }
+  
+  .dateInput.placeholder {
+    color: #888;
+  }
+  
+  .icon {
+    color: #999;
+  }
+  
+  .dateInput:hover:not(:disabled) ~ .iconWrapper .icon {
+    color: #e0e0e0;
+  }
+  
+  .displayValue {
+    background: #2a2a2a;
+    color: #e0e0e0;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 480px) {
+  .field {
+    margin-bottom: 1.2em;
+  }
+  
+  .label {
+    font-size: 0.85em;
+    margin-bottom: 0.4em;
+  }
+  
+  .dateInput {
+    padding: 0.75em 2.2em 0.75em 0.9em;
+    font-size: 0.95em;
+    border-radius: 8px;
+  }
+  
+  .iconWrapper {
+    right: 0.6em;
+  }
+  
+  .icon {
+    font-size: 1.1em;
+  }
+  
+  .displayValue {
+    left: 0.9em;
+    font-size: 0.95em;
+  }
+}
+
+/* Планшеты */
+@media (min-width: 481px) and (max-width: 768px) {
+  .dateInput {
+    padding: 0.8em 2.3em 0.8em 0.95em;
+  }
+}
+
+/* Firefox специфичные стили */
+@-moz-document url-prefix() {
+  .dateInput {
+    padding-right: 2.5em;
+  }
+}
+
+/* Для iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .dateInput {
+    min-height: 44px; /* Минимальный размер для iOS */
+  }
+}

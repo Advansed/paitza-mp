@@ -1,0 +1,703 @@
+/* Стили для мобильных устройств ~420px */
+
+/* Мягкая подложка карточки по статусу (как CargoCard) */
+.cardSurface {
+  border-width: 1px;
+  border-style: solid;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s,
+    filter 0.2s;
+}
+
+.workCard.cardSurface.surfaceNew {
+  border-color: #64b5f6;
+  background-color: rgba(100, 181, 246, 0.12);
+}
+
+.workCard.cardSurface.surfaceOffered {
+  border-color: #ffb74d;
+  background-color: rgba(255, 183, 77, 0.18);
+}
+
+.workCard.cardSurface.surfaceToLoad {
+  border-color: #ffcc80;
+  background-color: rgba(255, 204, 128, 0.2);
+}
+
+.workCard.cardSurface.surfaceOnLoad {
+  border-color: #ce93d8;
+  background-color: rgba(206, 147, 216, 0.14);
+}
+
+.workCard.cardSurface.surfaceLoading {
+  border-color: #ffca28;
+  background-color: rgba(255, 236, 179, 0.35);
+}
+
+.workCard.cardSurface.surfaceLoaded {
+  border-color: #81c784;
+  background-color: rgba(129, 199, 132, 0.16);
+}
+
+.workCard.cardSurface.surfaceInWork {
+  border-color: #ba68c8;
+  background-color: rgba(186, 104, 200, 0.12);
+}
+
+.workCard.cardSurface.surfaceToUnload {
+  border-color: #4dd0e1;
+  background-color: rgba(77, 208, 225, 0.14);
+}
+
+.workCard.cardSurface.surfaceUnloading {
+  border-color: #4fc3f7;
+  background-color: rgba(79, 195, 247, 0.12);
+}
+
+.workCard.cardSurface.surfaceUnloaded {
+  border-color: #66bb6a;
+  background-color: rgba(102, 187, 106, 0.14);
+}
+
+.workCard.cardSurface.surfaceCompleted {
+  border-color: #4db6ac;
+  background-color: rgba(77, 182, 172, 0.14);
+}
+
+.workCard.cardSurface.surfaceRejected {
+  border-color: #e57373;
+  background-color: rgba(229, 115, 115, 0.12);
+}
+
+.workCard {
+  background-color: white;
+  border: 1px solid silver;
+  border-radius: 8px;
+  padding: 0.75em 0.5em;
+  margin-bottom: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: auto;
+  height: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.workCard:hover {
+  box-shadow: 0 4px 12px rgba(26, 31, 46, 0.1);
+}
+
+.topRow {
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr) max-content;
+  align-items: center;
+  column-gap: 0.5em;
+  margin-bottom: 0.6em;
+  width: 100%;
+  min-width: 0;
+}
+
+.topRowStatus {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topRowId {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.publishedRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em 0.5em;
+  margin: -0.15em 0 0.55em;
+  font-size: 0.78em;
+  line-height: 1.3;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.publishedLabel {
+  font-weight: 500;
+  color: var(--gvr-text-secondary, #5c6578);
+}
+
+.publishedValue {
+  font-weight: 600;
+  color: var(--gvr-text, #1a1f2e);
+  font-variant-numeric: tabular-nums;
+}
+
+.publishedRel {
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.publishedRel::before {
+  content: '·';
+  margin-right: 0.5em;
+  opacity: 0.55;
+}
+
+.topRowPrice {
+  justify-self: end;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* Цена теперь использует класс statusBadge, стили удалены */
+
+.tagsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin-bottom: 0.6em;
+}
+
+.tag {
+  /* Делаем теги по размеру как статусы */
+  padding: 0.4em 0.9em;
+  border-radius: 1em;
+  font-size: 0.85em;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.tagGreen {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}
+
+.tagOrange {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
+.tagPurple {
+  background-color: #F3E5F5;
+  color: #7B1FA2;
+}
+
+.tagBlue {
+  background-color: #E3F2FD;
+  color: #1976D2;
+}
+
+.tagYellow {
+  background-color: #FFF9C4;
+  color: #F57F17;
+}
+
+.cargoName {
+  margin-bottom: 0.6em;
+}
+
+.cargoNameText {
+  display: block;
+}
+
+.routeSection {
+  margin-bottom: 0.6em;
+}
+
+.routeRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.4em;
+  width: 100%;
+  margin-bottom: 0.25em;
+}
+
+.routeLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+  flex: 1;
+  min-width: 0;
+}
+
+.routeTextGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+}
+
+.routeLabel {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.routeCity {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #333;
+}
+
+.routeIcon {
+  font-size: 2em;
+  flex-shrink: 0;
+}
+
+.routeIconGreen {
+  color: #4CAF50;
+}
+
+.routeIconRed {
+  color: #F44336;
+}
+
+.routeRight {
+  text-align: right;
+  font-size: 0.8em;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.routeDateLabel {
+  display: block;
+}
+
+.routeDateValue {
+  display: block;
+  font-weight: 600;
+  color: #333;
+}
+
+.cargoDetails {
+  margin-top: 0.6em;
+  padding-top: 0.6em;
+  border-top: 1px solid #E0E0E0;
+}
+
+.cargoDetailsTitle {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.4em;
+}
+
+.cargoDetailsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em;
+  margin-bottom: 0.4em;
+}
+
+.cargoDetailItem {
+  font-size: 0.8em;
+  color: #666;
+}
+
+.cargoDetailValue {
+  font-weight: 600;
+  color: #333;
+}
+
+.cargoDescription {
+  font-size: 0.8em;
+  color: #666;
+  line-height: 1.4;
+  margin-top: 0.4em;
+}
+
+/* Статусы */
+.statusBadge {
+  padding: 0.4em 0.9em;
+  border-radius: 1em;
+  font-size: 0.85em;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.statusWaiting {
+  background-color: #E3F2FD;
+  color: #1976D2;
+}
+
+.statusBargaining {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
+.idText {
+  font-size: 0.85em;
+  color: #333;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Для очень маленьких экранов (< 360px) */
+@media (max-width: 360px) {
+  .workCard {
+    padding: 0.6em 0.5em;
+  }
+  
+  .topRow {
+    column-gap: 0.35em;
+  }
+
+  .statusBadge {
+    font-size: 0.8em;
+    padding: 0.35em 0.75em;
+  }
+  
+  .idText {
+    font-size: 0.8em;
+  }
+  
+  .price {
+    font-size: 0.9em;
+    padding: 0.35em 0.75em;
+  }
+  
+  .tag {
+    font-size: 0.8em;
+    padding: 0.35em 0.75em;
+  }
+  
+  .routeLabel {
+    min-width: 60px;
+    font-size: 0.75em;
+  }
+  
+  .routeValue {
+    font-size: 0.8em;
+  }
+}
+
+.feedCard {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 16px 18px 16px 12px;
+  border: 1px solid var(--gvr-border, #e6ebf2);
+  border-radius: var(--gvr-radius-lg, 16px);
+  box-shadow: var(--gvr-shadow-sm, 0 1px 2px rgba(26, 31, 46, 0.05));
+  cursor: pointer;
+  background: var(--gvr-surface, #fff);
+  font: inherit;
+  appearance: none;
+  color: inherit;
+}
+
+.feedCard:hover {
+  border-color: var(--gvr-primary, #2b5adc);
+  box-shadow: 0 4px 16px rgba(43, 90, 220, 0.08);
+}
+
+.feedCardSelected {
+  border-color: var(--gvr-primary, #2b5adc);
+  box-shadow: 0 0 0 3px var(--gvr-primary-soft, #e8eefc);
+}
+
+.light {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  width: 18px;
+  padding: 8px 0;
+  border-radius: 999px;
+  background: #eef1f6;
+  align-self: stretch;
+}
+
+.lamp {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d5dbe6;
+}
+
+.light_full .lamp:nth-child(1) {
+  background: #22a06b;
+  box-shadow: 0 0 0 3px rgba(34, 160, 107, 0.18);
+}
+
+.light_partial .lamp:nth-child(2) {
+  background: #f5a524;
+  box-shadow: 0 0 0 3px rgba(245, 165, 36, 0.22);
+}
+
+.light_none .lamp:nth-child(3) {
+  background: #e5484d;
+  box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.18);
+}
+
+.feedBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.feedTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.feedBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: var(--gvr-radius-pill, 999px);
+  white-space: nowrap;
+}
+
+.badgeNew {
+  color: #1565c0;
+  background: rgba(21, 101, 192, 0.12);
+}
+
+.badgeBids {
+  color: #ef6c00;
+  background: rgba(239, 108, 0, 0.14);
+}
+
+.badgeWork {
+  color: #1565c0;
+  background: rgba(21, 101, 192, 0.1);
+}
+
+.badgeDone {
+  color: #2e7d32;
+  background: rgba(46, 125, 50, 0.12);
+}
+
+.badgeAlert {
+  color: #c62828;
+  background: rgba(198, 40, 40, 0.12);
+}
+
+.feedId {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gvr-text-muted, #8b93a7);
+  padding-top: 2px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.feedPriceCol {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.feedPrice {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.payBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px 3px 6px;
+  border-radius: var(--gvr-radius-pill, 999px);
+  white-space: nowrap;
+}
+
+.payDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pay_full {
+  color: #1b7a52;
+  background: #e6f7ef;
+}
+
+.pay_full .payDot {
+  background: #22a06b;
+}
+
+.pay_partial {
+  color: #b86a00;
+  background: #fff4e0;
+}
+
+.pay_partial .payDot {
+  background: #f5a524;
+}
+
+.pay_none {
+  color: #c62828;
+  background: #fdecec;
+}
+
+.pay_none .payDot {
+  background: #e5484d;
+}
+
+.feedTitle {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+  line-height: 1.25;
+}
+
+.feedCompany {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gvr-text-secondary, #5c6578);
+}
+
+.feedCompany svg {
+  flex-shrink: 0;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.feedCompanyName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.verified {
+  color: var(--gvr-primary, #2b5adc) !important;
+  flex-shrink: 0;
+}
+
+.feedRoute {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gvr-text, #1a1f2e);
+}
+
+.feedRoute svg {
+  color: var(--gvr-text-muted, #8b93a7);
+  flex-shrink: 0;
+}
+
+.feedKm {
+  font-weight: 500;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.feedDates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 13px;
+  color: var(--gvr-text-secondary, #5c6578);
+}
+
+.feedDates span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.feedDates svg {
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.fleet {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 12px;
+  font-weight: 650;
+  color: #c2410c;
+  background: #fff4e0;
+  border-radius: var(--gvr-radius-pill, 999px);
+  padding: 5px 10px;
+}
+
+.feedMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.feedMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.feedOffers {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--gvr-primary, #2b5adc);
+}
+
+@media (max-width: 560px) {
+  .feedCard {
+    padding: 14px 12px 14px 10px;
+    gap: 10px;
+  }
+
+  .feedTop {
+    flex-wrap: wrap;
+  }
+
+  .feedPriceCol {
+    margin-left: 0;
+    width: 100%;
+    align-items: flex-start;
+    order: 3;
+  }
+
+  .feedTitle {
+    font-size: 16px;
+  }
+
+  .feedPrice {
+    font-size: 16px;
+  }
+
+  .feedOffers {
+    margin-left: 0;
+  }
+
+  .feedMeta {
+    gap: 6px 10px;
+  }
+}

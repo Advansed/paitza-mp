@@ -1,0 +1,101 @@
+/* Добавить в RegistrationForm.module.css или подключить в RegistrationForm.tsx */
+
+.showAgreementOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  /* Аппаратное ускорение */
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.showAgreementContent {
+  background: white;
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 85vh;
+  width: 500px;
+  overflow-y: auto;
+  padding: 0;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  /* Подсказка браузеру вынести слой на GPU */
+  will-change: transform, opacity;
+  animation: slideUpOptimized 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.showAgreementCloseBtn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.showAgreementCloseBtn:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #000;
+  transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+  .showAgreementContent {
+    max-width: 95vw;
+    max-height: 90vh;
+    margin: 20px;
+    border-radius: 8px;
+  }
+
+  .showAgreementCloseBtn {
+    top: 10px;
+    right: 15px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,83 @@
+.stepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5em;
+  padding: 0.5em;
+  background: var(--main-color);
+  border-radius: 10px 10px 0 0;
+  color: white;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  color: white;
+}
+.pageTitle {
+  margin: 0;
+  font-size: 0.8em;
+  font-weight: 400;
+  text-align: center;
+  flex: 1;
+  color: silver;
+}
+
+.navButton {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2em;
+}
+
+.navButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.navButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.navButtonLeft {
+  margin-right: auto;
+}
+
+.navButtonRight {
+  margin-left: auto;
+}
+
+.navButtonRight.navButton:last-child {
+  background: var(--dop-color);
+  border-color: var(--dop-color);
+}
+
+@media (max-width: 480px) {
+  .stepHeader {
+    padding: 0.5em;
+  }
+  
+  .stepTitle {
+    font-size: 0.9em;
+  }
+  
+  .navButton {
+    width: 1.8em;
+    height: 1.8em;
+    font-size: 1.1em;
+  }
+}

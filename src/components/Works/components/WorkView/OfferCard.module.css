@@ -1,0 +1,39 @@
+.offerCard { width: 100%; margin: 0; display: flex; flex-direction: column; gap: 0.75em; box-sizing: border-box; }
+.notificationCard, .detailsCard, .secureCard { border-radius: 12px; padding: 1em; background: linear-gradient(135deg, #2d9d5e 0%, #34c77b 100%); }
+.notificationHeader { display: flex; flex-direction: column; gap: 0.35em; }
+.notificationTitleRow { display: flex; align-items: center; gap: 0.5em; flex-wrap: wrap; }
+.notificationIcon { font-size: 1.4em; color: white; }
+.notificationTitle { font-size: 1.05em; font-weight: 600; color: white; margin: 0; }
+.newBadge { background: #e53935; color: white; font-size: 0.7em; font-weight: 700; padding: 0.2em 0.5em; border-radius: 4px; }
+.notificationSubtitle { font-size: 0.9em; color: rgba(255, 255, 255, 0.9); margin: 0; }
+.infoRow { display: flex; flex-wrap: nowrap; gap: 0.75em; width: 100%; margin-bottom: 1em; align-items: stretch; }
+.infoField { flex: 1 1 0; display: flex; flex-direction: column; gap: 0.4em; min-width: 0; }
+.label { font-size: 0.8em; color: rgba(255, 255, 255, 0.95); font-weight: 500; }
+.input, .value, .transportSingle, .transportEmpty { width: 100%; border-radius: 10px; padding: 0.6em 0.75em; box-sizing: border-box; }
+.value { white-space: nowrap; overflow: hidden; font-size: 0.875rem; }
+.input, .value, .transportSingle { background: rgba(255, 255, 255, 0.3); color: white; border: 1px solid rgba(255, 255, 255, 0.4); }
+.input::placeholder { color: rgba(255, 255, 255, 0.6); }
+.transportField { display: flex; flex-direction: column; gap: 0.4em; width: 100%; }
+.transportPlate { opacity: 0.9; font-size: 0.9em; }
+.transportEmpty { background: rgba(255, 255, 255, 0.2); color: rgba(255, 255, 255, 0.85); font-style: italic; border: 1px solid rgba(255, 255, 255, 0.3); }
+.secureIcon { font-size: 1.5em; color: white; margin-bottom: 0.4em; }
+.secureTitle { font-size: 1em; font-weight: 600; color: white; margin: 0 0 0.5em 0; }
+.secureDescription { font-size: 0.88em; color: rgba(255, 255, 255, 0.9); margin: 0; }
+.loadedForm { display: flex; flex-direction: column; gap: 1em; }
+.error { color: #fff3e0; font-size: 0.85em; padding: 0.6em 0.8em; background: rgba(229, 57, 53, 0.3); border-radius: 10px; }
+.actions { width: 100%; margin-top: 0.25em; }
+.submitButton { width: 100%; --background: #27b03e; --color: white; }
+.cancelButton {
+  width: 100%;
+  --background: transparent;
+  --background-activated: rgba(45, 157, 94, 0.14);
+  --background-hover: rgba(45, 157, 94, 0.08);
+  --color: #1b5e20;
+  --border-width: 2px;
+  --border-style: solid;
+  --border-color: #2d9d5e;
+  --border-radius: 10px;
+  --box-shadow: none;
+  font-weight: 600;
+  min-height: 2.75rem;
+}

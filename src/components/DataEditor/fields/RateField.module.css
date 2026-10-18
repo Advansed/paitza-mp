@@ -1,0 +1,177 @@
+/* RateField.module.css */
+.field {
+  margin-bottom: 1.5em;
+  position: relative;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.8em;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #333;
+  letter-spacing: 0.02em;
+}
+
+.rateContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 0;
+}
+
+.starButton {
+  background: none;
+  border: none;
+  padding: 0.3em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.starButton:not(.disabled):hover {
+  transform: scale(1.2);
+  background: rgba(8, 108, 162, 0.1);
+}
+
+.starButton:not(.disabled):active {
+  transform: scale(1.1);
+}
+
+.starButton.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.starIcon {
+  font-size: 2em;
+  transition: all 0.2s ease;
+}
+
+.starIcon.outline {
+  color: #e0e0e0;
+}
+
+.starIcon.filled {
+  color: #ffc107;
+  filter: drop-shadow(0 2px 4px rgba(255, 193, 7, 0.3));
+}
+
+.starIcon.hovered:not(.filled) {
+  color: #ffecb3;
+}
+
+.starIcon.filled.hovered {
+  color: #ffd54f;
+  transform: scale(1.1);
+}
+
+.ratingText {
+  margin-left: 1em;
+  font-size: 0.9em;
+  color: #666;
+  font-weight: 500;
+  min-width: 60px;
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 0.5em;
+  font-size: 0.85em;
+  color: #ff4444;
+  font-weight: 500;
+}
+
+/* Анимация появления */
+.field {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Темная тема */
+@media (prefers-color-scheme: dark) {
+  .label {
+    color: #e0e0e0;
+  }
+  
+  .starIcon.outline {
+    color: #555;
+  }
+  
+  .starIcon.filled {
+    color: #ffc107;
+  }
+  
+  .starIcon.hovered:not(.filled) {
+    color: #ffecb3;
+  }
+  
+  .ratingText {
+    color: #ccc;
+  }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 480px) {
+  .field {
+    margin-bottom: 1.2em;
+  }
+  
+  .label {
+    font-size: 0.85em;
+    margin-bottom: 0.6em;
+  }
+  
+  .starIcon {
+    font-size: 1.8em;
+  }
+  
+  .rateContainer {
+    gap: 0.3em;
+  }
+  
+  .ratingText {
+    font-size: 0.85em;
+    margin-left: 0.8em;
+    min-width: 50px;
+  }
+}
+
+/* Планшеты */
+@media (min-width: 481px) and (max-width: 768px) {
+  .starIcon {
+    font-size: 1.9em;
+  }
+}
+
+/* Анимация для заполнения звезд */
+@keyframes starPop {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.starIcon.filled {
+  animation: starPop 0.3s ease;
+}

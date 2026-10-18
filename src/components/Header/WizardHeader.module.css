@@ -1,0 +1,131 @@
+.stepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75em;
+  padding: 0.6em 0.8em;
+  background: var(--main-color);
+  border-radius: 0 0 10px 10px;
+  color: white;
+  gap: 0.6em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.titleContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0; /* Позволяет тексту сжиматься */
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.pageTitle {
+  margin: 0.2em 0 0 0;
+  font-size: 0.8em;
+  font-weight: 400;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.navButton {
+  width: 2.2em;
+  height: 2.2em;
+  min-width: 2.2em;
+  min-height: 2.2em;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+.navButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.navButton:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.navButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Левая кнопка меню - светло-синий фон */
+.menuButton {
+  background: #4A9FD4 !important; /* Светло-синий цвет (более светлый оттенок основного #086CA2) */
+}
+
+.menuButton:hover:not(:disabled) {
+  background: #5BB0E5 !important; /* Более светлый при наведении */
+}
+
+/* Правая кнопка обновления - желтый фон */
+.refreshButton {
+  background: var(--dop-color) !important;
+  border: none;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: #ffcc00 !important;
+  filter: brightness(1.1);
+}
+
+.navButtonLeft {
+  margin-right: 0;
+}
+
+.navButtonRight {
+  margin-left: 0;
+}
+
+/* Для очень маленьких экранов (< 360px) */
+@media (max-width: 360px) {
+  .stepHeader {
+    padding: 0.5em 0.6em;
+    gap: 0.5em;
+  }
+  
+  .stepTitle {
+    font-size: 0.85em;
+  }
+
+  .pageTitle {
+    font-size: 0.75em;
+  }
+  
+  .navButton {
+    width: 2em;
+    height: 2em;
+    min-width: 2em;
+    min-height: 2em;
+    font-size: 1em;
+  }
+}

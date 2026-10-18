@@ -1,0 +1,167 @@
+/* WorksList.css */
+
+.works-list-container {
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.scroll {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  padding-bottom: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Лента: карточки в 2 столбца */
+.works-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 4px 4px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.works-card-cell {
+  flex: 1 1 calc(33.333% - 11px);
+  max-width: calc(33.333% - 11px);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.works-card-cell > * {
+  height: 100%;
+  width: 100%;
+}
+
+/* Планшет: 2 колонки */
+@media (max-width: 1023px) {
+  .works-card-cell {
+    flex: 1 1 calc(50% - 8px);
+    max-width: calc(50% - 8px);
+  }
+}
+
+/* Мобилка: 1 колонка */
+@media (max-width: 767px) {
+  .works-cards-grid {
+    gap: 12px;
+    padding: 0 2px 8px;
+  }
+
+  .works-card-cell {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+.custom-segment {
+  --background: #ffffff;
+  --border-radius: 12px;
+  --border-color: #e0e0e0;
+  --border-width: 1px;
+  --border-style: solid;
+  margin: 0.6em 0.8em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: calc(100% - 1.6em);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: inherit;
+}
+
+.cr-card {
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.lottie-container {
+  max-width: 100%;
+  max-height: 200px;
+  margin: 0 auto;
+}
+
+.empty-state-container {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1em;
+  box-sizing: border-box;
+}
+
+.segment-button {
+  --background: transparent;
+  --background-checked: var(--ion-color-primary);
+  --color: #666666;
+  --color-checked: #ffffff;
+  --border-radius: 10px;
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+  --indicator-box-shadow: 0 2px 6px rgba(var(--ion-color-primary-rgb), 0.3);
+  min-height: 32px;
+  transition: all 0.2s ease;
+}
+
+.segment-button::part(indicator) {
+  border-radius: 10px;
+  height: calc(100% - 4px);
+  margin: 2px;
+}
+
+.segment-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.3px;
+}
+
+.segment-button.segment-button-checked {
+  color: #5757e0;
+  font-weight: 700;
+}
+
+.works-list-container img,
+.works-list-container video,
+.works-list-container iframe,
+.works-list-container canvas,
+.works-list-container svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 360px) {
+  .custom-segment {
+    margin: 0.5em 0.6em;
+    width: calc(100% - 1.2em);
+  }
+
+  .segment-label {
+    font-size: 0.75rem;
+  }
+
+  .scroll {
+    max-height: calc(100vh - 110px);
+  }
+
+  .segment-button {
+    min-height: 30px;
+    --padding-top: 5px;
+    --padding-bottom: 5px;
+  }
+}

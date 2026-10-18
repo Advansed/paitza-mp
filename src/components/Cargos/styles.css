@@ -1,0 +1,386 @@
+/* Стили для модуля Cargos */
+
+@font-face {
+    font-family: "Roboto";
+    src: url("/fonts/Roboto.ttf") format("truetype");
+}
+
+.roboto {
+    font-family: "Roboto";
+    line-height: medium;
+    letter-spacing: 40;
+}
+
+.cr-card {
+    /* Убраны боковые отступы */
+    background-color: white;
+    border: 1px solid silver;
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
+.c-card {
+    /* Убраны боковые отступы */
+    background-color: white;
+    border: 1px solid silver;
+    border-radius: 5px;
+    padding: 0.5em;
+}
+
+.cr-chip {
+    padding: 0.2em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    background-color: var(--dop-color);
+    border-radius: 1em;
+    color: white;
+    font-size: 0.7em;
+}
+
+.cr-detali {
+    padding: 0.5em;
+    background-color: #BAD3FA;
+    border-radius: 5px;
+    color: black;
+}
+
+.cr-button-1 {
+    min-height: 1.5em;
+    --border-radius: 5px !important;
+    --padding-top: 0.5em;
+    --padding-bottom: 0.5em;
+}
+
+.cr-button-2 {
+    min-height: 1.5em;
+    --border-radius: 5px !important;
+    --padding-top: 0.5em;
+    --padding-bottom: 0.5em;
+    border: 1px solid silver;
+    border-radius: 5px;
+}
+
+/* Статусы */
+.cr-status-1 {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+    padding: 0.3em 0.8em;
+    border-radius: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.cr-status-2 {
+    background-color: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffcc02;
+    padding: 0.3em 0.8em;
+    border-radius: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.cr-status-3 {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+    border: 1px solid #ce93d8;
+    padding: 0.3em 0.8em;
+    border-radius: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.cr-status-4 {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+    padding: 0.3em 0.8em;
+    border-radius: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.cr-status-5 {
+    background-color: #e0f2f1;
+    color: #eb1212;
+    border: 1px solid #d64a12;
+    padding: 0.3em 0.8em;
+    border-radius: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.cr-status-6 {
+    background-color: #e0f2f1;
+    color:          #10da09;
+    border:         1px solid #2dd816;
+    padding:        0.3em 0.8em;
+    border-radius:  0.5em;
+    font-size:      0.8em;
+    font-weight:    bold;
+    text-align:     center;
+    display:        inline-block;
+}
+
+.cr-status-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+    padding: 0.3em 0.8em;
+    border-radius: 0.5em;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    display: inline-block;
+}
+
+.circle-1 {
+    width: 1em;
+    height: 1em;
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+}
+.circle-2 {
+    width: 1em;
+    height: 1em;
+    background-color: orange;
+    border-radius: 50%;
+    display: inline-block;
+}
+.circle-3 {
+    width: 1em;
+    height: 1em;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Утилиты */
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.fl-space {
+    justify-content: space-between;
+}
+
+.a-center {
+    align-items: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-05 {
+    margin-top: 0.5em;
+}
+
+.mt-1 {
+    margin-top: 1em;
+}
+
+.mb-05 {
+    margin-bottom: 0.5em;
+}
+
+.mb-1 {
+    margin-bottom: 1em;
+}
+
+.ml-05 {
+    margin-left: 0.5em;
+}
+
+.ml-1 {
+    margin-left: 1em;
+}
+
+.mr-05 {
+    margin-right: 0.5em;
+}
+
+.mr-1 {
+    margin-right: 1em;
+}
+
+.mx-1 {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.w-90 {
+    width: 90%;
+}
+
+.w-70 {
+    width: 70%;
+}
+
+.w-10 {
+    width: 10%;
+}
+
+.w-15 {
+    width: 1.5em;
+}
+
+.w-2 {
+    width: 2em;
+}
+
+.h-15 {
+    height: 1.5em;
+}
+
+.h-2 {
+    height: 2em;
+}
+
+/* Цвета */
+.cl-black {
+    color: black;
+}
+
+.cl-gray {
+    color: gray;
+}
+
+.cl-prim {
+    color: var(--ion-color-primary);
+}
+
+.cl-danger {
+    color: var(--ion-color-danger);
+}
+
+/* Размеры шрифтов */
+.fs-07 {
+    font-size: 0.7em;
+}
+
+.fs-08 {
+    font-size: 0.8em;
+}
+
+.fs-09 {
+    font-size: 0.9em;
+}
+
+/* Специальные классы для грузов */
+.cargo-card-list {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.cargo-card-list:hover {
+    filter: brightness(0.97);
+}
+
+.cargo-card-view {
+    /* Стили для режима просмотра */
+}
+
+.c-input {
+    margin-top: 0.5em;
+}
+
+.custom-input {
+    --padding-start: 0.5em;
+    --padding-end: 0.5em;
+    --padding-top: 0.5em;
+    --padding-bottom: 0.5em;
+}
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.a-container {
+    padding-bottom: 2em;
+}
+
+.gradient-button {
+  background: linear-gradient(to right, #3b82f6, #9333ea);
+  color: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-button:hover {
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+}
+
+/* Мои заказы (заказчик): карточки в 3 столбца, как у исполнителя */
+.cargos-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 4px 4px 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cargos-card-cell {
+  flex: 1 1 calc(33.333% - 11px);
+  max-width: calc(33.333% - 11px);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.cargos-card-cell > * {
+  height: 100%;
+  width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .cargos-card-cell {
+    flex: 1 1 calc(50% - 8px);
+    max-width: calc(50% - 8px);
+  }
+}
+
+@media (max-width: 767px) {
+  .cargos-cards-grid {
+    gap: 12px;
+    padding: 0 2px 8px;
+  }
+
+  .cargos-card-cell {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}

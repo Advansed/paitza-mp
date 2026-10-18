@@ -1,0 +1,7 @@
+{
+  "name": "paitza-mp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

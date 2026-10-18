@@ -1,0 +1,153 @@
+.field {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 2px rgba(8, 108, 162, 0.1);
+}
+
+.inputError {
+  border-color: #dc3545;
+}
+
+.errorMessage {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.mapBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 15px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--gvr-primary, #2b5adc);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mapBtn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.mapBtn:disabled {
+  color: #9aa3b5;
+  cursor: default;
+}
+
+.mapOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(26, 31, 46, 0.45);
+}
+
+.mapDialog {
+  display: flex;
+  flex-direction: column;
+  width: min(720px, 100%);
+  height: min(480px, 80vh);
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(26, 31, 46, 0.2);
+}
+
+.mapBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px 10px 16px;
+  border-bottom: 1px solid #e6ebf2;
+}
+
+.mapHeadingWrap {
+  min-width: 0;
+  flex: 1;
+}
+
+.mapHeading {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1f2e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mapHint {
+  margin: 2px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8b93a7;
+}
+
+.mapClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #1a1f2e;
+  cursor: pointer;
+}
+
+.mapClose:hover {
+  background: rgba(43, 90, 220, 0.08);
+}
+
+.mapFrame {
+  flex: 1;
+  min-height: 280px;
+  position: relative;
+  background: #e8edf5;
+}
+
+.mapActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 12px;
+  border-top: 1px solid #e6ebf2;
+}
+
+.mapDone {
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  background: var(--gvr-primary, #2b5adc);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}

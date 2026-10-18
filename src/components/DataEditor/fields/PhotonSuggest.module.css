@@ -1,0 +1,43 @@
+.wrap {
+  position: relative;
+}
+
+.list {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  max-height: 240px;
+  overflow: auto;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+}
+
+.item:hover,
+.itemActive {
+  background: rgba(8, 108, 162, 0.08);
+}
+
+.empty {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #888;
+}
