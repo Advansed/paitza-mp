@@ -51,7 +51,7 @@ export interface  DriverInfo {
     capacity:       string;
     rating:         number;
     price:          number;
-
+    currency?:      string;
 }
 
 export interface CargoCompany {
@@ -76,6 +76,7 @@ export interface  CargoInfo {
     cost:           number;
     advance:        number;
     insurance:      number;
+    currency?:      string;
     phone:          string;
     face:           string;
     status:         CargoStatus;

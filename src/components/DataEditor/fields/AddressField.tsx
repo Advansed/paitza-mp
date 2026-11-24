@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Map, X } from 'lucide-react';
 import { reverseGeocode, searchAddresses } from '../../../utils/googlePlaces';
 import { MAPS_CONFIG } from '../../Maps/services/MapConfig';
@@ -31,6 +32,7 @@ export const AddressField: React.FC<AddressFieldProps> = ({
   disabled = false,
   error,
 }) => {
+  const { t } = useTranslation('common');
   const [mapOpen, setMapOpen] = useState(false);
   const [picking, setPicking] = useState(false);
   const [pickedLabel, setPickedLabel] = useState('');
@@ -47,7 +49,8 @@ export const AddressField: React.FC<AddressFieldProps> = ({
   const hasPoint = hasMapCoordinates({ lat, long: lon });
   const mapLat = hasPoint ? lat : MAPS_CONFIG.defaultCenter.lat;
   const mapLon = hasPoint ? lon : MAPS_CONFIG.defaultCenter.lng;
-  const mapTitle = pickedLabel || value?.address?.trim() || cityName || 'Адрес';
+  const mapTitle =
+    pickedLabel || value?.address?.trim() || cityName || t('addressFallback');
 
   useEffect(() => {
     if (!mapOpen) return;
@@ -84,7 +87,9 @@ export const AddressField: React.FC<AddressFieldProps> = ({
         value={value?.address || ''}
         disabled={disabled}
         error={error}
-        placeholder={cityName ? `Улица и дом в ${cityName}` : 'Улица и дом'}
+        placeholder={
+          cityName ? t('streetHouseInCity', { city: cityName }) : t('streetHouse')
+        }
         search={search}
         onInputChange={(query) =>
           onChange({
@@ -112,7 +117,7 @@ export const AddressField: React.FC<AddressFieldProps> = ({
         }}
       >
         <Map size={16} strokeWidth={1.75} />
-        Указать на карте
+        {t('pickOnMap')}
       </button>
 
       {mapOpen && (
@@ -120,21 +125,21 @@ export const AddressField: React.FC<AddressFieldProps> = ({
           className={styles.mapOverlay}
           role="dialog"
           aria-modal="true"
-          aria-label="Указать адрес на карте"
+          aria-label={t('pickOnMapAria')}
         >
           <div className={styles.mapDialog} onClick={(event) => event.stopPropagation()}>
             <div className={styles.mapBar}>
               <div className={styles.mapHeadingWrap}>
                 <h3 className={styles.mapHeading}>{mapTitle}</h3>
                 <p className={styles.mapHint}>
-                  {picking ? 'Определяем адрес…' : 'Нажмите на карту, чтобы указать точку'}
+                  {picking ? t('resolvingAddress') : t('pickOnMapHint')}
                 </p>
               </div>
               <button
                 type="button"
                 className={styles.mapClose}
                 onClick={() => setMapOpen(false)}
-                aria-label="Закрыть"
+                aria-label={t('close')}
               >
                 <X size={20} strokeWidth={2} />
               </button>
@@ -151,7 +156,7 @@ export const AddressField: React.FC<AddressFieldProps> = ({
             </div>
             <div className={styles.mapActions}>
               <button type="button" className={styles.mapDone} onClick={() => setMapOpen(false)}>
-                Готово
+                {t('ready')}
               </button>
             </div>
           </div>

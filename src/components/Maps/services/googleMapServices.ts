@@ -239,6 +239,16 @@ function distanceKmFromDirections(result: {
   return Math.round(meters / 1000);
 }
 
+function haversineKmChain(points: LatLng[]): number | null {
+  let meters = 0;
+  for (let index = 1; index < points.length; index += 1) {
+    meters += straightMeters(points[index - 1], points[index]);
+  }
+  if (meters <= 0) return null;
+  // Короткие плечи (<500 м) не обнуляем — иначе калькулятор не вызывается
+  return Math.max(1, Math.round(meters / 1000));
+}
+
 export async function fetchDrivingDistanceKm(
   from: { lat: number; lon: number },
   to: { lat: number; lon: number },
@@ -257,19 +267,20 @@ export async function fetchDrivingDistanceKm(
   ) {
     return null;
   }
+  const points = [start, ...stops, end];
   try {
     await loadGoogleMapsAPI();
   } catch {
-    return null;
+    return haversineKmChain(points);
   }
-  const points = [start, ...stops, end];
   let meters = 0;
   for (let index = 1; index < points.length; index += 1) {
     const result = await fetchDirectionsResult(points[index - 1], points[index]);
     const legMeters = result ? distanceMetersFromDirections(result) : null;
     meters += legMeters ?? straightMeters(points[index - 1], points[index]);
   }
-  return meters > 0 ? Math.round(meters / 1000) : null;
+  if (meters <= 0) return haversineKmChain(points);
+  return Math.max(1, Math.round(meters / 1000));
 }
 
 function drawLine(

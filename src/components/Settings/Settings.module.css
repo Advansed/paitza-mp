@@ -331,12 +331,17 @@
   padding: 0;
 }
 
-.logoutButton {
+.logoutButton,
+.deleteAccountButton {
   width: 100%;
   --border-radius: 12px;
   height: 2.75em;
   font-weight: 650;
   margin: 0;
+}
+
+.deleteAccountButton {
+  margin-top: 10px;
 }
 
 /* Переключатель вкладок */

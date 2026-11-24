@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -33,10 +34,9 @@ import {
 import { useLoginStore, useToken } from '../../../Store/loginStore';
 import { api } from '../../../Store/api';
 import {
-  formatHaulPriceRange,
-  haulPriceRange,
   resolveTransportTypeId,
   toTransportTypeId,
+  transportTypeLabel,
   useTransportTypes,
 } from '../../../Store/transportStore';
 import { useSocket } from '../../../Store/useSocket';
@@ -47,6 +47,7 @@ import { fetchDrivingDistanceKm } from '../../Maps/services/googleMapServices';
 import { geocodeAddress } from '../../../utils/googlePlaces';
 import { getPaymentLevel, type PaymentLevel } from '../../Works/feedFormat';
 import { companyGetters, useCompanyStore } from '../../../Store/companyStore';
+import { moneySign } from '../../../utils/utils';
 import { OrganizationRequiredModal } from '../../OrganizationRequiredModal';
 import styles from './CargoNew.module.css';
 
@@ -80,74 +81,35 @@ interface CargoNewProps {
 
 type InsuranceKind = 'none' | 'simple' | 'fragile' | 'tech';
 
-const FALLBACK_BODY_TYPES: Array<{ name: string; desc: string; Icon: typeof Truck }> = [
-  { name: 'Тент', desc: 'Универсальный кузов для большинства грузов', Icon: Truck },
-  { name: 'Рефрижератор', desc: 'С поддержанием температурного режима', Icon: Snowflake },
-  { name: 'Фургон', desc: 'Закрытый кузов, защита от осадков', Icon: Box },
-  { name: 'Бортовой', desc: 'Открытая платформа для негабарита', Icon: Package },
+const FALLBACK_BODY_TYPES: Array<{ name: string; descKey: string; Icon: typeof Truck }> = [
+  { name: 'Тент', descKey: 'bodyDescTent', Icon: Truck },
+  { name: 'Рефрижератор', descKey: 'bodyDescReefer', Icon: Snowflake },
+  { name: 'Фургон', descKey: 'bodyDescVan', Icon: Box },
+  { name: 'Бортовой', descKey: 'bodyDescFlatbed', Icon: Package },
 ];
 
 const ESCROW_OPTIONS: Array<{
   id: PaymentLevel;
-  short: string;
-  desc: string;
+  shortKey: string;
+  descKey: string;
   light: 'green' | 'yellow' | 'red';
 }> = [
-  {
-    id: 'full',
-    short: 'Оплата на эскроу',
-    desc: 'Вся сумма уже зарезервирована на эскроу-счёте и будет переведена после доставки.',
-    light: 'green',
-  },
-  {
-    id: 'partial',
-    short: 'Часть на эскроу',
-    desc: 'На эскроу-счёте зарезервирована часть суммы, остаток оплачивается напрямую.',
-    light: 'yellow',
-  },
-  {
-    id: 'none',
-    short: 'Без эскроу',
-    desc: 'Средства не зарезервированы. Оплата напрямую с заказчиком — повышенный риск.',
-    light: 'red',
-  },
+  { id: 'full', shortKey: 'escrowFull', descKey: 'escrowFullDesc', light: 'green' },
+  { id: 'partial', shortKey: 'escrowPartial', descKey: 'escrowPartialDesc', light: 'yellow' },
+  { id: 'none', shortKey: 'escrowNone', descKey: 'escrowNoneDesc', light: 'red' },
 ];
 
 const INSURANCE_OPTIONS: Array<{
   id: InsuranceKind;
-  label: string;
-  desc: string;
+  labelKey: string;
+  descKey: string;
   rate: number;
   Icon: typeof Box;
 }> = [
-  {
-    id: 'none',
-    label: 'Без страховки',
-    desc: 'Заказ публикуется без страхового покрытия, премия не списывается',
-    rate: 0,
-    Icon: ShieldOff,
-  },
-  {
-    id: 'simple',
-    label: 'Простой товар',
-    desc: 'Стройматериалы, продукция без особых требований к хрупкости',
-    rate: 1,
-    Icon: Box,
-  },
-  {
-    id: 'fragile',
-    label: 'Хрупкий товар',
-    desc: 'Керамика, мебель, стеклотара и другие бьющиеся грузы',
-    rate: 2,
-    Icon: GlassWater,
-  },
-  {
-    id: 'tech',
-    label: 'Техника, стекло',
-    desc: 'Электроника, бытовая техника, листовое и оконное стекло',
-    rate: 3,
-    Icon: Cpu,
-  },
+  { id: 'none', labelKey: 'insNone', descKey: 'insNoneDesc', rate: 0, Icon: ShieldOff },
+  { id: 'simple', labelKey: 'insSimple', descKey: 'insSimpleDesc', rate: 1, Icon: Box },
+  { id: 'fragile', labelKey: 'insFragile', descKey: 'insFragileDesc', rate: 2, Icon: GlassWater },
+  { id: 'tech', labelKey: 'insTech', descKey: 'insTechDesc', rate: 3, Icon: Cpu },
 ];
 
 const formatDateForInput = (dateString: string): string => {
@@ -203,10 +165,19 @@ export const CargoNew: React.FC<CargoNewProps> = ({
   onUpdate,
   onCreate,
 }) => {
+  const { t, i18n } = useTranslation('cargos');
   const userName = useLoginStore((state) => state.name);
   const userPhone = useLoginStore((state) => state.phone);
   const history = useHistory();
   const companyData = useCompanyStore((state) => state.data);
+  const basic = companyData?.plan !== 'pro';
+  const companyCurrency = (companyData?.currency || 'RUB').toUpperCase();
+  const moneyMark = moneySign(companyCurrency);
+  const numberLocale = i18n.language?.startsWith('zh')
+    ? 'zh-CN'
+    : i18n.language?.startsWith('en')
+      ? 'en-US'
+      : 'ru-RU';
   const companyLoading = useCompanyStore((state) => state.isLoading);
   const organizationRequired = useMemo(
     () => !companyLoading && companyGetters.getCompletionPercentage() < 80,
@@ -253,17 +224,22 @@ export const CargoNew: React.FC<CargoNewProps> = ({
   const bodyTypes = useMemo(
     () =>
       transportTypes.map((type) => {
+        const ruName = (type.ru || type.name || '').toLowerCase();
         const fallback = FALLBACK_BODY_TYPES.find(
-          (item) => item.name.toLowerCase() === type.name.toLowerCase()
+          (item) => item.name.toLowerCase() === ruName
         );
         return {
           id: type.id,
-          name: type.name,
-          desc: type.description || fallback?.desc || 'Тип кузова из справочника',
+          name: transportTypeLabel(type, i18n.language),
+          /** Русский канон для body_type / 1С */
+          nameRu: type.ru || type.name,
+          desc:
+            type.description ||
+            (fallback ? t(fallback.descKey) : t('bodyTypeFallback')),
           Icon: fallback?.Icon || Truck,
         };
       }),
-    [transportTypes]
+    [transportTypes, t, i18n.language]
   );
 
   useEffect(() => {
@@ -385,6 +361,22 @@ export const CargoNew: React.FC<CargoNewProps> = ({
   const haulPrice = Number(info.price) || 0;
   const insuranceRate =
     INSURANCE_OPTIONS.find((item) => item.id === insuranceKind)?.rate ?? 0;
+  const fmtMoney = (value: number) =>
+    new Intl.NumberFormat(numberLocale, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  const fmtRate = (value: number) =>
+    new Intl.NumberFormat(numberLocale, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4,
+    }).format(value);
+  const fmtDate = (value: string | undefined) => {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString(numberLocale);
+  };
   const insurancePremium =
     insuranceKind === 'none' || insuranceRate <= 0
       ? 0
@@ -439,7 +431,9 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           if (cancelled) return;
           const query = [stop.address, stop.city].filter((part) => part.trim()).join(', ');
           let coords = resolvePointCoords(stop);
-          if (stop.address.trim().length >= 3) {
+          // Геокод по городу или улице (≥3) — иначе при edit город без адреса не резолвится
+          const canGeocode = stop.city.trim().length > 0 || stop.address.trim().length >= 3;
+          if (canGeocode && query) {
             const place = await geocodeAddress(query);
             if (cancelled) return;
             if (place) coords = { lat: place.lat, lon: place.lon };
@@ -449,9 +443,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
         if (cancelled) return;
         const chain = resolved.filter((point): point is { kind: string; lat: number; lon: number } => Boolean(point));
         if (chain.length < 2) {
-          setInfo((prev) =>
-            prev.route_distance == null ? prev : { ...prev, route_distance: undefined }
-          );
+          // Не затираем сохранённый route_distance (иначе калькулятор в edit молчит)
           return;
         }
         const [from, ...rest] = chain;
@@ -461,7 +453,12 @@ export const CargoNew: React.FC<CargoNewProps> = ({
         if (cancelled) return;
         const next = km;
         setInfo((prev) => {
-          const sameDistance = next == null ? prev.route_distance == null : prev.route_distance === next;
+          // При null от Directions сохраняем прежние км
+          const effectiveDistance = next == null ? prev.route_distance : next;
+          const sameDistance =
+            effectiveDistance == null
+              ? prev.route_distance == null
+              : prev.route_distance === effectiveDistance;
           const applyCoord = (currentLat?: number, currentLon?: number, nextPoint?: { lat: number; lon: number } | null) => {
             if (!nextPoint) return { lat: currentLat || 0, lon: currentLon || 0, changed: false };
             const changed =
@@ -487,7 +484,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           if (sameDistance && !pickup.changed && !delivery.changed && !viaChanged) return prev;
           return {
             ...prev,
-            route_distance: next == null ? undefined : next,
+            route_distance: effectiveDistance == null ? undefined : effectiveDistance,
             address: prev.address ? { ...prev.address, lat: pickup.lat, lon: pickup.lon } : prev.address,
             destiny: prev.destiny ? { ...prev.destiny, lat: delivery.lat, lon: delivery.lon } : prev.destiny,
             route,
@@ -507,7 +504,6 @@ export const CargoNew: React.FC<CargoNewProps> = ({
 
   const selectedTransportType = transportTypes.find((type) => type.id === transportTypeId);
   const routeKm = Number(info.route_distance) > 0 ? Number(info.route_distance) : null;
-  const priceRange = haulPriceRange(info.weight, routeKm, selectedTransportType);
   const formula = Number(selectedTransportType?.formula);
   const hasTariffs =
     Number.isFinite(Number(selectedTransportType?.min_tarif)) &&
@@ -517,23 +513,25 @@ export const CargoNew: React.FC<CargoNewProps> = ({
     if (!Number.isFinite(v) || v <= 0) return '—';
     return String(v).replace('.', ',');
   };
-  const tariffParts = hasTariffs
-    ? `(${hintNum(info.weight)}, ${hintNum(routeKm)}, ${hintNum(selectedTransportType?.min_tarif)}~${hintNum(selectedTransportType?.max_tarif)})`
-    : '';
   const priceHint =
-    priceRange
-      ? `${tariffParts} Цена перевозки ${formatHaulPriceRange(priceRange)}`.trim()
-      : formula === 1 && hasTariffs
-        ? `${tariffParts} Укажите вес и маршрут`
-        : formula === 2 && hasTariffs
-          ? `${tariffParts} Укажите маршрут`
-          : null;
+    formula === 1 && hasTariffs && !(Number(info.weight) > 0 && routeKm)
+      ? t('hintNeedWeightRoute')
+      : formula === 2 && hasTariffs && !routeKm
+        ? t('hintNeedRoute')
+        : null;
+
+  const formulaLabel =
+    formula === 1 ? t('formulaWeight') : formula === 2 ? t('formulaKm') : '—';
 
   const [serverQuote, setServerQuote] = useState<{
     min: number;
     target: number;
     max: number;
     currency: string;
+    rate?: number;
+    rateDate?: string;
+    urbanApplied?: boolean;
+    urbanCoef?: number;
   } | null>(null);
 
   useEffect(() => {
@@ -546,6 +544,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
       return;
     }
     let cancelled = false;
+    // /api2/ уже проксируется в /api/ на бэке — без лишнего префикса api/
     api('pricing/calculate', {
       token,
       transportTypeId,
@@ -576,8 +575,13 @@ export const CargoNew: React.FC<CargoNewProps> = ({
   }, [token, transportTypeId, routeKm, info.weight, formula]);
 
   const buildCargo = (): CargoInfo => {
-    const advance =
-      escrow === 'full' ? haulPrice : escrow === 'partial' ? Number(escrowHeld) || 0 : 0;
+    const advance = basic
+      ? 0
+      : escrow === 'full'
+        ? haulPrice
+        : escrow === 'partial'
+          ? Number(escrowHeld) || 0
+          : 0;
     const selectedType = transportTypes.find((type) => type.id === transportTypeId);
 
     const route = buildCargoRoute(
@@ -595,9 +599,15 @@ export const CargoNew: React.FC<CargoNewProps> = ({
       price: haulPrice,
       cost: cargoCost,
       advance,
-      insurance: insurancePremium,
+      insurance: basic ? 0 : insurancePremium,
+      currency: companyCurrency,
       transport_type: transportTypeId ? toTransportTypeId(transportTypeId) : undefined,
-      body_type: selectedType?.name || activeBody?.name || info.body_type || '',
+      body_type:
+        selectedType?.ru ||
+        selectedType?.name ||
+        activeBody?.nameRu ||
+        info.body_type ||
+        '',
       vehicles_total: 1,
       vehicles_busy: info.vehicles_busy || 0,
       route,
@@ -677,36 +687,34 @@ export const CargoNew: React.FC<CargoNewProps> = ({
       />
       <button type="button" className={styles.backBtn} onClick={onBack}>
         <ArrowLeft size={16} strokeWidth={2} />
-        К моим заказам
+        {t('formBack')}
       </button>
 
       <header className={styles.pageHeader}>
-        <p className={styles.eyebrow}>Кабинет заказчика</p>
+        <p className={styles.eyebrow}>{t('formEyebrow')}</p>
         <h1 className={styles.title}>
-          {isEdit ? 'Редактировать заказ' : 'Разместить заказ'}
+          {isEdit ? t('formTitleEdit') : t('formTitleNew')}
         </h1>
         <p className={styles.subtitle}>
-          {isEdit
-            ? 'Измените детали груза и маршрута'
-            : 'Заполните детали груза и маршрута'}
+          {isEdit ? t('formSubtitleEdit') : t('formSubtitleNew')}
         </p>
       </header>
 
       <form className={styles.form} onSubmit={handleNext}>
-        <Section icon={Package} title="Груз">
+        <Section icon={Package} title={t('sectionCargo')}>
           <div className={styles.grid2}>
-            <Field label="Наименование груза" className={styles.span2}>
+            <Field label={t('fieldCargoName')} className={styles.span2}>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="Например, строительные материалы"
+                placeholder={t('phCargoName')}
                 value={info.name || ''}
                 onChange={(e) => setInfo({ ...info, name: e.target.value })}
                 required
               />
             </Field>
 
-            <Field label="Вес, т">
+            <Field label={t('fieldWeight')}>
               <input
                 type="text"
                 inputMode="decimal"
@@ -722,7 +730,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
               />
             </Field>
 
-            <Field label="Объём, м³">
+            <Field label={t('fieldVolume')}>
               <input
                 type="text"
                 inputMode="decimal"
@@ -738,7 +746,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
               />
             </Field>
 
-            <Field label="Стоимость груза, ₽" className={styles.span2}>
+            <Field label={t('fieldCargoCost', { sign: moneyMark })} className={styles.span2}>
               <input
                 type="text"
                 inputMode="numeric"
@@ -752,11 +760,11 @@ export const CargoNew: React.FC<CargoNewProps> = ({
               />
             </Field>
 
-            <Field label="Описание груза" className={styles.span2}>
+            <Field label={t('fieldCargoDesc')} className={styles.span2}>
               <textarea
                 className={styles.textarea}
                 rows={3}
-                placeholder="Упаковка, особенности погрузки, требования к температуре и т. д."
+                placeholder={t('phCargoDesc')}
                 value={info.description || ''}
                 onChange={(e) => setInfo({ ...info, description: e.target.value })}
               />
@@ -764,9 +772,9 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           </div>
         </Section>
 
-        <Section icon={Truck} title="Требуемый транспорт">
+        <Section icon={Truck} title={t('sectionTransport')}>
           {bodyTypes.length === 0 ? (
-            <p className={styles.bodyHint}>Загружаем типы транспорта…</p>
+            <p className={styles.bodyHint}>{t('loadingTransportTypes')}</p>
           ) : (
             <>
               <div className={styles.bodyGrid}>
@@ -791,7 +799,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
             </>
           )}
 
-          <Field label="Требуемая грузоподъёмность, т" className={styles.mt3}>
+          <Field label={t('fieldCapacity')} className={styles.mt3}>
             <input
               type="text"
               inputMode="decimal"
@@ -803,11 +811,11 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           </Field>
         </Section>
 
-        <Section icon={MapPin} title="Пункт отправки">
+        <Section icon={MapPin} title={t('sectionPickup')}>
           <div className={styles.grid2}>
             <div className={styles.dadata}>
               <CityField
-                label="Город и страна отправки"
+                label={t('fieldPickupCity')}
                 value={info.address?.city || EMPTY_CARGO.address.city}
                 onChange={(cityData) => {
                   setInfo((prev) => ({
@@ -826,7 +834,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
               />
             </div>
 
-            <Field label="Дата отправки">
+            <Field label={t('fieldPickupDate')}>
               <input
                 type="date"
                 className={styles.input}
@@ -839,7 +847,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
             <div className={`${styles.dadata} ${styles.span2}`}>
               <AddressField
                 key={`from-${info.address?.city?.city || ''}-${info.address?.city?.lat || 0}-${info.address?.city?.lon || 0}`}
-                label="Точный адрес отправки"
+                label={t('fieldPickupAddress')}
                 value={{
                   address: info.address?.address || '',
                   fias: info.address?.fias || '',
@@ -885,25 +893,25 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           </div>
         </Section>
 
-        <Section icon={MapPin} title="Промежуточные точки">
+        <Section icon={MapPin} title={t('sectionWaypoints')}>
           <div className={styles.waypointList}>
             {waypoints.map((point, index) => (
               <div key={point.id || `waypoint-${index}`} className={styles.waypointCard}>
                 <div className={styles.waypointHead}>
-                  <span>Точка {index + 1}</span>
+                  <span>{t('waypointN', { n: index + 1 })}</span>
                   <button
                     type="button"
                     className={styles.waypointRemove}
                     onClick={() => removeWaypoint(index)}
                   >
                     <Trash2 size={14} strokeWidth={2} />
-                    Удалить
+                    {t('remove')}
                   </button>
                 </div>
                 <div className={styles.grid2}>
                   <div className={styles.dadata}>
                     <CityField
-                      label="Город"
+                      label={t('fieldCity')}
                       value={{ city: point.city || '', fias: '', lat: point.lat, lon: point.lon }}
                       onChange={(cityData) =>
                         patchWaypoint(index, {
@@ -919,7 +927,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
                   <div className={`${styles.dadata} ${styles.span2}`}>
                     <AddressField
                       key={`via-${point.id || index}-${point.city}`}
-                      label="Точный адрес"
+                      label={t('fieldExactAddress')}
                       value={{
                         address: point.address || '',
                         fias: '',
@@ -953,16 +961,16 @@ export const CargoNew: React.FC<CargoNewProps> = ({
             ))}
             <button type="button" className={styles.addPoint} onClick={addWaypoint}>
               <Plus size={16} strokeWidth={2} />
-              Добавить точку
+              {t('addWaypoint')}
             </button>
           </div>
         </Section>
 
-        <Section icon={Navigation} title="Пункт прибытия">
+        <Section icon={Navigation} title={t('sectionDelivery')}>
           <div className={styles.grid2}>
             <div className={styles.dadata}>
               <CityField
-                label="Город и страна прибытия"
+                label={t('fieldDeliveryCity')}
                 value={info.destiny?.city || EMPTY_CARGO.destiny.city}
                 onChange={(cityData) => {
                   setInfo((prev) => ({
@@ -981,7 +989,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
               />
             </div>
 
-            <Field label="Дата прибытия">
+            <Field label={t('fieldDeliveryDate')}>
               <input
                 type="date"
                 className={styles.input}
@@ -994,7 +1002,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
             <div className={`${styles.dadata} ${styles.span2}`}>
               <AddressField
                 key={`to-${info.destiny?.city?.city || ''}-${info.destiny?.city?.lat || 0}-${info.destiny?.city?.lon || 0}`}
-                label="Точный адрес прибытия"
+                label={t('fieldDeliveryAddress')}
                 value={{
                   address: info.destiny?.address || '',
                   fias: info.destiny?.fias || '',
@@ -1041,7 +1049,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
         </Section>
 
         {resolvePointCoords(info.address) && resolvePointCoords(info.destiny) ? (
-          <Section icon={MapPin} title="Маршрут">
+          <Section icon={MapPin} title={t('sectionRoute')}>
             <div className={styles.routeMap}>
               <Maps
                 height="320px"
@@ -1062,19 +1070,19 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           </Section>
         ) : null}
 
-        <Section icon={Phone} title="Контактное лицо">
+        <Section icon={Phone} title={t('sectionContact')}>
           <div className={styles.grid2}>
-            <Field label="ФИО контактного лица">
+            <Field label={t('fieldContactName')}>
               <input
                 type="text"
                 className={styles.input}
-                placeholder="Иванов Иван"
+                placeholder={t('phContactName')}
                 value={info.face || ''}
                 onChange={(e) => setInfo({ ...info, face: e.target.value })}
                 required
               />
             </Field>
-            <Field label="Номер телефона">
+            <Field label={t('fieldPhone')}>
               <input
                 type="tel"
                 inputMode="tel"
@@ -1092,20 +1100,16 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           <div className={styles.lockNote}>
             <Lock size={16} strokeWidth={2} />
             <p>
-              <strong>Телефон скрыт от перевозчиков.</strong> До завершения торгов общение идёт в
-              чате платформы. Номер для связи открывается обеим сторонам автоматически после
-              заключения договора.
+              <strong>{t('phoneHiddenTitle')}</strong> {t('phoneHiddenText')}
             </p>
           </div>
         </Section>
 
-        <Section icon={FileText} title="Документы">
+        <Section icon={FileText} title={t('sectionDocs')}>
           <label className={styles.upload}>
             <Upload size={20} strokeWidth={1.75} />
-            <span className={styles.uploadTitle}>Загрузите документы по грузу</span>
-            <span className={styles.uploadHint}>
-              Накладные, счета, спецификации — PDF, JPG, XLSX
-            </span>
+            <span className={styles.uploadTitle}>{t('uploadDocsTitle')}</span>
+            <span className={styles.uploadHint}>{t('uploadDocsHint')}</span>
             <input
               type="file"
               multiple
@@ -1127,7 +1131,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
                   <button
                     type="button"
                     className={styles.docRemove}
-                    aria-label={`Удалить ${file.name}`}
+                    aria-label={t('removeFile', { name: file.name })}
                     onClick={() => setDocs((prev) => prev.filter((_, i) => i !== index))}
                   >
                     <X size={14} strokeWidth={2} />
@@ -1140,14 +1144,12 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           <div className={styles.lockNote}>
             <Lock size={16} strokeWidth={2} />
             <p>
-              <strong>Документы скрыты от исполнителей во время торгов.</strong> Они откроются
-              автоматически после того, как вы выберете исполнителя и договоритесь об условиях
-              перевозки.
+              <strong>{t('docsHiddenTitle')}</strong> {t('docsHiddenText')}
             </p>
           </div>
         </Section>
 
-        <Section icon={Shield} title="Безопасная оплата (эскроу)">
+        {!basic && <Section icon={Shield} title={t('sectionEscrow')}>
           <div className={styles.choiceGrid}>
             {ESCROW_OPTIONS.map((option) => (
               <button
@@ -1158,9 +1160,9 @@ export const CargoNew: React.FC<CargoNewProps> = ({
               >
                 <span className={styles.choiceHead}>
                   <span className={`${styles.choiceDot} ${styles[`dot_${option.light}`]}`} />
-                  <span className={styles.choiceTitle}>{option.short}</span>
+                  <span className={styles.choiceTitle}>{t(option.shortKey)}</span>
                 </span>
-                <span className={styles.choiceDesc}>{option.desc}</span>
+                <span className={styles.choiceDesc}>{t(option.descKey)}</span>
               </button>
             ))}
           </div>
@@ -1168,7 +1170,7 @@ export const CargoNew: React.FC<CargoNewProps> = ({
           {escrow === 'partial' && (
             <div className={styles.partialBox}>
               <div className={styles.grid2}>
-                <Field label="Сумма на эскроу-счёт, ₽">
+                <Field label={t('fieldEscrowAmount', { sign: moneyMark })}>
                   <input
                     type="text"
                     inputMode="numeric"
@@ -1179,22 +1181,26 @@ export const CargoNew: React.FC<CargoNewProps> = ({
                     required
                   />
                 </Field>
-                <Field label="Остаток напрямую заказчику">
+                <Field label={t('fieldEscrowRest')}>
                   <div className={styles.readonly}>
-                    {formatNumber(Math.max(haulPrice - escrowHeld, 0)) || '0'} ₽
+                    {formatNumber(Math.max(haulPrice - escrowHeld, 0)) || '0'} {moneyMark}
                   </div>
                 </Field>
               </div>
               <p className={styles.helpText}>
                 {haulPrice > 0
-                  ? `Указанная сумма — ${escrowPercent}% от цены перевозки (${formatNumber(haulPrice)} ₽). Она будет зарезервирована на эскроу-счёте платформы и переведена перевозчику после доставки, остальное оплачивается напрямую.`
-                  : 'Укажите сумму, которую нужно зарезервировать на эскроу-счёте платформы. Она будет переведена перевозчику после подтверждения доставки.'}
+                  ? t('escrowPartialHint', {
+                      percent: escrowPercent,
+                      price: formatNumber(haulPrice),
+                      sign: moneyMark,
+                    })
+                  : t('escrowPartialHintEmpty')}
               </p>
             </div>
           )}
-        </Section>
+        </Section>}
 
-        <Section icon={ShieldCheck} title="Страхование груза">
+        {!basic && <Section icon={ShieldCheck} title={t('sectionInsurance')}>
           <div className={styles.choiceGrid}>
             {INSURANCE_OPTIONS.map((option) => {
               const Icon = option.Icon;
@@ -1209,34 +1215,94 @@ export const CargoNew: React.FC<CargoNewProps> = ({
                 >
                   <span className={styles.choiceHead}>
                     <Icon size={16} strokeWidth={1.75} className={styles.choiceIcon} />
-                    <span className={styles.choiceTitle}>{option.label}</span>
+                    <span className={styles.choiceTitle}>{t(option.labelKey)}</span>
                     <span className={styles.choiceRate}>
-                      {option.rate > 0 ? `${option.rate}%` : '0 ₽'}
+                      {option.rate > 0 ? `${option.rate}%` : `0 ${moneyMark}`}
                     </span>
                   </span>
-                  <span className={styles.choiceDesc}>{option.desc}</span>
+                  <span className={styles.choiceDesc}>{t(option.descKey)}</span>
                 </button>
               );
             })}
           </div>
           {insuranceKind === 'none' ? (
-            <p className={styles.helpText}>
-              Заказ будет опубликован без страховки, с баланса премия не списывается.
-            </p>
+            <p className={styles.helpText}>{t('insNoneNote')}</p>
           ) : cargoCost > 0 ? (
             <p className={styles.helpText}>
-              Страховая премия:{' '}
-              <strong>
-                {formatNumber(insurancePremium)} ₽
-              </strong>{' '}
-              ({insuranceRate}% от стоимости груза {formatNumber(cargoCost)} ₽)
+              {t('insPremiumNote', {
+                premium: formatNumber(insurancePremium),
+                sign: moneyMark,
+                rate: insuranceRate,
+                cost: formatNumber(cargoCost),
+              })}
             </p>
           ) : null}
-        </Section>
+        </Section>}
 
-        <Section icon={Wallet} title="Цена перевозки">
+        <Section icon={Wallet} title={t('sectionPrice')}>
+          <div className={styles.quoteLayout}>
+            <dl className={styles.calcMetrics}>
+              <div>
+                <dt>{t('metricDistance')}</dt>
+                <dd>
+                  {routeKm != null ? t('kmUnit', { n: hintNum(routeKm) }) : '—'}
+                </dd>
+              </div>
+              {formula === 1 ? (
+                <div>
+                  <dt>{t('metricWeight')}</dt>
+                  <dd>
+                    {Number(info.weight) > 0 ? t('tonUnit', { n: hintNum(info.weight) }) : '—'}
+                  </dd>
+                </div>
+              ) : null}
+              <div>
+                <dt>{t('metricBody')}</dt>
+                <dd>
+                  {selectedTransportType
+                    ? transportTypeLabel(selectedTransportType, i18n.language)
+                    : '—'}
+                </dd>
+              </div>
+              <div>
+                <dt>{t('metricFormula')}</dt>
+                <dd>{formulaLabel}</dd>
+              </div>
+            </dl>
+            <div className={styles.quoteRange}>
+              {serverQuote ? (
+                <>
+                  <div className={styles.quoteBound}>
+                    <span className={styles.quoteBoundLabel}>{t('quoteMin')}</span>
+                    <span className={styles.quoteBoundValue}>
+                      {fmtMoney(serverQuote.min)} {moneySign(serverQuote.currency)}
+                    </span>
+                  </div>
+                  <div className={styles.quoteBound}>
+                    <span className={styles.quoteBoundLabel}>{t('quoteMax')}</span>
+                    <span className={styles.quoteBoundValue}>
+                      {fmtMoney(serverQuote.max)} {moneySign(serverQuote.currency)}
+                    </span>
+                  </div>
+                  {Number.isFinite(Number(serverQuote.rate)) ? (
+                    <p className={styles.helpText}>
+                      {t('cbrRate', { rate: fmtRate(Number(serverQuote.rate)) })}
+                      {fmtDate(serverQuote.rateDate)
+                        ? t('cbrRateOn', { date: fmtDate(serverQuote.rateDate) })
+                        : ''}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                <p className={styles.helpText} style={{ marginTop: 0 }}>
+                  {priceHint || t('quotePending')}
+                </p>
+              )}
+            </div>
+          </div>
+          {priceHint && serverQuote ? <p className={styles.helpText}>{priceHint}</p> : null}
           <div className={styles.grid2}>
-            <Field label="Цена перевозки, ₽">
+            <Field label={t('fieldHaulPrice', { sign: moneyMark })}>
               <input
                 type="text"
                 inputMode="numeric"
@@ -1247,20 +1313,10 @@ export const CargoNew: React.FC<CargoNewProps> = ({
                 required
               />
             </Field>
-            <Field label="Итого с учётом страхования">
-              <div className={styles.readonly}>{formatNumber(totalWithInsurance) || '0'} ₽</div>
+            <Field label={t('fieldTotalInsurance')}>
+              <div className={styles.readonly}>{formatNumber(totalWithInsurance) || '0'} {moneyMark}</div>
             </Field>
           </div>
-          {serverQuote ? (
-            <p className={styles.helpText}>
-              Минимум <strong>{formatNumber(serverQuote.min)} ₽</strong>
-              {' · '}
-              Середина <strong>{formatNumber(serverQuote.target)} ₽</strong>
-              {' · '}
-              Максимум <strong>{formatNumber(serverQuote.max)} ₽</strong>
-            </p>
-          ) : null}
-          {priceHint ? <p className={styles.helpText}>{priceHint}</p> : null}
         </Section>
 
         <div className={styles.actions}>
@@ -1269,10 +1325,10 @@ export const CargoNew: React.FC<CargoNewProps> = ({
             className={styles.submit}
             disabled={isSubmitting || !info.name?.trim()}
           >
-            {isEdit ? 'Сохранить изменения' : 'Создать заказ'}
+            {isEdit ? t('submitSave') : t('submitCreate')}
           </button>
           <button type="button" className={styles.cancel} onClick={onBack}>
-            Отмена
+            {t('cancel')}
           </button>
         </div>
       </form>

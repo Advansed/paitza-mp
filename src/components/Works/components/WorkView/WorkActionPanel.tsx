@@ -1,5 +1,6 @@
 import React from 'react';
 import { WorkInfo } from '../../types';
+import { moneySign } from '../../../../utils/utils';
 import styles from './CounterOffer.module.css';
 
 type WorkActionPanelProps = {
@@ -28,7 +29,8 @@ export const WorkActionPanel: React.FC<WorkActionPanelProps> = ({
   const price = work.currentOffer?.price ?? work.price;
   const weight = work.currentOffer?.weight ?? work.weight;
   const volume = work.currentOffer?.volume ?? work.volume;
-  const priceLabel = price.toLocaleString('ru-RU').replace(/,/g, ' ');
+  const orderCurrency = work.cargo_currency || work.currency || 'RUB';
+  const priceLabel = `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(orderCurrency)}`;
 
   return (
     <div className={styles.root}>
@@ -37,7 +39,7 @@ export const WorkActionPanel: React.FC<WorkActionPanelProps> = ({
         <p className={styles.formHint}>{hint}</p>
         <div className={styles.fields}>
           <label className={styles.field}>
-            <span>Цена (₽)</span>
+            <span>{`Цена (${moneySign(orderCurrency)})`}</span>
             <div className={styles.readonlyValue}>{priceLabel}</div>
           </label>
           <label className={styles.field}>

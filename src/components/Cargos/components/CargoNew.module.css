@@ -544,8 +544,90 @@
   color: var(--gvr-text-muted, #8b93a7);
 }
 
+.helpText + .grid2,
+.quoteLayout + .grid2 {
+  margin-top: 16px;
+}
+
 .helpText strong {
   color: var(--gvr-text, #1a1f2e);
+}
+
+.quoteLayout {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+@media (min-width: 640px) {
+  .quoteLayout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 28px;
+  }
+}
+
+.calcMetrics {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calcMetrics > div {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.calcMetrics dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.calcMetrics dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gvr-text, #1a1f2e);
+  word-break: break-word;
+}
+
+.quoteRange {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.quoteBound {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quoteBoundLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gvr-text-muted, #8b93a7);
+}
+
+.quoteBoundValue {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--gvr-text-muted, #8b93a7);
+  word-break: break-word;
+}
+
+@media (max-width: 639px) {
+  .quoteBoundValue {
+    font-size: 20px;
+  }
 }
 
 .actions {

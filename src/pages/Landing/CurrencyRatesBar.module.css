@@ -1,0 +1,137 @@
+.bar {
+  position: relative;
+  z-index: 1;
+  background: #eef2f8;
+  border-bottom: 1px solid rgba(230, 235, 242, 0.95);
+  color: var(--gvr-text-secondary, #5c6578);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+}
+
+.meta {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--gvr-text-muted, #8b93a7);
+  white-space: nowrap;
+}
+
+.scroller {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.scroller::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #eef2f8 70%);
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 0 20px 0 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.2;
+  scroll-snap-align: start;
+  padding: 2px 0;
+}
+
+.code {
+  font-weight: 700;
+  color: var(--gvr-text, #1a1f2e);
+  font-variant-numeric: tabular-nums;
+}
+
+.value {
+  font-weight: 600;
+  color: var(--gvr-primary, #2b5adc);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 640px) {
+  .inner {
+    padding: 6px 10px 6px 12px;
+    gap: 6px;
+    min-height: 32px;
+  }
+
+  .meta {
+    font-size: 9px;
+    max-width: 3.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item {
+    font-size: 11px;
+    gap: 3px;
+  }
+
+  .list {
+    gap: 12px;
+    padding-right: 24px;
+  }
+
+  .scroller::after {
+    width: 36px;
+  }
+}
+
+@media (min-width: 900px) {
+  .inner {
+    padding: 6px 20px;
+    gap: 14px;
+  }
+
+  .list {
+    gap: 16px;
+    padding-right: 0;
+    overflow: visible;
+  }
+
+  .scroller::after {
+    display: none;
+  }
+
+  .item {
+    font-size: 13px;
+  }
+}

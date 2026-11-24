@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Camera, MessageSquare, Package, RefreshCw, Send, Star, type LucideIcon } from 'lucide-react';
 import { DriverInfo } from '../../../Store/cargoStore';
 import { useChats } from '../../../Store/useChats';
@@ -7,8 +8,11 @@ import { latestPhotoBatch, resolvePhotoBatch, LOAD_CARGO_PHOTO_STATUS, LOAD_SEAL
 import { PhotoPreview } from '../../Chats/PhotoPreview';
 import styles from './CargoView.module.css';
 
+type TFn = (key: string, options?: { defaultValue?: string }) => string;
+
 type CargoTripActionProps = {
   invoice: DriverInfo;
+  basic?: boolean;
   onChat: (invoice: DriverInfo) => void;
   onStartLoading: (invoice: DriverInfo) => void | Promise<void>;
   onSend: (invoice: DriverInfo) => void | Promise<void>;
@@ -46,100 +50,137 @@ function resolvePhotoGroups(copy: StepCopy): PhotoGroupCopy[] {
   return [];
 }
 
-function stepCopy(status: DriverInfo['status']): StepCopy {
+function stepCopy(status: DriverInfo['status'], t: TFn, basic = false): StepCopy {
+  if (basic && status !== 'Заказано' && status !== 'Завершено') {
+    return {
+      title: t('tripBasicTitle', { defaultValue: 'Рейс идёт' }),
+      hint: t('tripBasicHint', { defaultValue: 'Завершите рейс, когда груз доставлен.' }),
+      primaryLabel: t('tripBasicComplete', { defaultValue: 'Завершить рейс' }),
+      requireRating: true,
+      PrimaryIcon: Star,
+    };
+  }
   switch (status) {
     case 'Принято':
       return {
-        title: 'Договор подписан',
-        hint: 'Водитель принят. Ожидайте прибытия на место погрузки.',
+        title: t('tripAcceptedTitle', { defaultValue: 'Договор подписан' }),
+        hint: t('tripAcceptedHint', {
+          defaultValue: 'Водитель принят. Ожидайте прибытия на место погрузки.',
+        }),
       };
     case 'На погрузке':
       return {
-        title: 'Приехал на погрузку',
-        hint: 'Исполнитель прибыл. Проверьте фото кузова и начните загрузку.',
+        title: t('tripAtLoadTitle', { defaultValue: 'Приехал на погрузку' }),
+        hint: t('tripAtLoadHint', {
+          defaultValue: 'Исполнитель прибыл. Проверьте фото кузова и начните загрузку.',
+        }),
         photoStatus: 14,
-        photoLabel: 'Актуальные фото кузова',
-        photoEmpty: 'Фото кузова ещё не получены. Водитель может отправить или заменить снимки в действии по заказу.',
+        photoLabel: t('tripBodyPhotos', { defaultValue: 'Актуальные фото кузова' }),
+        photoEmpty: t('tripBodyPhotosEmpty', {
+          defaultValue:
+            'Фото кузова ещё не получены. Водитель может отправить или заменить снимки в действии по заказу.',
+        }),
         requirePhotos: true,
-        primaryLabel: 'Начать погрузку',
+        primaryLabel: t('tripStartLoading', { defaultValue: 'Начать погрузку' }),
         PrimaryIcon: Package,
       };
     case 'Загружается':
       return {
-        title: 'Загрузка начата',
-        hint: 'Погрузка выполняется. Ожидайте, пока водитель подтвердит загрузку.',
+        title: t('tripLoadingTitle', { defaultValue: 'Загрузка начата' }),
+        hint: t('tripLoadingHint', {
+          defaultValue: 'Погрузка выполняется. Ожидайте, пока водитель подтвердит загрузку.',
+        }),
       };
     case 'Загружено':
       return {
-        title: 'Погружено',
-        hint: 'Груз погружен. Проверьте фото и отправьте транспорт в рейс. Водитель может заменить снимки, пока вы не отправили.',
+        title: t('tripLoadedTitle', { defaultValue: 'Погружено' }),
+        hint: t('tripLoadedHint', {
+          defaultValue:
+            'Груз погружен. Проверьте фото и отправьте транспорт в рейс. Водитель может заменить снимки, пока вы не отправили.',
+        }),
         photoGroups: [
           {
             status: LOAD_CARGO_PHOTO_STATUS,
-            label: 'Актуальные фото груза',
-            empty: 'Фото груза ещё не получены.',
+            label: t('tripCargoPhotos', { defaultValue: 'Актуальные фото груза' }),
+            empty: t('tripCargoPhotosEmpty', { defaultValue: 'Фото груза ещё не получены.' }),
           },
           {
             status: LOAD_SEAL_PHOTO_STATUS,
-            label: 'Актуальные фото пломбы',
-            empty: 'Фото пломбы ещё не получены.',
+            label: t('tripSealPhotos', { defaultValue: 'Актуальные фото пломбы' }),
+            empty: t('tripSealPhotosEmpty', { defaultValue: 'Фото пломбы ещё не получены.' }),
           },
         ],
-        primaryLabel: 'Отправить',
+        primaryLabel: t('tripSend', { defaultValue: 'Отправить' }),
         PrimaryIcon: Send,
       };
     case 'В пути':
       return {
-        title: 'В пути',
-        hint: 'Транспорт в пути к месту разгрузки.',
+        title: t('tripTransitTitle', { defaultValue: 'В пути' }),
+        hint: t('tripTransitHint', { defaultValue: 'Транспорт в пути к месту разгрузки.' }),
       };
     case 'Прибыл':
       return {
-        title: 'Прибыл на выгрузку',
-        hint: 'Транспорт на месте разгрузки. Ожидайте фото и начала разгрузки.',
+        title: t('tripArrivedTitle', { defaultValue: 'Прибыл на выгрузку' }),
+        hint: t('tripArrivedHint', {
+          defaultValue: 'Транспорт на месте разгрузки. Ожидайте фото и начала разгрузки.',
+        }),
       };
     case 'Доставлено':
       return {
-        title: 'Товар прибыл',
-        hint: 'Проверьте фото и подтвердите, что пломба цела, затем начните разгрузку.',
+        title: t('tripDeliveredTitle', { defaultValue: 'Товар прибыл' }),
+        hint: t('tripDeliveredHint', {
+          defaultValue:
+            'Проверьте фото и подтвердите, что пломба цела, затем начните разгрузку.',
+        }),
         photoStatus: 18,
-        photoLabel: 'Фото при прибытии на выгрузку',
-        photoEmpty: 'Фото ещё не получены.',
+        photoLabel: t('tripArrivalPhotos', { defaultValue: 'Фото при прибытии на выгрузку' }),
+        photoEmpty: t('tripArrivalPhotosEmpty', { defaultValue: 'Фото ещё не получены.' }),
         requireConfirm: true,
-        confirmLabel: 'Пломба цела, груз доставлен',
-        primaryLabel: 'Начать разгрузку',
+        confirmLabel: t('tripSealOk', { defaultValue: 'Пломба цела, груз доставлен' }),
+        primaryLabel: t('tripStartUnload', { defaultValue: 'Начать разгрузку' }),
         PrimaryIcon: Package,
       };
     case 'Разгружается':
       return {
-        title: 'Разгружается',
-        hint: 'Идёт разгрузка. Ожидайте завершения со стороны водителя.',
+        title: t('tripUnloadingTitle', { defaultValue: 'Разгружается' }),
+        hint: t('tripUnloadingHint', {
+          defaultValue: 'Идёт разгрузка. Ожидайте завершения со стороны водителя.',
+        }),
       };
     case 'Разгружено':
       return {
-        title: 'Товар выгружен',
-        hint: 'Оцените работу исполнителя и завершите заказ.',
+        title: t('tripUnloadedTitle', { defaultValue: 'Товар выгружен' }),
+        hint: t('tripUnloadedHint', {
+          defaultValue: 'Оцените работу исполнителя и завершите заказ.',
+        }),
         requireRating: true,
         requireConfirm: true,
-        confirmLabel: 'Все работы завершены в срок и претензий не имею',
-        primaryLabel: 'Завершить',
+        confirmLabel: t('tripDoneConfirm', {
+          defaultValue: 'Все работы завершены в срок и претензий не имею',
+        }),
+        primaryLabel: t('tripComplete', { defaultValue: 'Завершить' }),
         PrimaryIcon: Star,
       };
     case 'Завершено':
       return {
-        title: 'Заказ завершён',
-        hint: 'Все работы по этому исполнителю завершены.',
+        title: t('tripCompletedTitle', { defaultValue: 'Заказ завершён' }),
+        hint: t('tripCompletedHint', {
+          defaultValue: 'Все работы по этому исполнителю завершены.',
+        }),
       };
     default:
       return {
-        title: 'Действие по заказу',
-        hint: 'Откройте чат с исполнителем, если нужна связь.',
+        title: t('orderAction', { defaultValue: 'Действие по заказу' }),
+        hint: t('tripDefaultHint', {
+          defaultValue: 'Откройте чат с исполнителем, если нужна связь.',
+        }),
       };
   }
 }
 
 export const CargoTripAction: React.FC<CargoTripActionProps> = ({
   invoice,
+  basic = false,
   onChat,
   onStartLoading,
   onSend,
@@ -147,7 +188,8 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
   onComplete,
   isLoading = false,
 }) => {
-  const copy = stepCopy(invoice.status);
+  const { t } = useTranslation('cargos');
+  const copy = stepCopy(invoice.status, t, basic);
   const photoGroups = resolvePhotoGroups(copy);
   const photoKey = photoGroups.map((g) => g.status).join(',');
   const [groupFotos, setGroupFotos] = useState<Record<number, unknown[]>>({});
@@ -217,6 +259,10 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
   const canSubmit = Boolean(copy.primaryLabel) && photosReady && confirmReady && ratingReady && !isLoading;
 
   const handlePrimary = () => {
+    if (basic && invoice.status !== 'Заказано' && invoice.status !== 'Завершено') {
+      void onComplete(invoice, rating, true);
+      return;
+    }
     if (invoice.status === 'На погрузке') {
       void onStartLoading(invoice);
       return;
@@ -242,17 +288,18 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
 
       <div className={styles.confirmCard}>
         <div className={styles.confirmRow}>
-          <span className={styles.confirmLabel}>Исполнитель</span>
-          <span className={styles.confirmValue}>{invoice.client || 'Исполнитель'}</span>
+          <span className={styles.confirmLabel}>{t('carrier')}</span>
+          <span className={styles.confirmValue}>{invoice.client || t('carrier')}</span>
         </div>
         <div className={styles.confirmRow}>
-          <span className={styles.confirmLabel}>Транспорт</span>
+          <span className={styles.confirmLabel}>{t('tripTransport', { defaultValue: 'Транспорт' })}</span>
           <span className={styles.confirmValue}>
-            {[invoice.transport, invoice.capacity].filter(Boolean).join(' · ') || 'Не указан'}
+            {[invoice.transport, invoice.capacity].filter(Boolean).join(' · ') ||
+              t('notSpecified')}
           </span>
         </div>
         <div className={styles.confirmRow}>
-          <span className={styles.confirmLabel}>Ставка</span>
+          <span className={styles.confirmLabel}>{t('tripRate', { defaultValue: 'Ставка' })}</span>
           <span className={styles.confirmValue}>{formatters.currency(invoice.price)}</span>
         </div>
       </div>
@@ -269,10 +316,12 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
               disabled={photosLoading}
             >
               <RefreshCw size={14} strokeWidth={2} />
-              Обновить
+              {t('tripRefresh', { defaultValue: 'Обновить' })}
             </button>
           </div>
-          {photosLoading && <p className={styles.photoEmpty}>Загрузка фото…</p>}
+          {photosLoading && (
+            <p className={styles.photoEmpty}>{t('tripPhotosLoading', { defaultValue: 'Загрузка фото…' })}</p>
+          )}
           {!photosLoading && group.srcs.length === 0 && (
             <p className={styles.photoEmpty}>{group.empty}</p>
           )}
@@ -285,7 +334,11 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
                   className={styles.photoThumbBtn}
                   onClick={() => setPreviewUrl(src)}
                 >
-                  <img src={src} alt={`Фото ${index + 1}`} className={styles.photoThumb} />
+                  <img
+                    src={src}
+                    alt={`${t('tripPhoto', { defaultValue: 'Фото' })} ${index + 1}`}
+                    className={styles.photoThumb}
+                  />
                 </button>
               ))}
             </div>
@@ -295,8 +348,14 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
 
       {copy.requireRating && (
         <div className={styles.photoBlock}>
-          <div className={styles.photoHead}>Оценка работы исполнителя</div>
-          <div className={styles.stars} role="group" aria-label="Оценка от 1 до 5">
+          <div className={styles.photoHead}>
+            {t('tripRating', { defaultValue: 'Оценка работы исполнителя' })}
+          </div>
+          <div
+            className={styles.stars}
+            role="group"
+            aria-label={t('tripRatingAria', { defaultValue: 'Оценка от 1 до 5' })}
+          >
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
@@ -326,7 +385,7 @@ export const CargoTripAction: React.FC<CargoTripActionProps> = ({
       <div className={styles.confirmActions}>
         <button type="button" className={styles.confirmCancel} onClick={() => onChat(invoice)}>
           <MessageSquare size={16} strokeWidth={1.75} />
-          Написать
+          {t('writeToCarrier')}
         </button>
         {copy.primaryLabel && (
           <button

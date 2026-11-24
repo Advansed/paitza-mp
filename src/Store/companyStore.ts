@@ -53,6 +53,8 @@ export interface CompanyData {
   payout_type?: string
   card_number_mask?: string
   is_verified?: boolean
+  plan?: 'basic' | 'pro'
+  pro_unlocked?: boolean
   created_at?: string
   updated_at?: string
   files?: CompanyFile[]
@@ -93,10 +95,54 @@ export const COMPANY_TYPES = {
   PERSON: 2,
 } as const
 
-export const COMPANY_TYPE_LABELS: Record<number, string> = {
-  [COMPANY_TYPES.LEGAL]: 'Юридическое лицо',
-  [COMPANY_TYPES.IP]: 'Индивидуальный предприниматель',
-  [COMPANY_TYPES.PERSON]: 'Физлицо / самозанятый',
+export type CompanyTypeLocale = 'ru' | 'en' | 'zh'
+
+export type CompanyTypeLabel = {
+  /** Русский канон (и fallback) */
+  name: string
+  ru: string
+  en: string
+  zh: string
+}
+
+export const COMPANY_TYPE_LABELS: Record<number, CompanyTypeLabel> = {
+  [COMPANY_TYPES.LEGAL]: {
+    name: 'Юридическое лицо',
+    ru: 'Юридическое лицо',
+    en: 'Legal entity',
+    zh: '法人',
+  },
+  [COMPANY_TYPES.IP]: {
+    name: 'Индивидуальный предприниматель',
+    ru: 'Индивидуальный предприниматель',
+    en: 'Sole proprietor',
+    zh: '个体经营者',
+  },
+  [COMPANY_TYPES.PERSON]: {
+    name: 'Физлицо / самозанятый',
+    ru: 'Физлицо / самозанятый',
+    en: 'Individual / self-employed',
+    zh: '个人 / 自雇',
+  },
+}
+
+/** `i18n.language` → ключ поля в справочнике типов */
+export function companyTypeLocale(lang?: string | null): CompanyTypeLocale {
+  const code = String(lang || '').toLowerCase()
+  if (code.startsWith('zh')) return 'zh'
+  if (code.startsWith('en')) return 'en'
+  return 'ru'
+}
+
+/** Подпись типа юрлица по текущей локали */
+export function companyTypeLabel(type: number, lang?: string | null): string {
+  const row = COMPANY_TYPE_LABELS[type]
+  if (!row) return ''
+  const locale = companyTypeLocale(lang)
+  const byLocale = row[locale]
+  if (byLocale != null && String(byLocale).trim()) return String(byLocale).trim()
+  if (row.ru != null && String(row.ru).trim()) return String(row.ru).trim()
+  return String(row.name || '').trim()
 }
 
 export const DEFAULT_COUNTRY_CODE = 'RU'
@@ -136,6 +182,8 @@ export const EMPTY_COMPANY: CompanyData = {
   payout_type: DEFAULT_PAYOUT_TYPE,
   card_number_mask: '',
   is_verified: false,
+  plan: 'basic',
+  pro_unlocked: false,
 }
 
 /** Поля JSON для p_set_company (новые имена) */
@@ -260,6 +308,8 @@ export function normalizeCompany(raw: any): CompanyData | null {
     local_bank_code,
     intermediary_bank_account,
     is_verified: Boolean(raw.is_verified),
+    plan: raw.plan === 'pro' ? 'pro' : 'basic',
+    pro_unlocked: Boolean(raw.pro_unlocked ?? raw.proUnlocked),
     files: Array.isArray(raw.files) ? raw.files : [],
     inn: tax_number,
     kpp: tax_number_2,

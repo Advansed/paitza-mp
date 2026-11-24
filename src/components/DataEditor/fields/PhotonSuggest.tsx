@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { GeoPlace } from '../../../utils/googlePlaces';
 import fieldStyles from './CityField.module.css';
 import styles from './PhotonSuggest.module.css';
@@ -24,6 +25,7 @@ export const PhotonSuggest: React.FC<PhotonSuggestProps> = ({
   onSelect,
   onInputChange,
 }) => {
+  const { t } = useTranslation('common');
   const [query, setQuery] = useState(value || '');
   const [dirty, setDirty] = useState(false);
   const [items, setItems] = useState<GeoPlace[]>([]);
@@ -135,7 +137,9 @@ export const PhotonSuggest: React.FC<PhotonSuggestProps> = ({
               </li>
             ))}
             {items.length === 0 && (
-              <li className={styles.empty}>{loading ? 'Поиск…' : 'Ничего не найдено'}</li>
+              <li className={styles.empty}>
+                {loading ? t('searching') : t('nothingFound')}
+              </li>
             )}
           </ul>
         )}

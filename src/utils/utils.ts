@@ -18,18 +18,31 @@ import { normalizeCargoStatus } from '../components/Cargos/cargoStatusFlow';
 // УТИЛИТЫ ФОРМАТИРОВАНИЯ
 // ======================
 
+const CURRENCY_SIGNS: Record<string, string> = {
+    RUB: '₽',
+    CNY: '¥',
+    KGS: 'сом',
+};
+
+export function moneySign(currency?: string | null): string {
+    const code = (currency || 'RUB').trim().toUpperCase() || 'RUB';
+    return CURRENCY_SIGNS[code] || code;
+}
+
 export const formatters = {
-    // Форматирование валюты
-    currency: (amount: number): string => {
+    // Форматирование валюты того, кто смотрит сумму
+    currency: (amount: number, currency = 'RUB'): string => {
+        const code = (currency || 'RUB').trim().toUpperCase() || 'RUB';
+        const digits = code === 'RUB' ? 0 : 2;
         try {
             return new Intl.NumberFormat(intlLocale(), {
                 style: 'currency',
-                currency: 'RUB',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
+                currency: code,
+                minimumFractionDigits: digits,
+                maximumFractionDigits: digits
             }).format(amount);
         } catch {
-            return `${amount} ₽`;
+            return `${amount} ${moneySign(code)}`;
         }
     },
 

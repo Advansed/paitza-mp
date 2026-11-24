@@ -1,0 +1,86 @@
+.page {
+  --landing-font: 'Manrope', 'Segoe UI', sans-serif;
+  --landing-display: 'Sora', 'Manrope', sans-serif;
+  min-height: 100%;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f4f6fb;
+  color: var(--gvr-text, #1a1f2e);
+  font-family: var(--landing-font);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(230, 235, 242, 0.9);
+}
+
+.headerInner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  text-decoration: none;
+  font-family: var(--landing-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.brandLogo {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  object-fit: cover;
+  display: block;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back {
+  color: var(--gvr-primary, #2b5adc);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.back:hover {
+  color: var(--gvr-primary-hover, #234bc0);
+}
+
+.main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+}
+
+@media (max-width: 640px) {
+  .headerInner,
+  .main {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .back {
+    font-size: 13px;
+  }
+}

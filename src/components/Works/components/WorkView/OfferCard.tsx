@@ -4,8 +4,7 @@ import { ChevronDown, ShieldCheck } from 'lucide-react';
 import { WorkInfo, WorkStatus } from '../../types';
 import { useTransportStore, transportDisplayName } from '../../../../Store/transportStore';
 import { offerTaxAmount, useLoginStore } from '../../../../Store/loginStore';
-import { useAccountData } from '../../../../Store/accountStore';
-import { formatters } from '../../../../utils/utils';
+import { formatters, moneySign } from '../../../../utils/utils';
 import { intlLocale } from '../../../../i18n';
 import styles from './CounterOffer.module.css';
 
@@ -53,9 +52,8 @@ export const CounterOfferCard: React.FC<CounterOfferCardProps> = ({ work, onSubm
   const transport = useTransportStore((state) => state.data);
   const isOffered = work.status === WorkStatus.OFFERED;
   const tax = useLoginStore((state) => state.tax);
-  const accountData = useAccountData();
   const required = offerTaxAmount(Number(formData.price) || 0, tax);
-  const balance = accountData?.balance;
+  const orderCurrency = work.cargo_currency || work.currency || 'RUB';
 
   useEffect(() => {
     if (transport?.guid) {
@@ -114,12 +112,6 @@ export const CounterOfferCard: React.FC<CounterOfferCardProps> = ({ work, onSubm
       setError(t('addTransport'));
       return;
     }
-    if (!isOffered && required > 0 && balance != null && balance < required) {
-      setError(
-        t('holdShort', { required: formatters.currency(required), tax, balance: formatters.currency(balance) })
-      );
-      return;
-    }
 
     setIsSubmitting(true);
     try {
@@ -153,7 +145,7 @@ export const CounterOfferCard: React.FC<CounterOfferCardProps> = ({ work, onSubm
 
         <div className={styles.fields}>
           <label className={styles.field}>
-            <span>{t('priceRub')}</span>
+            <span>{t('priceLabel', { sign: moneySign(orderCurrency), defaultValue: `Цена (${moneySign(orderCurrency)})` })}</span>
             <input
               ref={priceRef}
               className={styles.priceInput}
@@ -211,9 +203,12 @@ export const CounterOfferCard: React.FC<CounterOfferCardProps> = ({ work, onSubm
               : ` ${t('secureNoTax')}`}
           </p>
           {!isOffered && required > 0 && (
-            <p className={balance != null && balance < required ? styles.holdWarn : styles.holdNote}>
-              {t('holdLine', { required: formatters.currency(required), tax })}
-              {balance != null ? ` ${t('holdNow', { balance: formatters.currency(balance) })}` : ''}
+            <p className={styles.holdNote}>
+              {t('holdFromPayout', {
+                required: formatters.currency(required, orderCurrency),
+                tax,
+                defaultValue: `Комиссия сервиса ${formatters.currency(required, orderCurrency)} (${tax}%) будет удержана из выплаты.`,
+              })}
             </p>
           )}
         </div>

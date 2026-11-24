@@ -295,7 +295,23 @@ const StepPersonalInfo: React.FC<{
             />
             <span>
               {t('accept')}{' '}
-              <span className="auth-consent-link">{t('pdConsent')}</span>
+              <a
+                className="auth-inline-link"
+                href="/consent"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('pdConsent')}
+              </a>
+              {' · '}
+              <a
+                className="auth-inline-link"
+                href="/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('privacyLink', { ns: 'landing' })}
+              </a>
             </span>
           </label>
           {err.consentPersonalData && <div className="auth-error">{err.consentPersonalData}</div>}

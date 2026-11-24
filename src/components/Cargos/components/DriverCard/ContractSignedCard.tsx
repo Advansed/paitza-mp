@@ -16,7 +16,7 @@ export const ContractSignedCard: React.FC<ContractSignedCardProps> = ({
     isLoading,
 }) => {
     const formatPrice = (price: number): string => {
-        return price.toLocaleString('ru-RU').replace(/,/g, ' ');
+        return `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(info.currency)}`;
     };
 
     return (
@@ -44,7 +44,7 @@ export const ContractSignedCard: React.FC<ContractSignedCardProps> = ({
                 </div>
 
                 <div className={styles.infoField}>
-                    <label className={styles.label}>Цена (₽)</label>
+                    <label className={styles.label}>Цена</label>
                     <div className={styles.value + ' cl-white fs-11'}>
                         <b>{formatPrice(info.price)}</b>
                     </div>

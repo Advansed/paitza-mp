@@ -24,6 +24,7 @@ import {
   cargoFeedLabel,
   resolveCargoProgressStatus,
 } from '../cargoStatusFlow';
+import { useAppPlan } from '../../../plan';
 import styles from './CargoOrderInfo.module.css';
 
 type CargoOrderInfoProps = {
@@ -33,6 +34,8 @@ type CargoOrderInfoProps = {
 
 export const CargoOrderInfo: React.FC<CargoOrderInfoProps> = ({ cargo, onMapClick }) => {
   const { t } = useTranslation('cargos');
+  const plan = useAppPlan();
+  const basic = plan === 'basic';
   const fromCity = cargo.address?.city?.city || t('notSpecified');
   const toCity = cargo.destiny?.city?.city || t('notSpecified');
   const payment = getPaymentLevel(cargo);
@@ -61,7 +64,7 @@ export const CargoOrderInfo: React.FC<CargoOrderInfoProps> = ({ cargo, onMapClic
         <div className={styles.topLeft}>
           <div className={styles.meta}>
             <span className={`${styles.badge} ${badgeClass}`}>
-              {cargoFeedLabel(progressStatus)}
+              {cargoFeedLabel(progressStatus, plan)}
             </span>
             <span className={styles.id}>ЗК-{formatters.shortId(cargo.guid)}</span>
           </div>
@@ -81,11 +84,13 @@ export const CargoOrderInfo: React.FC<CargoOrderInfoProps> = ({ cargo, onMapClic
         </div>
 
         <div className={styles.topRight}>
-          <p className={styles.price}>{formatters.currency(cargo.price)}</p>
-          <span className={`${styles.escrowBadge} ${styles[`escrow_${payment}`]}`}>
-            <span className={styles.escrowDot} />
-            {PAYMENT_LABEL[payment]}
-          </span>
+          <p className={styles.price}>{formatters.currency(cargo.price, cargo.currency)}</p>
+          {!basic && (
+            <span className={`${styles.escrowBadge} ${styles[`escrow_${payment}`]}`}>
+              <span className={styles.escrowDot} />
+              {PAYMENT_LABEL[payment]}
+            </span>
+          )}
         </div>
       </div>
 
@@ -110,13 +115,15 @@ export const CargoOrderInfo: React.FC<CargoOrderInfoProps> = ({ cargo, onMapClic
         </span>
       </div>
 
-      <div className={styles.escrowRow}>
-        <div className={styles.escrowLabel}>
-          <Lock size={16} strokeWidth={2} />
-          <span>{t('inEscrow')}</span>
+      {!basic && (
+        <div className={styles.escrowRow}>
+          <div className={styles.escrowLabel}>
+            <Lock size={16} strokeWidth={2} />
+            <span>{t('inEscrow')}</span>
+          </div>
+          <strong>{formatters.currency(reserved, cargo.currency)}</strong>
         </div>
-        <strong>{formatters.currency(reserved)}</strong>
-      </div>
+      )}
 
       {cargo.description && cargo.description.trim() !== cargo.name && (
         <p className={styles.desc}>{cargo.description}</p>

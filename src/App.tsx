@@ -32,6 +32,9 @@ import { AppShell } from './layout';
 import { Login, type LoginFormMode } from './components/Login';
 import { HomePage } from './pages/Home/HomePage';
 import { StubPage } from './pages/Stub/StubPage';
+import { PartnersPage } from './pages/Partners/PartnersPage';
+
+const PrivacyPage = lazy(() => import('./pages/Privacy/PrivacyPage'));
 
 const FeedPage = lazy(() => import('./pages/RoutePages').then((m) => ({ default: m.FeedPage })));
 const ChatsPage = lazy(() => import('./pages/RoutePages').then((m) => ({ default: m.ChatsPage })));
@@ -56,25 +59,102 @@ const GuestLogin: React.FC<{ mode: LoginFormMode }> = ({ mode }) => (
 );
 
 const GuestRoutes: React.FC = () => (
-  <IonReactRouter>
-    <Switch>
-      <Route exact path="/" render={() => <GuestLogin mode="login" />} />
-      <Route exact path="/login" render={() => <GuestLogin mode="login" />} />
-      <Route exact path="/register" render={() => <GuestLogin mode="register" />} />
-      <Route exact path="/recovery" render={() => <GuestLogin mode="recovery" />} />
-      <Route>
-        <Redirect to="/login" />
-      </Route>
-    </Switch>
-  </IonReactRouter>
+  <Switch>
+    <Route exact path="/" render={() => <GuestLogin mode="login" />} />
+    <Route exact path="/login" render={() => <GuestLogin mode="login" />} />
+    <Route exact path="/register" render={() => <GuestLogin mode="register" />} />
+    <Route exact path="/recovery" render={() => <GuestLogin mode="recovery" />} />
+    <Route exact path="/privacy">
+      <Suspense fallback={null}>
+        <PrivacyPage />
+      </Suspense>
+    </Route>
+    <Route exact path="/consent">
+      <Suspense fallback={null}>
+        <PrivacyPage />
+      </Suspense>
+    </Route>
+    <Route>
+      <Redirect to="/login" />
+    </Route>
+  </Switch>
 );
 
-const AppContent: React.FC = () => {
+const AuthedRoutes: React.FC = () => {
   const { t } = useTranslation('common');
+
+  return (
+    <AppShell>
+      <Suspense fallback={null}>
+        <Switch>
+          <Route exact path="/" component={HomePage} />
+          <Route exact path="/feed" component={FeedPage} />
+          <Route exact path="/applications">
+            <Redirect to="/feed" />
+          </Route>
+          <Route exact path="/orders">
+            <Redirect to="/feed" />
+          </Route>
+          <Route exact path="/finance" component={FinancePage} />
+          <Route exact path="/chats" component={ChatsPage} />
+          <Route exact path="/chats/:id" component={ChatsPage} />
+          <Route exact path="/vehicles" component={VehiclesPage} />
+          <Route exact path="/drivers" component={DriversRoutePage} />
+          <Route exact path="/settings" component={SettingsRoutePage} />
+          <Route exact path="/profile" component={ProfileRoutePage} />
+          <Route exact path="/cabinet">
+            <Redirect to="/profile" />
+          </Route>
+
+          <Route exact path="/support">
+            <StubPage title={t('supportTitle')} description={t('supportText')} />
+          </Route>
+          <Route exact path="/documents">
+            <StubPage title={t('documentsTitle')} description={t('documentsText')} />
+          </Route>
+          <Route exact path="/verification">
+            <Redirect to="/finance" />
+          </Route>
+          <Route exact path="/partners" component={PartnersPage} />
+
+          <Route exact path="/tab1">
+            <Redirect to="/feed" />
+          </Route>
+          <Route exact path="/tab2">
+            <Redirect to="/chats" />
+          </Route>
+          <Route exact path="/tab2/:id" component={LegacyChatRedirect} />
+          <Route exact path="/tab3">
+            <Redirect to="/settings" />
+          </Route>
+          <Route exact path="/tab3/:name">
+            <Redirect to="/settings" />
+          </Route>
+          <Route exact path="/tab4">
+            <Redirect to="/feed" />
+          </Route>
+
+          <Route exact path="/login">
+            <Redirect to="/" />
+          </Route>
+          <Route exact path="/register">
+            <Redirect to="/" />
+          </Route>
+
+          <Route>
+            <Redirect to="/" />
+          </Route>
+        </Switch>
+      </Suspense>
+    </AppShell>
+  );
+};
+
+const AppContent: React.FC = () => {
   const { auth } = useLogin();
+
   useExecutorLocation();
   usePushNotifications();
-
   useSocketManager();
   useApp();
 
@@ -83,81 +163,12 @@ const AppContent: React.FC = () => {
   }, []);
 
   return (
-    <ServerConnectionGuard>
-      {auth ? (
-        <IonReactRouter>
-          <PushNavigator />
-          <AppShell>
-            <Suspense fallback={null}>
-            <Switch>
-              <Route exact path="/" component={HomePage} />
-              <Route exact path="/feed" component={FeedPage} />
-              <Route exact path="/applications">
-                <Redirect to="/feed" />
-              </Route>
-              <Route exact path="/orders">
-                <Redirect to="/feed" />
-              </Route>
-              <Route exact path="/finance" component={FinancePage} />
-              <Route exact path="/chats" component={ChatsPage} />
-              <Route exact path="/chats/:id" component={ChatsPage} />
-              <Route exact path="/vehicles" component={VehiclesPage} />
-              <Route exact path="/drivers" component={DriversRoutePage} />
-              <Route exact path="/settings" component={SettingsRoutePage} />
-              <Route exact path="/profile" component={ProfileRoutePage} />
-              <Route exact path="/cabinet">
-                <Redirect to="/profile" />
-              </Route>
-
-              <Route exact path="/support">
-                <StubPage title={t('supportTitle')} description={t('supportText')} />
-              </Route>
-              <Route exact path="/documents">
-                <StubPage title={t('documentsTitle')} description={t('documentsText')} />
-              </Route>
-              <Route exact path="/verification">
-                <Redirect to="/finance" />
-              </Route>
-              <Route exact path="/partners">
-                <StubPage title={t('partnersTitle')} description={t('partnersText')} />
-              </Route>
-
-              {/* Legacy tabs */}
-              <Route exact path="/tab1">
-                <Redirect to="/feed" />
-              </Route>
-              <Route exact path="/tab2">
-                <Redirect to="/chats" />
-              </Route>
-              <Route exact path="/tab2/:id" component={LegacyChatRedirect} />
-              <Route exact path="/tab3">
-                <Redirect to="/settings" />
-              </Route>
-              <Route exact path="/tab3/:name">
-                <Redirect to="/settings" />
-              </Route>
-              <Route exact path="/tab4">
-                <Redirect to="/feed" />
-              </Route>
-
-              <Route exact path="/login">
-                <Redirect to="/" />
-              </Route>
-              <Route exact path="/register">
-                <Redirect to="/" />
-              </Route>
-
-              <Route>
-                <Redirect to="/" />
-              </Route>
-            </Switch>
-            </Suspense>
-          </AppShell>
-        </IonReactRouter>
-      ) : (
-        <GuestRoutes />
-      )}
-    </ServerConnectionGuard>
+    <IonReactRouter>
+      <PushNavigator />
+      <ServerConnectionGuard>
+        {auth ? <AuthedRoutes /> : <GuestRoutes />}
+      </ServerConnectionGuard>
+    </IonReactRouter>
   );
 };
 

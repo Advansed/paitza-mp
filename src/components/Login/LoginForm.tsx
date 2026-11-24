@@ -2,10 +2,9 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Truck } from 'lucide-react'
 import { parseLoginPhone, validateLoginPhoneRaw } from './phone'
 import { PhoneCountryField } from './PhoneCountryField'
-import { LanguageSwitcher } from '../../i18n/LanguageSwitcher'
 import './Login.css'
 
 interface LoginFormProps {
@@ -99,17 +98,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <div className="auth-page auth-page-login">
       <div className="auth-brand-row">
-        <img
-          src="/landing/logo.jpg"
-          alt=""
-          className="auth-brand-logo"
-          width={44}
-          height={44}
-        />
-        <span>PAITZA</span>
-        <div className="auth-brand-lang">
-          <LanguageSwitcher variant="inline" />
-        </div>
+        <span className="login-logo-mark login-logo-mark-light" aria-hidden>
+          <Truck size={18} strokeWidth={2} />
+        </span>
+        <span>{t('brand')}</span>
       </div>
 
       <header className="auth-hero">
@@ -120,7 +112,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <form className="auth-form" onSubmit={handleSubmit}>
         <PhoneCountryField
           id="login-phone"
-          label={t('phone')}
           value={phone}
           onChange={handlePhoneChange}
           error={formErrors.phone}

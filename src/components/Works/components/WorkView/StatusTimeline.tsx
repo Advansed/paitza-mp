@@ -3,10 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
 import { WorkInfo, WorkStatus } from '../../types';
 import {
+  getBasicOrderProgressSlots,
   getOrderProgressSlots,
   normalizeWorkStatus,
   workStatusLabel,
 } from '../../statusFlow';
+import { useAppPlan } from '../../../../plan';
 import styles from './StatusTimeline.module.css';
 
 type StatusTimelineProps = {
@@ -15,16 +17,21 @@ type StatusTimelineProps = {
 
 export const StatusTimeline: React.FC<StatusTimelineProps> = ({ work }) => {
   const { t } = useTranslation('works');
+  const plan = useAppPlan();
   const current = normalizeWorkStatus(work.status);
   const isRejected = current === WorkStatus.REJECTED;
-  const slots = isRejected ? [] : getOrderProgressSlots(current);
+  const slots = isRejected
+    ? []
+    : plan === 'basic'
+      ? getBasicOrderProgressSlots(current)
+      : getOrderProgressSlots(current);
 
   return (
     <section className={styles.wrap} aria-label={t('tripStatus')}>
       <div className={styles.head}>
         <p className={styles.title}>{t('tripStatus')}</p>
         {!isRejected && (
-          <span className={styles.pill}>{workStatusLabel(current)}</span>
+          <span className={styles.pill}>{workStatusLabel(current, plan)}</span>
         )}
       </div>
 
@@ -72,7 +79,7 @@ export const StatusTimeline: React.FC<StatusTimelineProps> = ({ work }) => {
                     <span className={styles.dotMark} />
                   )}
                 </span>
-                <span className={styles.stepLabel}>{workStatusLabel(slot.status)}</span>
+                <span className={styles.stepLabel}>{workStatusLabel(slot.status, plan)}</span>
               </li>
             );
           })}

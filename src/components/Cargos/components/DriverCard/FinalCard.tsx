@@ -2,6 +2,7 @@ import React from 'react';
 import { IonButton, IonIcon } from '@ionic/react';
 import { checkmarkCircleOutline, chatboxEllipsesOutline } from 'ionicons/icons';
 import { DriverInfo } from '../../../../Store/cargoStore';
+import { moneySign } from '../../../../utils/utils';
 import offerStyles from './OfferCard.module.css';
 
 interface FinalCardProps {
@@ -12,7 +13,7 @@ interface FinalCardProps {
 
 export const FinalCard: React.FC<FinalCardProps> = ({ info, onChat, isLoading }) => {
     const formatPrice = (price: number): string =>
-        price.toLocaleString('ru-RU').replace(/,/g, ' ');
+        `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(info.currency)}`;
 
     return (
         <div className={offerStyles.offerCard}>
@@ -58,9 +59,9 @@ export const FinalCard: React.FC<FinalCardProps> = ({ info, onChat, isLoading })
                         </div>
                     </div>
                     <div className={offerStyles.infoField}>
-                        <label className={offerStyles.label}>Цена (₽)</label>
+                        <label className={offerStyles.label}>Цена</label>
                         <div className={offerStyles.value}>
-                            {formatPrice(info.price)} (₽)
+                            {formatPrice(info.price)}
                         </div>
                     </div>
                 </div>

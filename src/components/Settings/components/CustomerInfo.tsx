@@ -4,7 +4,7 @@ import { IonButton } from '@ionic/react';
 import styles from '../../Profile/Profile.module.css';
 import {
   COMPANY_TYPES,
-  COMPANY_TYPE_LABELS,
+  companyTypeLabel,
   CompanyData,
   DEFAULT_COUNTRY_CODE,
   DEFAULT_CURRENCY,
@@ -112,7 +112,7 @@ export const CustomerInfo: React.FC<CustomerInfoProps> = ({
   consentSlot,
   footerSlot,
 }) => {
-  const { t } = useTranslation('settings');
+  const { t, i18n } = useTranslation('settings');
   const toast = useToast();
   const [form, setForm] = useState<FormState>(() => toForm(companyData));
   const [showIntermediary, setShowIntermediary] = useState(false);
@@ -219,9 +219,9 @@ export const CustomerInfo: React.FC<CustomerInfoProps> = ({
               value={form.company_type}
               onChange={(e) => set('company_type', Number(e.target.value))}
             >
-              {Object.values(COMPANY_TYPES).map((t) => (
-                <option key={t} value={t}>
-                  {COMPANY_TYPE_LABELS[t]}
+              {Object.values(COMPANY_TYPES).map((type) => (
+                <option key={type} value={type}>
+                  {companyTypeLabel(type, i18n.language)}
                 </option>
               ))}
             </select>

@@ -61,6 +61,13 @@ export const WorkOrderInfo: React.FC<WorkOrderInfoProps> = ({ work, onMapClick }
   const contactName = work.face?.trim() || '';
   const payment = getPaymentLevel(work);
   const reserved = Number(work.advance) || 0;
+  const reservedCurrency = work.cargo_currency || work.currency || 'RUB';
+  const performerCurrency = work.performer_currency || work.currency;
+  const showRate =
+    work.cargo_currency &&
+    performerCurrency &&
+    work.cargo_currency !== performerCurrency &&
+    Number(work.rate) > 0;
   const slots = fleetSlots(work);
   const offers = work.offers?.length ?? 0;
   const distance = routeDistanceKm(work);
@@ -102,12 +109,18 @@ export const WorkOrderInfo: React.FC<WorkOrderInfoProps> = ({ work, onMapClick }
           <div className={styles.payReserve}>
             <span>{t('reserved')}</span>
             <strong>
-              {workFormatters.currency(reserved)}
+              {workFormatters.currency(reserved, reservedCurrency)}
               <span>
                 {' '}
-                {t('ofAmount', { amount: workFormatters.currency(work.price) })}
+                {t('ofAmount', { amount: workFormatters.currency(work.price, work.cargo_currency || reservedCurrency) })}
               </span>
             </strong>
+            {showRate ? (
+              <span>
+                {' '}
+                {`≈ 1 ${work.cargo_currency} = ${Number(work.rate).toLocaleString('ru-RU', { maximumFractionDigits: 4 })} ${performerCurrency}`}
+              </span>
+            ) : null}
           </div>
         )}
       </section>
@@ -263,7 +276,7 @@ export const WorkOrderInfo: React.FC<WorkOrderInfoProps> = ({ work, onMapClick }
           <span className={styles.specKicker}>{t('cost')}</span>
           <span className={styles.offers}>{offersLabel(offers)}</span>
         </div>
-        <div className={styles.specPrice}>{workFormatters.currency(price)}</div>
+        <div className={styles.specPrice}>{workFormatters.currency(price, work.cargo_currency || work.currency)}</div>
         <div className={styles.specRoute}>
           <MapPin size={16} strokeWidth={1.75} />
           <span>{fromCity}</span>

@@ -49,6 +49,7 @@ function normalizeTransactions(raw: unknown): Transaction[] {
     date: item.date ?? '',
     type: mapTransactionType(item.type),
     amount: Number(item.amount ?? item.summ ?? 0),
+    currency: asText(item.currency) || undefined,
     title: item.title ?? item.description ?? item.message ?? '',
     subtitle: item.subtitle ?? item.route ?? item.details ?? ''
   }));
@@ -238,6 +239,19 @@ export const useWallet = () => {
     [setLoading, socketRequest, token]
   );
 
+  const set_card_payment = useCallback(
+    async (data: { type: number; amount: number; description: string; success_url: string; fail_url: string }) => {
+      setLoading(true);
+      try {
+        const result = await socketRequest('create_payment_card', { token, ...data }, 'create_payment_card');
+        return result;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, socketRequest, token]
+  );
+
   const set_invoice = useCallback(
     async (invoiceData: any): Promise<any> => {
       setLoading(true);
@@ -301,16 +315,42 @@ export const useWallet = () => {
 
   const formattedBalance = useMemo(() => {
     if (!accountData) return '—';
-    try {
-      return accountData.balance.toLocaleString('ru-RU', {
-        style: 'currency',
-        currency: accountData.currency || 'RUB',
-        maximumFractionDigits: 0
-      });
-    } catch {
-      return `${accountData.balance} ${accountData.currency || 'RUB'}`;
-    }
+    const rows =
+      accountData.balances?.length
+        ? accountData.balances
+        : [{ currency: accountData.currency || 'RUB', balance: accountData.balance }];
+    return rows
+      .map((row) => {
+        try {
+          return row.balance.toLocaleString('ru-RU', {
+            style: 'currency',
+            currency: row.currency || 'RUB',
+            maximumFractionDigits: 0,
+          });
+        } catch {
+          return `${row.balance} ${row.currency || 'RUB'}`;
+        }
+      })
+      .join(' · ');
   }, [accountData]);
+
+  const withdraw = useCallback(
+    async (payload: {
+      amount: number;
+      currency: string;
+    }): Promise<{ success: boolean; data?: any; error?: string }> => {
+      const result = await socketRequest(
+        'withdraw',
+        { token, amount: payload.amount, currency: payload.currency },
+        'withdraw'
+      );
+      if (!result?.success) {
+        return { success: false, error: result?.error || 'Не удалось вывести средства' };
+      }
+      return { success: true, data: result.data };
+    },
+    [socketRequest, token]
+  );
 
   const refreshWallet = useCallback(
     async (opts?: { silent?: boolean }) => {
@@ -341,10 +381,12 @@ export const useWallet = () => {
     load,
     refreshWallet,
     set_payment,
+    set_card_payment,
     set_invoice,
     get_invoice,
     get_deals,
     set_deals_payment,
+    withdraw,
     seller_id
   };
 };

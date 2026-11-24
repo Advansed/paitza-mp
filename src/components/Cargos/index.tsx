@@ -17,6 +17,7 @@ import { PrepaymentPage }                           from './components/PrePaymen
 import { useCargos, type UseCargosReturn }          from './hooks/useCargos';
 import { useInvoices }                              from './hooks/useInvoices';
 import { useCargoNavigation }                       from './hooks/useNavigation';
+import { useAppPlan }                               from '../../plan';
 
 type CargoActions = Pick<
     UseCargosReturn,
@@ -54,6 +55,7 @@ const CargoDetail: React.FC<{ cargosLoading: boolean } & CargoActions> = ({
     const { create_contract, handleAccept, get_contract, handleReject, handleChat, handleComplete } = invoiceApi;
     const { emit } = useSocket();
     const token = useToken();
+    const basic = useAppPlan() === 'basic';
 
     const handleBack = useCallback(() => {
         if (currentPage.type === 'view' || currentPage.type === 'create') {
@@ -93,12 +95,16 @@ const CargoDetail: React.FC<{ cargosLoading: boolean } & CargoActions> = ({
         async (invoice: DriverInfo) => {
             const cargo = currentPage.cargo;
             if (!cargo) return;
+            if (basic) {
+                await handleAccept(invoice, 12);
+                return;
+            }
             const contractData = await get_contract(invoice);
             if (contractData) {
                 navigateTo({ type: 'agreement', cargo, invoice, contract: contractData });
             }
         },
-        [currentPage.cargo, get_contract, navigateTo]
+        [basic, currentPage.cargo, get_contract, handleAccept, navigateTo]
     );
 
     const handleAdvanceInvoice = useCallback(

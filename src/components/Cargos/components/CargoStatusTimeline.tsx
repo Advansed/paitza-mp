@@ -4,9 +4,11 @@ import { AlertTriangle, Check } from 'lucide-react';
 import { CargoInfo, CargoStatus } from '../../../Store/cargoStore';
 import {
   cargoStatusLabel,
+  getBasicCargoProgressSlots,
   getCargoProgressSlots,
   resolveCargoProgressStatus,
 } from '../cargoStatusFlow';
+import { useAppPlan } from '../../../plan';
 import styles from './CargoStatusTimeline.module.css';
 
 type CargoStatusTimelineProps = {
@@ -15,16 +17,21 @@ type CargoStatusTimelineProps = {
 
 export const CargoStatusTimeline: React.FC<CargoStatusTimelineProps> = ({ cargo }) => {
   const { t } = useTranslation('works');
+  const plan = useAppPlan();
   const current = resolveCargoProgressStatus(cargo);
   const isProblems = current === CargoStatus.PROBLEMS;
-  const slots = isProblems ? [] : getCargoProgressSlots(current);
+  const slots = isProblems
+    ? []
+    : plan === 'basic'
+      ? getBasicCargoProgressSlots(current)
+      : getCargoProgressSlots(current);
 
   return (
     <section className={styles.wrap} aria-label={t('tripStatus')}>
       <div className={styles.head}>
         <p className={styles.title}>{t('tripStatus')}</p>
         {!isProblems && (
-          <span className={styles.pill}>{cargoStatusLabel(current)}</span>
+          <span className={styles.pill}>{cargoStatusLabel(current, plan)}</span>
         )}
       </div>
 
@@ -75,7 +82,7 @@ export const CargoStatusTimeline: React.FC<CargoStatusTimelineProps> = ({ cargo 
                     <span className={styles.dotMark} />
                   )}
                 </span>
-                <span className={styles.stepLabel}>{cargoStatusLabel(slot.status)}</span>
+                <span className={styles.stepLabel}>{cargoStatusLabel(slot.status, plan)}</span>
               </li>
             );
           })}

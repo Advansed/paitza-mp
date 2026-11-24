@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IonButton, IonIcon } from '@ionic/react';
 import { chatboxEllipsesOutline, cubeOutline } from 'ionicons/icons';
 import { DriverInfo } from '../../../../Store/cargoStore';
+import { moneySign } from '../../../../utils/utils';
 import { useChats } from '../../../../Store/useChats';
 import offerStyles from './OfferCard.module.css';
 import { PhotoPreview } from '../../../Chats/PhotoPreview';
@@ -26,7 +27,7 @@ export const LoadedCard: React.FC<LoadedCardProps> = ({ info, onChat, onSend, is
     const { getPhotos } = useChats();
 
     const formatPrice = (price: number): string => {
-        return price.toLocaleString('ru-RU').replace(/,/g, ' ');
+        return `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(info.currency)}`;
     };
 
     useEffect(() => {
@@ -66,9 +67,9 @@ export const LoadedCard: React.FC<LoadedCardProps> = ({ info, onChat, onSend, is
             <div className={offerStyles.detailsCard}>
                 <div className={offerStyles.infoRow}>
                     <div className={offerStyles.infoField}>
-                        <label className={offerStyles.label}>Цена (₽)</label>
+                        <label className={offerStyles.label}>Цена</label>
                         <div className={offerStyles.value}>
-                            {formatPrice(info.price)} (₽)
+                            {formatPrice(info.price)}
                         </div>
                     </div>
                     <div className={offerStyles.infoField}>

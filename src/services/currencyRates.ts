@@ -49,3 +49,17 @@ export async function fetchCbrRates(): Promise<CbrRates> {
     rates,
   }
 }
+
+function rubPer(code: string, rates: CbrRates): number {
+  const key = (code || 'RUB').trim().toUpperCase() || 'RUB'
+  if (key === 'RUB') return 1
+  const rate = rates.rates[key as CbrRateCode]
+  if (!rate) throw new Error(`Нет курса ${key}`)
+  return rate
+}
+
+export function convertAtCbr(amount: number, from: string, to: string, rates: CbrRates): number {
+  const src = rubPer(from, rates)
+  const dst = rubPer(to, rates)
+  return Math.round((amount * src / dst) * 100) / 100
+}

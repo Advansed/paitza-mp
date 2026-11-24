@@ -9,6 +9,7 @@ import {
   toTransportTypeId,
   transportDisplayName,
   transportDriverName,
+  transportTypeLabel,
 } from '../../../Store/transportStore';
 import { uploadTransportPhoto, uploadTransportSts, useResolvedImageSrc } from '../../../utils/fileUpload';
 import { useLoginStore } from '../../../Store/loginStore';
@@ -29,7 +30,7 @@ export const VehicleModal: React.FC<VehicleModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const { t } = useTranslation('fleet');
+  const { t, i18n } = useTranslation('fleet');
   const types = useTransportTypes();
   const toast = useToast();
   const { name: userName, phone: userPhone, user_type } = useLoginStore();
@@ -310,12 +311,12 @@ export const VehicleModal: React.FC<VehicleModalProps> = ({
                 {form.transportType &&
                   !types.some((type) => type.id === form.transportType) && (
                     <option value={form.transportType}>
-                      {currentType?.name || t('currentType')}
+                      {transportTypeLabel(currentType, i18n.language) || t('currentType')}
                     </option>
                   )}
                 {types.map((type) => (
                   <option key={type.id} value={type.id}>
-                    {type.name}
+                    {transportTypeLabel(type, i18n.language)}
                   </option>
                 ))}
               </select>

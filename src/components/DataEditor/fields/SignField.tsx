@@ -1,5 +1,6 @@
 // src/components/DataEditor/fields/ImageField.tsx
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import styles from './ImageField.module.css';
 import { IonLoading, IonButton } from "@ionic/react";
 import { useToast } from "../../Toast";
@@ -26,6 +27,7 @@ export const SignField: React.FC<ImageFieldProps> = ({
   error, 
   validate 
 }) => {
+  const { t } = useTranslation('common');
   const signatureRef = useRef<SignatureCanvas>(null);
   
   const toast = useToast();
@@ -79,7 +81,7 @@ export const SignField: React.FC<ImageFieldProps> = ({
             onClick={handleClearSignature}
             disabled={disabled}
           >
-            Очистить
+            {t('clear')}
           </IonButton>
         </div>
 

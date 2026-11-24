@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { FOOTER_NAV, MAIN_NAV, filterNavByRole, isNavActive } from './navConfig';
 import { useLoginStore } from '../Store/loginStore';
+import { useAppPlan } from '../plan';
 import { roleLabel } from '../Store/roles';
 import { useResolvedImageSrc } from '../utils/fileUpload';
 import styles from './Sidebar.module.css';
@@ -15,8 +16,9 @@ type SidebarProps = {
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({ userType, pathname, onNavigate, compact }) => {
-  const main = filterNavByRole(MAIN_NAV, userType);
-  const footer = filterNavByRole(FOOTER_NAV, userType);
+  const plan = useAppPlan();
+  const main = filterNavByRole(MAIN_NAV, userType, plan);
+  const footer = filterNavByRole(FOOTER_NAV, userType, plan);
   const { t } = useTranslation();
   const name = useLoginStore((s) => s.name);
   const image = useLoginStore((s) => s.image);

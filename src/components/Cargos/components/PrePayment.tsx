@@ -91,7 +91,7 @@ export const PrepaymentPage: React.FC<PrepaymentPageProps> = ({ cargo, onBack })
 
           <p className="flex fl-space">
             <strong>Стоимость:</strong>
-            <div>{formatters.currency(cargo.price)} </div>
+            <div>{formatters.currency(cargo.price, cargo.currency)} </div>
           </p>
 
           <div className="mt-1">
@@ -165,7 +165,7 @@ export const PrepaymentPage: React.FC<PrepaymentPageProps> = ({ cargo, onBack })
             max={cargo.price - (cargo.advance || 0)}
             placeholder="Введите сумму"
           />
-          <small>Доступно для оплаты: {cargo.price} ₽</small>
+          <small>Доступно для оплаты: {formatters.currency(cargo.price, cargo.currency)}</small>
         </div>
 
         <div className="actions">

@@ -56,6 +56,16 @@ export function resolveRegistrationPartner(explicit?: string): string {
   return found || DEFAULT_PARTNER_GUID
 }
 
+/** Сразу сохранить ?partner= из URL (до history.replace, который сбрасывает query). */
+export function persistPartnerFromUrl(search?: string): void {
+  if (typeof window === 'undefined') return
+  const raw = new URLSearchParams(search ?? window.location.search).get('partner') || ''
+  const value = raw.trim()
+  if (GUID_RE.test(value)) {
+    localStorage.setItem('gvrs.partner', value)
+  }
+}
+
 /** Шаг 2 → событие `check_sms` */
 export type CheckSmsPayload = {
   phone: string

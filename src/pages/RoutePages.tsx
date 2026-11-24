@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Download } from 'lucide-react';
 import { Redirect, useHistory, useLocation, useParams } from 'react-router-dom';
 import { useUserType } from '../Store/loginStore';
+import { useCompany } from '../Store/useCompany';
+import { useAppPlan, useProUnlocked } from '../plan';
 import { isDispatcher, isExecutorRole } from '../Store/roles';
 import { PanelFrame } from '../layout/PanelFrame';
 import panelStyles from '../layout/PanelFrame.module.css';
@@ -96,6 +98,40 @@ export const ProfileRoutePage: React.FC = () => {
 };
 
 export const FinancePage: React.FC = () => {
+  const plan = useAppPlan();
+  if (plan !== 'pro') return <TariffPage />;
+  return <FinanceScreen />;
+};
+
+const TariffPage: React.FC = () => {
+  const { t } = useTranslation('finance');
+  const history = useHistory();
+  const { loadData } = useCompany();
+  const unlocked = useProUnlocked();
+
+  return (
+    <PanelFrame crumb={t('tariffCrumb', { defaultValue: 'Тариф' })} title={t('tariffTitle', { defaultValue: 'Тариф Basic' })} bare>
+      <div className="web-finance-layout">
+        <p>
+          {unlocked
+            ? t('tariffUnlocked', { defaultValue: 'Pro открыт. Переключите тариф в настройках, чтобы видеть заявки Pro, договор и финансы.' })
+            : t('tariffLead', { defaultValue: 'Пополните счёт любым способом. После зачисления денег тариф Pro можно включить в настройках.' })}
+        </p>
+        {unlocked && (
+          <button type="button" onClick={() => history.push('/settings')}>
+            {t('tariffSettings', { defaultValue: 'Открыть настройки' })}
+          </button>
+        )}
+        <button type="button" onClick={() => loadData()}>
+          {t('tariffRefresh', { defaultValue: 'Проверить зачисление' })}
+        </button>
+        <WalletPage onBack={() => history.push('/')} variant="topup" onPaid={() => loadData()} />
+      </div>
+    </PanelFrame>
+  );
+};
+
+const FinanceScreen: React.FC = () => {
   const { t } = useTranslation('finance');
   const history = useHistory();
   const location = useLocation<{ amount?: number | string }>();

@@ -82,6 +82,15 @@ export interface WorkInfo {
     price: number;
     advance: number;
     insurance: number;
+    /** Справочный аванс в валюте исполнителя (не начисление) */
+    advance_local?: number;
+    /** Валюта расчёта / начисления (= валюта заказа) */
+    currency?: string;
+    cargo_currency?: string;
+    /** Домашняя валюта исполнителя (справочно) */
+    performer_currency?: string;
+    rate?: number;
+    rateDate?: string;
 
     pickup_date: string;
     delivery_date: string;

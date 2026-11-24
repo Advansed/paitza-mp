@@ -13,6 +13,7 @@ export const LOCALE_SHORT: Record<AppLocale, string> = {
 
 const NAMESPACES = [
   'common',
+  'landing',
   'auth',
   'nav',
   'home',
@@ -98,11 +99,12 @@ async function ensureLocale(locale: AppLocale): Promise<LocaleBundle> {
 }
 
 export const i18nReady: Promise<void> = (async () => {
-  const bundle = await ensureLocale(initial)
+  const bundles = await Promise.all(APP_LOCALES.map((locale) => ensureLocale(locale)))
+  const resources = Object.fromEntries(APP_LOCALES.map((locale, index) => [locale, bundles[index]]))
   await i18n.use(initReactI18next).init({
-    resources: { [initial]: bundle },
+    resources,
     lng: initial,
-    fallbackLng: initial,
+    fallbackLng: 'ru',
     ns: [...NAMESPACES],
     defaultNS: 'common',
     interpolation: { escapeValue: false },
@@ -118,7 +120,12 @@ export async function setAppLocale(locale: AppLocale) {
     /* ignore */
   }
   await ensureLocale(locale)
-  await i18n.changeLanguage(locale)
+  if (i18n.language !== locale) {
+    await i18n.changeLanguage(locale)
+  } else {
+    applyDocumentLocale(locale)
+    return
+  }
   applyDocumentLocale(locale)
 }
 

@@ -13,6 +13,13 @@ export default defineConfig({
   server: {
     host: '127.0.0.1',
     port: 5173,
+    proxy: {
+      '/payler': {
+        target: 'https://sandbox.payler.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/payler/, ''),
+      },
+    },
   },
   test: {
     globals: true,

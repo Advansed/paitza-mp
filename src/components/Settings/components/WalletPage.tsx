@@ -25,6 +25,9 @@ import walletStyles from './WalletPage.module.css';
 import { useToast } from '../../Toast';
 import { useLogin } from '../../../Store/useLogin';
 import { openUrlInApp } from '../../../utils/openUrlInApp';
+import { startPaylerPayment } from '../../../services/payler';
+import { convertAtCbr, fetchCbrRates } from '../../../services/currencyRates';
+import { moneySign } from '../../../utils/utils';
 import { InvoiceModal } from './InvoiceModal/InvoiceModal';
 import type { Transaction } from '../../../Store/accountStore';
 import { shortDate } from '../../Works/feedFormat';
@@ -32,6 +35,8 @@ import { shortDate } from '../../Works/feedFormat';
 export interface WalletPageProps {
   onBack: () => void;
   initialAmount?: number | string | null;
+  variant?: 'full' | 'topup';
+  onPaid?: () => void;
 }
 
 type PayMethod = 'invoice' | 'sbp' | 'acquiring';
@@ -126,7 +131,10 @@ function MonthChart({ bars }: { bars: { key: string; label: string; value: numbe
 export const WalletPage: React.FC<WalletPageProps> = ({
   onBack: _onBack,
   initialAmount,
+  variant = 'full',
+  onPaid,
 }) => {
+  const topup = variant === 'topup';
   const { t } = useTranslation('finance');
   const toast = useToast();
   const { user } = useLogin();
@@ -139,10 +147,12 @@ export const WalletPage: React.FC<WalletPageProps> = ({
     load,
     refreshWallet,
     set_payment,
+    set_card_payment,
     set_invoice,
     get_invoice,
     get_deals,
     set_deals_payment,
+    withdraw,
     seller_id,
   } = useWallet();
 
@@ -150,7 +160,11 @@ export const WalletPage: React.FC<WalletPageProps> = ({
     const n = Number(initialAmount);
     return Number.isFinite(n) && n > 0 ? formatAmountInput(Math.ceil(n)) : '';
   });
-  const [showTopUp, setShowTopUp] = useState(() => Number(initialAmount) > 0);
+  const [showTopUp, setShowTopUp] = useState(() => variant === 'topup' || Number(initialAmount) > 0);
+  const [showWithdraw, setShowWithdraw] = useState(false);
+  const [withdrawCurrency, setWithdrawCurrency] = useState('RUB');
+  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [withdrawLoading, setWithdrawLoading] = useState(false);
   const [showDeals, setShowDeals] = useState(false);
   const [deals, setDeals] = useState<DueDeal[]>([]);
   const [dealsLoading, setDealsLoading] = useState(false);
@@ -158,6 +172,8 @@ export const WalletPage: React.FC<WalletPageProps> = ({
   const [payLoading, setPayLoading] = useState<PayMethod | null>(null);
   const [invoiceModalData, setInvoiceModalData] = useState<unknown>();
   const [invoiceLoadingId, setInvoiceLoadingId] = useState<string | null>(null);
+  const [payFrameUrl, setPayFrameUrl] = useState<string | null>(null);
+  const payFrameRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     const n = Number(initialAmount);
@@ -168,13 +184,18 @@ export const WalletPage: React.FC<WalletPageProps> = ({
   }, [initialAmount]);
 
   useEffect(() => {
-    if (!showTopUp) return;
+    if (!showTopUp && !payFrameUrl) return;
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !payLoading) setShowTopUp(false);
+      if (event.key !== 'Escape') return;
+      if (payFrameUrl) {
+        setPayFrameUrl(null);
+        return;
+      }
+      if (!payLoading) setShowTopUp(false);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [showTopUp, payLoading]);
+  }, [showTopUp, payLoading, payFrameUrl]);
 
   useEffect(() => {
     if (!showDeals) return;
@@ -192,15 +213,56 @@ export const WalletPage: React.FC<WalletPageProps> = ({
     load();
   }, [load]);
 
-  const formatMoney = (n: number) => {
+  const currencyBalances = useMemo(() => {
+    if (!accountData) return [] as { currency: string; balance: number }[];
+    if (accountData.balances?.length) return accountData.balances;
+    return [{ currency: accountData.currency || 'RUB', balance: accountData.balance || 0 }];
+  }, [accountData]);
+
+  const formatMoney = (n: number, currency?: string | null) => {
+    const code = (currency || accountData?.currency || 'RUB').trim().toUpperCase() || 'RUB';
     try {
       return n.toLocaleString(intlLocale(), {
         style: 'currency',
-        currency: accountData?.currency || 'RUB',
+        currency: code,
         maximumFractionDigits: 0,
       });
     } catch {
-      return `${n} ₽`;
+      return `${n} ${moneySign(code)}`;
+    }
+  };
+
+  const openWithdraw = () => {
+    const first = currencyBalances.find((b) => b.balance > 0) || currencyBalances[0];
+    setWithdrawCurrency(first?.currency || accountData?.currency || 'RUB');
+    setWithdrawAmount('');
+    setShowWithdraw(true);
+  };
+
+  const handleWithdraw = async () => {
+    const sum = parseAmountInput(withdrawAmount);
+    const available =
+      currencyBalances.find((b) => b.currency === withdrawCurrency)?.balance ?? 0;
+    if (sum <= 0) {
+      toast.error(t('badAmount', { defaultValue: 'Укажите сумму' }));
+      return;
+    }
+    if (sum > available) {
+      toast.error(t('withdrawShort', { defaultValue: 'Недостаточно средств в выбранной валюте' }));
+      return;
+    }
+    setWithdrawLoading(true);
+    try {
+      const res = await withdraw({ amount: sum, currency: withdrawCurrency });
+      if (!res?.success) {
+        toast.error(res?.error || t('withdrawError', { defaultValue: 'Ошибка вывода' }));
+        return;
+      }
+      toast.success(t('withdrawOk', { defaultValue: 'Заявка на вывод принята' }));
+      setShowWithdraw(false);
+      await refreshWallet({ silent: true });
+    } finally {
+      setWithdrawLoading(false);
     }
   };
 
@@ -319,6 +381,53 @@ export const WalletPage: React.FC<WalletPageProps> = ({
     if (amountNumber <= 0) return;
     setPayLoading(method);
     try {
+      if (method === 'acquiring') {
+        const back = `${window.location.origin}/finance`;
+        const walletCurrency = (accountData?.currency || 'RUB').toUpperCase();
+        if (walletCurrency === 'RUB') {
+          const res = await set_card_payment({
+            type: 2,
+            amount: amountNumber,
+            description: `Пополнение лицевого счета ${user?.id || ''}`.trim(),
+            success_url: back,
+            fail_url: back,
+          });
+          const url = res?.data?.payment_url || res?.data?.paymentUrl;
+          if (!res?.success || !url) {
+            toast.error(res?.error || t('payOpenError'));
+            return;
+          }
+          setPayFrameUrl(url);
+          setShowTopUp(false);
+          return;
+        }
+
+        const userId = String(user?.id || '0').replace(/[^A-Za-z0-9]/g, '').slice(0, 20) || '0';
+        const orderId = `p${userId}${Date.now()}`.slice(0, 100);
+        const email = user.email?.trim() || 'pay@paitza.com';
+        const lang = (i18n.resolvedLanguage || i18n.language || 'ru').slice(0, 2);
+        try {
+          let charge = amountNumber;
+          if (walletCurrency !== 'KGS') {
+            const rates = await fetchCbrRates();
+            charge = convertAtCbr(amountNumber, walletCurrency, 'KGS', rates);
+          }
+          const url = await startPaylerPayment({
+            amount: charge,
+            orderId,
+            email,
+            successUrl: back,
+            declineUrl: back,
+            lang,
+          });
+          setPayFrameUrl(url);
+          setShowTopUp(false);
+        } catch {
+          toast.error(t('payOpenError'));
+        }
+        return;
+      }
+
       const res = await set_payment({
         type: 1,
         amount: amountNumber,
@@ -329,32 +438,18 @@ export const WalletPage: React.FC<WalletPageProps> = ({
         return;
       }
 
-      if (method === 'acquiring') {
-        const url = res?.data?.payment_url || res?.data?.paymentUrl;
-        if (url) {
-          try {
-            await openUrlInApp(url);
-            setShowTopUp(false);
-            void refreshWallet({ silent: true });
-          } catch {
-            toast.error(t('payOpenError'));
-          }
-        } else {
-          toast.info(t('payLinkMissing'));
+      const payload = res?.data?.sbp_payload || res?.data?.sbpPayload;
+      if (payload) {
+        try {
+          await openUrlInApp(payload);
+          setShowTopUp(topup);
+          void refreshWallet({ silent: true });
+          onPaid?.();
+        } catch {
+          toast.error(t('sbpOpenError'));
         }
       } else {
-        const payload = res?.data?.sbp_payload || res?.data?.sbpPayload;
-        if (payload) {
-          try {
-            await openUrlInApp(payload);
-            setShowTopUp(false);
-            void refreshWallet({ silent: true });
-          } catch {
-            toast.error(t('sbpOpenError'));
-          }
-        } else {
-          toast.info(t('sbpMissing'));
-        }
+        toast.info(t('sbpMissing'));
       }
     } finally {
       setPayLoading(null);
@@ -407,9 +502,10 @@ export const WalletPage: React.FC<WalletPageProps> = ({
         return;
       }
 
-      setShowTopUp(false);
+      setShowTopUp(topup);
       setInvoiceModalData(invoice);
       void refreshWallet({ silent: true });
+      onPaid?.();
     } finally {
       setPayLoading(null);
     }
@@ -494,13 +590,13 @@ export const WalletPage: React.FC<WalletPageProps> = ({
                         className={walletStyles.dealPayBtn}
                         disabled={!canPay}
                         onClick={() => void handleDealPayment(deal)}
-                        aria-label={t('payDue', { amount: formatMoney(deal.due) })}
+                        aria-label={t('payDue', { amount: formatMoney(deal.due, deal.currency) })}
                       >
                         {isPaying ? (
                           <IonSpinner name="bubbles" />
                         ) : (
                           <>
-                            <span className={walletStyles.dealDue}>{formatMoney(deal.due)}</span>
+                            <span className={walletStyles.dealDue}>{formatMoney(deal.due, deal.currency)}</span>
                             <span className={walletStyles.dealPayLabel}>{t('dueLabel')}</span>
                           </>
                         )}
@@ -515,8 +611,124 @@ export const WalletPage: React.FC<WalletPageProps> = ({
         </div>
       )}
 
-      {showTopUp && (
-        <div className={walletStyles.modalOverlay} role="presentation" onClick={closeTopUp}>
+      {payFrameUrl && (
+        <div className={walletStyles.modalOverlay} role="presentation">
+          <div
+            className={`${walletStyles.modalDialog} ${walletStyles.payFrameDialog}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pay-frame-title"
+          >
+            <div className={walletStyles.modalHead}>
+              <h2 id="pay-frame-title" className={walletStyles.modalTitle}>
+                {t('acquiring')}
+              </h2>
+              <button
+                type="button"
+                className={walletStyles.modalClose}
+                onClick={() => setPayFrameUrl(null)}
+                aria-label={t('close', { ns: 'common' })}
+              >
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
+            <iframe
+              ref={payFrameRef}
+              className={walletStyles.payFrame}
+              src={payFrameUrl}
+              title={t('acquiring')}
+              onLoad={() => {
+                try {
+                  const href = payFrameRef.current?.contentWindow?.location.href || '';
+                  if (href.startsWith(window.location.origin)) {
+                    setPayFrameUrl(null);
+                    void refreshWallet({ silent: true });
+                    onPaid?.();
+                  }
+                } catch {
+                  // Форма Payler или страница банка ещё открыта.
+                }
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {showWithdraw && (
+        <div
+          className={walletStyles.modalOverlay}
+          role="presentation"
+          onClick={() => !withdrawLoading && setShowWithdraw(false)}
+        >
+          <div
+            className={walletStyles.modalDialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="withdraw-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={walletStyles.modalHead}>
+              <div>
+                <h2 id="withdraw-title" className={walletStyles.modalTitle}>
+                  {t('withdraw')}
+                </h2>
+                <p className={walletStyles.modalSub}>
+                  {t('withdrawSub', { defaultValue: 'Списание с остатка в выбранной валюте' })}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={walletStyles.modalClose}
+                onClick={() => setShowWithdraw(false)}
+                aria-label={t('close', { ns: 'common' })}
+                disabled={withdrawLoading}
+              >
+                <X size={18} strokeWidth={2} />
+              </button>
+            </div>
+
+            <div className={walletStyles.currencyPick}>
+              {currencyBalances.map((row) => (
+                <button
+                  key={row.currency}
+                  type="button"
+                  className={`${walletStyles.currencyChip} ${
+                    withdrawCurrency === row.currency ? walletStyles.currencyChipActive : ''
+                  }`}
+                  onClick={() => setWithdrawCurrency(row.currency)}
+                  disabled={withdrawLoading || row.balance <= 0}
+                >
+                  {row.currency}: {formatMoney(row.balance, row.currency)}
+                </button>
+              ))}
+            </div>
+
+            <div className={walletStyles.amountWrap}>
+              <IonInput
+                className={walletStyles.amountInput}
+                inputMode="numeric"
+                value={withdrawAmount}
+                placeholder="0"
+                onIonInput={(e) => setWithdrawAmount(formatAmountInput(String(e.detail.value ?? '')))}
+              />
+              <span className={walletStyles.amountCurrency}>{moneySign(withdrawCurrency)}</span>
+            </div>
+
+            <button
+              type="button"
+              className={walletStyles.heroPrimary}
+              style={{ width: '100%', marginTop: 12 }}
+              disabled={withdrawLoading || parseAmountInput(withdrawAmount) <= 0}
+              onClick={() => void handleWithdraw()}
+            >
+              {withdrawLoading ? <IonSpinner name="bubbles" /> : t('withdraw')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {(showTopUp || topup) && (
+        <div className={topup ? undefined : walletStyles.modalOverlay} role="presentation" onClick={topup ? undefined : closeTopUp}>
           <div
             className={walletStyles.modalDialog}
             role="dialog"
@@ -531,6 +743,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
                 </h2>
                 <p className={walletStyles.modalSub}>{t('topUpSub')}</p>
               </div>
+              {!topup && (
               <button
                 type="button"
                 className={walletStyles.modalClose}
@@ -540,6 +753,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
               >
                 <X size={18} strokeWidth={2} />
               </button>
+              )}
             </div>
 
             <div className={walletStyles.amountWrap}>
@@ -551,7 +765,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
                 placeholder="0"
                 onIonInput={(e) => setAmount(formatAmountInput(String(e.detail.value ?? '')))}
               />
-              <span className={walletStyles.amountCurrency}>₽</span>
+              <span className={walletStyles.amountCurrency}>{moneySign(accountData?.currency)}</span>
             </div>
 
             <div className={walletStyles.quickRow}>
@@ -563,7 +777,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
                   onClick={() => setAmount(formatAmountInput(q))}
                   disabled={Boolean(payLoading)}
                 >
-                  {q.toLocaleString(intlLocale())} ₽
+                  {q.toLocaleString(intlLocale())} {moneySign(accountData?.currency)}
                 </button>
               ))}
             </div>
@@ -618,7 +832,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
         </div>
       )}
 
-      <div className={walletStyles.stats}>
+      {!topup && <div className={walletStyles.stats}>
         <section className={`${walletStyles.statCard} ${walletStyles.statHero}`}>
           <div className={walletStyles.statHead}>
             <span className={walletStyles.statIconHero} aria-hidden>
@@ -628,7 +842,18 @@ export const WalletPage: React.FC<WalletPageProps> = ({
               {isCustomer ? t('balance') : t('available')}
             </span>
           </div>
-          <div className={walletStyles.statValue}>{formattedBalance}</div>
+          {currencyBalances.length > 1 ? (
+            <ul className={walletStyles.balanceList}>
+              {currencyBalances.map((row) => (
+                <li key={row.currency} className={walletStyles.balanceRow}>
+                  <span className={walletStyles.balanceCode}>{row.currency}</span>
+                  <span className={walletStyles.balanceAmt}>{formatMoney(row.balance, row.currency)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className={walletStyles.statValue}>{formattedBalance}</div>
+          )}
           {!isCustomer && (
             <div className={walletStyles.statSub}>{t('expected', { amount: formatMoney(upcomingIncome) })}</div>
           )}
@@ -637,7 +862,8 @@ export const WalletPage: React.FC<WalletPageProps> = ({
               <button
                 type="button"
                 className={walletStyles.heroGhost}
-                onClick={() => toast.info(t('withdrawSoon'))}
+                onClick={openWithdraw}
+                disabled={!currencyBalances.some((b) => b.balance > 0)}
               >
                 <ArrowUpRight size={16} strokeWidth={2.25} />
                 {t('withdraw')}
@@ -746,9 +972,9 @@ export const WalletPage: React.FC<WalletPageProps> = ({
             </section>
           </>
         )}
-      </div>
+      </div>}
 
-      {!isCustomer && (
+      {!topup && !isCustomer && (
       <div className={walletStyles.midGrid}>
         <section className={walletStyles.card}>
           <h2 className={walletStyles.cardTitle}>{t('incomeChart')}</h2>
@@ -778,7 +1004,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
       </div>
       )}
 
-      <section className={walletStyles.card} id="statement">
+      {!topup && <section className={walletStyles.card} id="statement">
         <h2 className={walletStyles.cardTitle}>{t('history')}</h2>
         {isLoading ? (
           <div className={walletStyles.loadingWrap}>
@@ -823,7 +1049,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
                         }
                       >
                         {tx.amount > 0 ? '+' : ''}
-                        {formatMoney(tx.amount)}
+                        {formatMoney(tx.amount, tx.currency)}
                       </div>
                       <span className={walletStyles.txWhen}>
                         {inv && invoiceLoadingId === tx.id ? t('loading', { ns: 'common' }) : formatTxWhen(tx.date)}
@@ -835,7 +1061,7 @@ export const WalletPage: React.FC<WalletPageProps> = ({
             })}
           </ul>
         )}
-      </section>
+      </section>}
     </div>
   );
 };

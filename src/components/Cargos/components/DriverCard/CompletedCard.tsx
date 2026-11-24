@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { IonButton, IonIcon, IonCheckbox } from '@ionic/react';
 import { checkmarkOutline, chatboxEllipsesOutline, cubeOutline } from 'ionicons/icons';
 import { DriverInfo } from '../../../../Store/cargoStore';
+import { moneySign } from '../../../../utils/utils';
 import offerStyles from './OfferCard.module.css';
 
 interface CompletedCardProps {
@@ -18,7 +19,7 @@ export const CompletedCard: React.FC<CompletedCardProps> = ({
     isLoading,
 }) => {
     const formatPrice = (price: number): string =>
-        price.toLocaleString('ru-RU').replace(/,/g, ' ');
+        `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(info.currency)}`;
 
     const [rating, setRating] = useState(0);
     const [completed, setCompleted] = useState(false);
@@ -42,8 +43,8 @@ export const CompletedCard: React.FC<CompletedCardProps> = ({
             <div className={offerStyles.detailsCard}>
                 <div className={offerStyles.infoRow}>
                     <div className={offerStyles.infoField}>
-                        <label className={offerStyles.label}>Цена (₽)</label>
-                        <div className={offerStyles.value}>{formatPrice(info.price)} (₽)</div>
+                        <label className={offerStyles.label}>Цена</label>
+                        <div className={offerStyles.value}>{formatPrice(info.price)}</div>
                     </div>
                     <div className={offerStyles.infoField}>
                         <label className={offerStyles.label}>Объем (м³)</label>

@@ -27,6 +27,7 @@ import {
   shortDate,
   type PaymentLevel,
 } from '../feedFormat';
+import { useAppPlan } from '../../../plan';
 import styles from './WorkCard.module.css';
 
 interface WorkCardProps {
@@ -61,6 +62,8 @@ const BADGE_CLASS: Record<ReturnType<typeof feedStatusKind>, string> = {
 
 export const WorkCard: React.FC<WorkCardProps> = ({ work, selected, onClick }) => {
   const { t } = useTranslation('works');
+  const plan = useAppPlan();
+  const basic = plan === 'basic';
   const status = normalizeWorkStatus(work.status);
   const kind = feedStatusKind(status);
   const fromCity = work.address?.city?.city || 'Не указано';
@@ -82,24 +85,33 @@ export const WorkCard: React.FC<WorkCardProps> = ({ work, selected, onClick }) =
       className={`${styles.feedCard} ${selected ? styles.feedCardSelected : ''}`}
       onClick={onClick}
     >
-      <div className={`${styles.light} ${LIGHT_CLASS[payment]}`} aria-hidden>
-        <span className={styles.lamp} />
-        <span className={styles.lamp} />
-        <span className={styles.lamp} />
-      </div>
+      {!basic && (
+        <div className={`${styles.light} ${LIGHT_CLASS[payment]}`} aria-hidden>
+          <span className={styles.lamp} />
+          <span className={styles.lamp} />
+          <span className={styles.lamp} />
+        </div>
+      )}
 
       <div className={styles.feedBody}>
         <div className={styles.feedTop}>
           <span className={`${styles.feedBadge} ${BADGE_CLASS[kind]}`}>
-            {feedStatusLabel(status)}
+            {feedStatusLabel(status, plan)}
           </span>
           <span className={styles.feedId}>ЗК-{workFormatters.shortId(work.guid || work.cargo)}</span>
           <div className={styles.feedPriceCol}>
-            <span className={styles.feedPrice}>{workFormatters.currency(work.price)}</span>
-            <span className={`${styles.payBadge} ${PAY_CLASS[payment]}`}>
-              <span className={styles.payDot} />
-              {PAYMENT_LABEL[payment]}
-            </span>
+            <span className={styles.feedPrice}>{workFormatters.currency(work.price, work.cargo_currency)}</span>
+            {!basic && Number(work.advance) > 0 ? (
+              <span className={styles.payBadge}>
+                {workFormatters.currency(work.advance, work.cargo_currency || work.currency)}
+              </span>
+            ) : null}
+            {!basic && (
+              <span className={`${styles.payBadge} ${PAY_CLASS[payment]}`}>
+                <span className={styles.payDot} />
+                {PAYMENT_LABEL[payment]}
+              </span>
+            )}
           </div>
         </div>
 

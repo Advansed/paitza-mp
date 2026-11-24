@@ -11,7 +11,14 @@ import {
   Truck,
   User,
 } from 'lucide-react';
-import { TransportData, asTransportType, transportDisplayName, transportDriverName } from '../../../Store/transportStore';
+import {
+  TransportData,
+  asTransportType,
+  transportDisplayName,
+  transportDriverName,
+  transportTypeLabel,
+  useTransportTypes,
+} from '../../../Store/transportStore';
 import { useResolvedImageSrc } from '../../../utils/fileUpload';
 import { useWorkStore } from '../../Works/workStore';
 import { MY_WORK_STATUSES, normalizeWorkStatus } from '../../Works/statusFlow';
@@ -109,11 +116,13 @@ function VehicleCard({
   status: FleetStatus;
   onClick: () => void;
 }) {
-  const { t } = useTranslation('fleet');
+  const { t, i18n } = useTranslation('fleet');
+  const types = useTransportTypes();
   const type = asTransportType(vehicle.transport_type);
+  const fromDict = type?.id ? types.find((item) => item.id === type.id) : undefined;
   const title = transportDisplayName(vehicle) || t('untitled');
   const plate = vehicle.license_plate || vehicle.number || '';
-  const body = type?.name || '—';
+  const body = transportTypeLabel(fromDict || type, i18n.language) || '—';
   const tons = vehicle.load_capacity ?? vehicle.capacity;
   const volume = vehicle.volume;
   const year = vehicle.manufacture_year || vehicle.year;

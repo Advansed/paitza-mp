@@ -103,6 +103,65 @@
   color: #fff;
 }
 
+.balanceList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.balanceRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.balanceCode {
+  font-size: 13px;
+  font-weight: 650;
+  opacity: 0.85;
+  min-width: 2.5em;
+}
+
+.balanceAmt {
+  font-variant-numeric: tabular-nums;
+}
+
+.currencyPick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.currencyChip {
+  border: 1px solid var(--gvr-border);
+  background: var(--gvr-surface);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.currencyChipActive {
+  border-color: var(--gvr-primary, #2b5adc);
+  background: var(--gvr-primary-soft, #e8eefc);
+  color: var(--gvr-primary, #2b5adc);
+}
+
+.currencyChip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .statSub {
   margin-top: 8px;
   font-size: 13px;
@@ -173,6 +232,28 @@
 
 .dealsDialog {
   max-width: 560px;
+}
+
+.payFrameDialog {
+  max-width: 480px;
+  height: min(760px, calc(100vh - 40px));
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 12px;
+  overflow: hidden;
+}
+
+.payFrameDialog .modalHead {
+  margin-bottom: 10px;
+}
+
+.payFrame {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #fff;
 }
 
 .dealList {

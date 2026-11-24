@@ -13,10 +13,8 @@ import { useWorkNavigation } from './hooks/useNavigation';
 import { isLocallyOffered, workActions, workGetters, useWorkStore } from './workStore';
 import { SaveData, WorkPage1 } from './components/WorkPage1';
 import { useSocket } from '../../Store/useSocket';
-import { offerTaxAmount, useLoginStore, useToken } from '../../Store/loginStore';
-import { useAccountStore } from '../../Store/accountStore';
+import { useToken } from '../../Store/loginStore';
 import { useToast } from '../Toast';
-import { formatters } from '../../utils/utils';
 import { useChats } from '../../Store/useChats';
 import { transportGetters } from '../../Store/transportStore';
 import { IonLoading } from '@ionic/react';
@@ -123,38 +121,6 @@ export const Works: React.FC<{ mode?: WorksListMode }> = ({ mode = 'all' }) => {
         navigateTo({ type: 'view', work });
     };
 
-    const loadBalance = () => new Promise<number | null>((resolve) => {
-        const current = useAccountStore.getState().accountData;
-        if (!socket || !token) {
-            resolve(current?.balance ?? null);
-            return;
-        }
-
-        let done = false;
-        let timer = 0;
-        const finish = (value: number | null) => {
-            if (done) return;
-            done = true;
-            window.clearTimeout(timer);
-            socket.off('get_balance', onBalance);
-            resolve(value);
-        };
-        const onBalance = (response: { success?: boolean; data?: { balance?: number } }) => {
-            const fromResponse = Number(response?.data?.balance);
-            if (response?.success && Number.isFinite(fromResponse)) {
-                finish(fromResponse);
-                return;
-            }
-            finish(useAccountStore.getState().accountData?.balance ?? null);
-        };
-        timer = window.setTimeout(() => {
-            finish(useAccountStore.getState().accountData?.balance ?? null);
-        }, 8000);
-
-        socket.once('get_balance', onBalance);
-        socket.emit('get_balance', { token });
-    });
-
     const handleOfferClick                                   = async (work: WorkInfo): Promise<boolean> => {
         // Формируем предложение из данных работы
         // Транспорт берется из work.transport, который был выбран в OfferCard
@@ -169,17 +135,7 @@ export const Works: React.FC<{ mode?: WorksListMode }> = ({ mode = 'all' }) => {
             status: 11 // WorkStatus.OFFERED
         };
 
-        const tax = useLoginStore.getState().tax;
-        const required = offerTaxAmount(offerData.price, tax);
-        if (required > 0) {
-            const balance = await loadBalance();
-            if (balance == null || balance < required) {
-                toast.error(
-                    `Для отправки предложения на счёте должно быть ${formatters.currency(required)} (${tax}% от цены). Сейчас ${formatters.currency(balance ?? 0)}.`
-                );
-                return false;
-            }
-        }
+        // Комиссия удерживается из выплаты в валюте заказа — баланс заранее не требуем.
 
         // Отправляем предложение
         const res = await setOffer(offerData, { guid: work.guid, cargo: work.cargo });
@@ -190,7 +146,7 @@ export const Works: React.FC<{ mode?: WorksListMode }> = ({ mode = 'all' }) => {
                 token: token,
                 recipient: offerData.recipient,
                 cargo: offerData.guid || work.guid,
-                message: "Сделал предложение: Сумма - " + offerData.price.toFixed() + " рублей",
+                message: "Сделал предложение: Сумма - " + offerData.price.toFixed() + " " + (work.cargo_currency || work.currency || "RUB"),
                 image: "",
             });
 

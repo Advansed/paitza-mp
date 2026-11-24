@@ -93,7 +93,7 @@ export const WorkOffer: React.FC<WorkOfferProps> = ({ work, onBack, onOffer }) =
                 </div>
 
                 <div className="field">
-                    <div className="label">Ваша цена (₽)</div>
+                    <div className="label">Ваша цена</div>
                     <div className="offer-input-wrapper">
                         <input
                             type="number"

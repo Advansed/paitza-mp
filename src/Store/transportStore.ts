@@ -4,12 +4,44 @@ import { devtools } from 'zustand/middleware'
 
 export interface TransportType {
   id: string
+  /** Русский канон (и fallback) */
   name: string
+  ru?: string
+  en?: string
+  zh?: string
   description?: string
   formula?: number
   min_tarif?: number
   max_tarif?: number
+  /** Городской множитель 2…4 при distanceKm ≤ 50 */
+  urban_coef?: number
 }
+
+export type TransportTypeLocale = 'ru' | 'en' | 'zh'
+
+/** `i18n.language` → ключ поля в справочнике типов */
+export function transportTypeLocale(lang?: string | null): TransportTypeLocale {
+  const code = String(lang || '').toLowerCase()
+  if (code.startsWith('zh')) return 'zh'
+  if (code.startsWith('en')) return 'en'
+  return 'ru'
+}
+
+/** Подпись типа кузова по текущей локали */
+export function transportTypeLabel(
+  type: Pick<TransportType, 'name' | 'ru' | 'en' | 'zh'> | null | undefined,
+  lang?: string | null
+): string {
+  if (!type) return ''
+  const locale = transportTypeLocale(lang)
+  const byLocale = type[locale]
+  if (byLocale != null && String(byLocale).trim()) return String(byLocale).trim()
+  if (type.ru != null && String(type.ru).trim()) return String(type.ru).trim()
+  return String(type.name || '').trim()
+}
+
+/** Совпадает с paitza-bun URBAN_MAX_KM */
+export const URBAN_MAX_KM = 50
 
 export type TransportTypeField = TransportType | TransportType[] | string | number | null | undefined
 
@@ -83,6 +115,16 @@ function optionalNumber(rec: Record<string, unknown>, keys: string[]): number | 
   return undefined
 }
 
+function optionalLocaleString(rec: Record<string, unknown>, keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = rec[key]
+    if (value == null || value === '') continue
+    const text = String(value).trim()
+    if (text) return text
+  }
+  return undefined
+}
+
 export function asTransportType(value: unknown): TransportType | undefined {
   const parsed = parseMaybeJson(value)
   const item = Array.isArray(parsed) ? parsed[0] : parsed
@@ -93,22 +135,40 @@ export function asTransportType(value: unknown): TransportType | undefined {
   if (typeof item !== 'object') return undefined
   const rec = item as Record<string, unknown>
   const id = rec.id ?? rec.guid ?? rec._id
-  const name = rec.name ?? rec.title ?? rec.label
-  if (id == null && (name == null || name === '')) return undefined
+  const ru = optionalLocaleString(rec, ['ru', 'name_ru', 'nameRu'])
+  const en = optionalLocaleString(rec, ['en', 'name_en', 'nameEn'])
+  const zh = optionalLocaleString(rec, ['zh', 'name_zh', 'nameZh'])
+  const name =
+    optionalLocaleString(rec, ['name', 'title', 'label']) ||
+    ru ||
+    en ||
+    zh
+  if (id == null && !name) return undefined
   return {
     id: id != null ? String(id) : '',
-    name: name != null && name !== '' ? String(name) : String(id ?? ''),
+    name: name || String(id ?? ''),
+    ru: ru || (name && !en && !zh ? name : undefined),
+    en,
+    zh,
     description: rec.description != null && rec.description !== '' ? String(rec.description) : undefined,
     formula: optionalNumber(rec, ['formula']),
     min_tarif: optionalNumber(rec, ['min_tarif', 'minTarif', 'min_tariff']),
     max_tarif: optionalNumber(rec, ['max_tarif', 'maxTarif', 'max_tariff']),
+    urban_coef: optionalNumber(rec, ['urban_coef', 'urbanCoef']),
   }
+}
+
+function clampUrbanCoef(value: number | undefined): number {
+  if (value == null || !Number.isFinite(value)) return 3
+  if (value < 2) return 2
+  if (value > 4) return 4
+  return value
 }
 
 export function haulPriceRange(
   weight: number | null | undefined,
   km: number | null | undefined,
-  type: Pick<TransportType, 'formula' | 'min_tarif' | 'max_tarif'> | undefined
+  type: Pick<TransportType, 'formula' | 'min_tarif' | 'max_tarif' | 'urban_coef'> | undefined
 ): { min: number; max: number } | null {
   if (!type) return null
   const formula = Number(type.formula)
@@ -116,15 +176,25 @@ export function haulPriceRange(
   const maxTarif = Number(type.max_tarif)
   if (!Number.isFinite(km) || (km as number) <= 0) return null
   if (!Number.isFinite(minTarif) || !Number.isFinite(maxTarif)) return null
+  let min: number
+  let max: number
   if (formula === 1) {
     const tons = Number(weight)
     if (!Number.isFinite(tons) || tons <= 0) return null
-    return { min: tons * (km as number) * minTarif, max: tons * (km as number) * maxTarif }
+    min = tons * (km as number) * minTarif
+    max = tons * (km as number) * maxTarif
+  } else if (formula === 2) {
+    min = (km as number) * minTarif
+    max = (km as number) * maxTarif
+  } else {
+    return null
   }
-  if (formula === 2) {
-    return { min: (km as number) * minTarif, max: (km as number) * maxTarif }
+  if ((km as number) <= URBAN_MAX_KM) {
+    const coef = clampUrbanCoef(type.urban_coef)
+    min *= coef
+    max *= coef
   }
-  return null
+  return { min, max }
 }
 
 export function formatHaulPriceRange(range: { min: number; max: number }): string {
@@ -202,15 +272,17 @@ export function transportDisplayName(transport?: TransportData | null): string {
 export function transportTypeName(
   value: unknown,
   types: TransportType[] = [],
-  fallback = ''
+  fallback = '',
+  lang?: string | null
 ): string {
   const parsed = asTransportType(value)
-  if (parsed?.name && parsed.name !== parsed.id) return parsed.name
   if (parsed?.id) {
-    const fromDict = types.find((type) => type.id === parsed.id)?.name
-    if (fromDict) return fromDict
-    if (parsed.name) return parsed.name
+    const fromDict = types.find((type) => type.id === parsed.id)
+    if (fromDict) return transportTypeLabel(fromDict, lang)
   }
+  const labeled = transportTypeLabel(parsed, lang)
+  if (labeled && labeled !== parsed?.id) return labeled
+  if (parsed?.name && parsed.name !== parsed.id) return parsed.name
   return fallback
 }
 

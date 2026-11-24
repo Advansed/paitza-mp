@@ -2,6 +2,7 @@ import React from 'react';
 import { IonButton, IonIcon } from '@ionic/react';
 import { chatboxEllipsesOutline, hourglassOutline } from 'ionicons/icons';
 import { DriverInfo } from '../../../../Store/cargoStore';
+import { moneySign } from '../../../../utils/utils';
 import offerStyles from './OfferCard.module.css';
 
 interface LoadingStartedCardProps {
@@ -17,7 +18,7 @@ export const LoadingStartedCard: React.FC<LoadingStartedCardProps> = ({
     isLoading,
 }) => {
     const formatPrice = (price: number): string => {
-        return price.toLocaleString('ru-RU').replace(/,/g, ' ');
+        return `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(info.currency)}`;
     };
 
     return (
@@ -37,9 +38,9 @@ export const LoadingStartedCard: React.FC<LoadingStartedCardProps> = ({
             <div className={offerStyles.detailsCard}>
                 <div className={offerStyles.infoRow}>
                     <div className={offerStyles.infoField}>
-                        <label className={offerStyles.label}>Цена (₽)</label>
+                        <label className={offerStyles.label}>Цена</label>
                         <div className={offerStyles.value}>
-                            {formatPrice(info.price)} (₽)
+                            {formatPrice(info.price)}
                         </div>
                     </div>
                     <div className={offerStyles.infoField}>

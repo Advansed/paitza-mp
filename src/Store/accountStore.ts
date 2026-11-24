@@ -33,11 +33,17 @@ export type TransactionStatus = 'completed' | 'pending' | 'failed'
 // ТИПЫ
 // ============================================
 
+export interface CurrencyBalance {
+  currency: string
+  balance: number
+}
+
 export interface Transaction {
   id: string
   date: string
   type: 'income' | 'expense' | 'new' | 'inv'
   amount: number
+  currency?: string
   title: string
   subtitle?: string
 }
@@ -53,6 +59,8 @@ export interface PaymentData {
 export interface AccountData {
   balance: number
   currency: string
+  /** Остатки по всем валютам — источник истины */
+  balances: CurrencyBalance[]
   deposit?: number
   /** Резерв под заявки — advance1 из p_get_balance */
   advanceReserve?: number
@@ -67,6 +75,30 @@ export interface AccountData {
   /** Получено авансов — hold_advance из p_get_balance (исполнитель) */
   holdAdvance?: number
   lastUpdated?: string
+}
+
+/** Остаток в конкретной валюте */
+export function balanceOf(data: AccountData | null | undefined, currency?: string | null): number {
+  if (!data) return 0
+  const code = (currency || data.currency || 'RUB').trim().toUpperCase() || 'RUB'
+  const row = data.balances?.find((b) => (b.currency || '').toUpperCase() === code)
+  if (row) return row.balance
+  if ((data.currency || '').toUpperCase() === code) return data.balance || 0
+  return 0
+}
+
+function parseBalances(data: any): CurrencyBalance[] {
+  const raw = data?.balances
+  if (Array.isArray(raw) && raw.length) {
+    return raw
+      .map((row: any) => ({
+        currency: String(row?.currency || 'RUB').trim().toUpperCase() || 'RUB',
+        balance: num(row?.balance),
+      }))
+      .filter((row: CurrencyBalance) => row.currency)
+  }
+  const currency = String(data?.currency || 'RUB').trim().toUpperCase() || 'RUB'
+  return [{ currency, balance: num(data?.balance) }]
 }
 
 function num(value: unknown): number {
@@ -127,6 +159,7 @@ type AccountStore = AccountState & AccountActions
 export const EMPTY_ACCOUNT: AccountData = {
   balance:          0,
   currency:         'RUB',
+  balances:         [{ currency: 'RUB', balance: 0 }],
   deposit:          0,
   advanceReserve:   0,
   advanceInWork:    0,
@@ -210,7 +243,9 @@ export const accountGetters = {
   isSaving: (): boolean => useAccountStore.getState().isSaving,
   isLoadingTransactions: (): boolean => useAccountStore.getState().isLoadingTransactions,
   getError: (): string | null => useAccountStore.getState().error,
-  getBalance: (): number => useAccountStore.getState().accountData?.balance || 0
+  getBalance: (): number => useAccountStore.getState().accountData?.balance || 0,
+  balanceOf: (currency?: string | null): number =>
+    balanceOf(useAccountStore.getState().accountData, currency),
 }
 
 // ============================================
@@ -241,9 +276,15 @@ export const accountSocketHandlers = {
     
     if (response.success) {
       const extras = parseBalanceExtras(response.data)
+      const balances = parseBalances(response.data)
+      const currency = String(response.data?.currency || balances[0]?.currency || 'RUB')
+        .trim()
+        .toUpperCase() || 'RUB'
+      const home = balances.find((b) => b.currency === currency) ?? balances[0]
       const accountData: AccountData = {
-        balance: response.data?.balance || 0,
-        currency: response.data?.currency || 'RUB',
+        balance: home?.balance ?? num(response.data?.balance),
+        currency,
+        balances,
         deposit: extras.deposit,
         advanceReserve: extras.advanceReserve,
         advanceInWork: extras.advanceInWork,

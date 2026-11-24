@@ -54,6 +54,32 @@ export const useCompany = () => {
     
   }, [token, isConnected, once, emit, toast])
 
+  const setPlan = useCallback((plan: 'basic' | 'pro') => {
+    if (!isConnected) {
+      toast.error('Нет подключения')
+      return
+    }
+    if (!token) {
+      toast.error('Нет токена авторизации')
+      return
+    }
+    once('set_plan', (response: { success?: boolean; message?: string; plan?: 'basic' | 'pro'; pro_unlocked?: boolean }) => {
+      if (response?.success) {
+        companyActions.updateData({
+          plan: response.plan === 'pro' ? 'pro' : 'basic',
+          pro_unlocked: response.pro_unlocked !== false,
+        })
+        emit('get_cargos', { token })
+        emit('get_works', { token })
+        emit('get_chats', { token })
+        toast.success(response.plan === 'pro' ? 'Включён тариф Pro' : 'Включён тариф Basic')
+      } else {
+        toast.error(response?.message || 'Не удалось сменить тариф')
+      }
+    })
+    emit('set_plan', { token, plan })
+  }, [token, isConnected, once, emit, toast])
+
   const saveData = useCallback((data: CompanyData) => {
     if (!isConnected) {
       toast.error('Нет подключения')
@@ -97,6 +123,7 @@ export const useCompany = () => {
     isLoading,
     isSaving,
     loadData,
-    saveData
+    saveData,
+    setPlan,
   }
 }

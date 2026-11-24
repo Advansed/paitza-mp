@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { IonButton, IonIcon } from '@ionic/react';
-import { 
-  menuOutline, 
-  refreshOutline, 
-  warningOutline, 
-  personOutline, 
+import {
+  menuOutline,
+  refreshOutline,
+  warningOutline,
+  personOutline,
   attachOutline,
   checkmarkCircleOutline,
-  downloadOutline
 } from 'ionicons/icons';
 import styles from './Agreement.module.css';
 import { SignField } from '../DataEditor/fields/SignField';
-import { i } from 'vite/dist/node/types.d-aGj9QkWt';
+import { moneySign } from '../../utils/utils';
+import { intlLocale } from '../../i18n';
 
-// Интерфейс для данных из get_contract
 export interface ContractData {
   document_info?: {
     order_number?: string;
@@ -38,6 +38,7 @@ export interface ContractData {
   };
   payment?: {
     amount?: string;
+    currency?: string;
   };
   contract_date?: string;
   specification?: {
@@ -55,7 +56,6 @@ interface AgreementProps {
   onRefresh?: () => void;
   onCancel?: () => void;
   onSign?: (signature: string) => void;
- // onDownload?: () => void;
 }
 
 export const Agreement: React.FC<AgreementProps> = ({
@@ -64,30 +64,31 @@ export const Agreement: React.FC<AgreementProps> = ({
   onRefresh,
   onCancel,
   onSign,
-  //onDownload,
 }) => {
+  const { t } = useTranslation('works');
   const [customerSignature, setCustomerSignature] = useState<string>('');
 
   if (!data) {
     return (
       <div className={styles.agreementContainer}>
         <div style={{ padding: '20px', textAlign: 'center' }}>
-          Загрузка данных договора...
+          {t('contractLoading')}
         </div>
       </div>
     );
   }
 
   const contractData = data;
-  
+
+  const payCurrency = contractData.payment?.currency || 'RUB';
   const formatPrice = (price: string): string => {
-    if (!price) return '0 ₽';
+    const sign = moneySign(payCurrency);
+    if (!price) return `0 ${sign}`;
     const numPrice = parseFloat(price);
-    if (isNaN(numPrice)) return price + ' ₽';
-    return numPrice.toLocaleString('ru-RU').replace(/,/g, ' ') + ' ₽';
+    if (isNaN(numPrice)) return `${price} ${sign}`;
+    return `${numPrice.toLocaleString(intlLocale()).replace(/,/g, ' ')} ${sign}`;
   };
 
-  // Парсим детали отправителя (sender_details)
   const parseSenderDetails = () => {
     try {
       const details = contractData.specification?.sender_details;
@@ -95,18 +96,17 @@ export const Agreement: React.FC<AgreementProps> = ({
         return JSON.parse(details);
       }
     } catch {
-      // Игнорируем ошибки парсинга
+      /* ignore */
     }
     return {
       company_name: contractData.customer?.name || '',
       inn: '',
       ogrn: '',
       representative: contractData.customer?.representative || '',
-      basis: contractData.customer?.basis || ''
+      basis: contractData.customer?.basis || '',
     };
   };
 
-  // Парсим детали перевозчика (carrier_details)
   const parseCarrierDetails = () => {
     try {
       const details = contractData.specification?.carrier_details;
@@ -114,18 +114,17 @@ export const Agreement: React.FC<AgreementProps> = ({
         return JSON.parse(details);
       }
     } catch {
-      // Игнорируем ошибки парсинга
+      /* ignore */
     }
     return {
       company_name: contractData.carrier?.name || '',
       inn: '',
       ogrn: '',
       representative: contractData.carrier?.representative || '',
-      basis: contractData.carrier?.basis || ''
+      basis: contractData.carrier?.basis || '',
     };
   };
 
-  // Парсим детали получателя
   const parseRecipientDetails = () => {
     try {
       const details = contractData.specification?.recipient_details;
@@ -133,14 +132,14 @@ export const Agreement: React.FC<AgreementProps> = ({
         return JSON.parse(details);
       }
     } catch {
-      // Игнорируем ошибки парсинга
+      /* ignore */
     }
     return {
-      company_name: 'Получатель',
+      company_name: t('contractFallbackRecipient'),
       inn: '',
       ogrn: '',
-      representative: 'Представитель',
-      basis: 'Устава'
+      representative: t('contractFallbackRep'),
+      basis: t('contractFallbackCharter'),
     };
   };
 
@@ -148,99 +147,85 @@ export const Agreement: React.FC<AgreementProps> = ({
   const carrierDetails = parseCarrierDetails();
   const recipientDetails = parseRecipientDetails();
 
-  // Парсим количество груза
   const parseCargoQuantity = () => {
     const quantity = contractData.specification?.cargo_quantity || '';
-    // Пример: "40.000 кг, 0.000 м?"
     const parts = quantity.split(', ');
-    const weightPart = parts[0] || '0 кг';
-    const volumePart = parts[1] || '0 м³';
-    
     return {
-      weight: weightPart,
-      volume: volumePart
+      weight: parts[0] || '0 кг',
+      volume: parts[1] || '0 м³',
     };
   };
 
   const cargoQuantity = parseCargoQuantity();
 
-  // Расчет платежей (примерно 30% предоплата)
   const calculatePayments = () => {
     const total = parseFloat(contractData.payment?.amount || '0');
     const prepaymentPercent = 30;
     const prepayment = total * (prepaymentPercent / 100);
     const remaining = total - prepayment;
-    
-    return {
-      total,
-      prepayment,
-      prepaymentPercent,
-      remaining
-    };
+    return { total, prepayment, prepaymentPercent, remaining };
   };
 
   const payments = calculatePayments();
 
-  // Форматирование даты договора
   const formatContractDate = () => {
-    return contractData.contract_date || ''; // Уже в формате "17 февраля 2026"
+    const raw = contractData.contract_date || '';
+    if (!raw) return '';
+    const parsed = new Date(raw);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toLocaleDateString(intlLocale(), {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    }
+    return raw;
   };
 
   const handleSign = () => {
-        if( onSign ) onSign( customerSignature )
-  }
+    if (onSign) onSign(customerSignature);
+  };
+
+  const orderNumber = contractData.document_info?.order_number || '';
+  const contractDateLabel = formatContractDate();
 
   return (
     <div className={styles.agreementContainer}>
-      {/* Header */}
       <div className={styles.header}>
-        <button 
-          className={styles.menuButton}
-          onClick={onMenu}
-        >
+        <button className={styles.menuButton} onClick={onMenu}>
           <IonIcon icon={menuOutline} />
         </button>
-        
+
         <div className={styles.headerContent}>
-          <h2 className={styles.headerTitle}>Оформление договора</h2>
+          <h2 className={styles.headerTitle}>{t('contractTitle')}</h2>
           <div className={styles.headerInfo}>
-            <span>Заказ №: {contractData.document_info?.order_number?.slice(0, 8) || contractData.document_info?.order_number || ''}</span>
-            <span>Согласованная цена: {formatPrice(contractData.payment?.amount || '0')}</span>
+            <span>{t('contractOrderNo', { number: orderNumber.slice(0, 8) || orderNumber })}</span>
+            <span>{t('contractAgreedPrice', { price: formatPrice(contractData.payment?.amount || '0') })}</span>
           </div>
         </div>
 
-        <button 
-          className={styles.refreshButton}
-          onClick={onRefresh}
-        >
+        <button className={styles.refreshButton} onClick={onRefresh}>
           <IonIcon icon={refreshOutline} />
         </button>
       </div>
 
-      {/* Warning Section */}
       <div className={styles.warningBox}>
         <IonIcon icon={warningOutline} className={styles.warningIcon} />
         <div className={styles.warningContent}>
-          <div className={styles.warningTitle}>Внимание! Ознакомьтесь с полным договором</div>
-          <div className={styles.warningText}>
-            Перед подписанием обязательно скачайте и внимательно прочитайте полный текст договора. 
-            Подписывая договор, вы принимаете все условия и обязательства.
-          </div>
+          <div className={styles.warningTitle}>{t('contractWarningTitle')}</div>
+          <div className={styles.warningText}>{t('contractWarningText')}</div>
         </div>
       </div>
 
-      {/* Contract ID and Date */}
       <div className={styles.contractInfo}>
-        Договор № {contractData.document_info?.order_number || ''} от {formatContractDate()}
+        {t('contractNumberFrom', { number: orderNumber, date: contractDateLabel })}
       </div>
 
-      {/* Parties Section */}
       <div className={styles.partiesSection}>
-        {/* Исполнитель (Перевозчик) */}
         <div className={styles.partyBox}>
           <div className={`${styles.partyHeader} ${styles.performerHeader}`}>
             <IonIcon icon={personOutline} />
-            <span>ИСПОЛНИТЕЛЬ (Перевозчик)</span>
+            <span>{t('contractPartyPerformer')}</span>
           </div>
           <div className={styles.partyContent}>
             <div className={styles.partyField}>
@@ -250,32 +235,35 @@ export const Agreement: React.FC<AgreementProps> = ({
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                в лице {carrierDetails.representative || contractData.carrier?.representative || ''}
+                {t('contractInPerson', {
+                  name: carrierDetails.representative || contractData.carrier?.representative || '',
+                })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                ИНН: {carrierDetails.inn || '__________'}
+                {t('contractInn', { value: carrierDetails.inn || '__________' })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                ОГРН: {carrierDetails.ogrn || '__________'}
+                {t('contractOgrn', { value: carrierDetails.ogrn || '__________' })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                действующий на основании: {carrierDetails.basis || contractData.carrier?.basis || ''}
+                {t('contractOnBasis', {
+                  value: carrierDetails.basis || contractData.carrier?.basis || '',
+                })}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Заказчик (Отправитель) */}
         <div className={styles.partyBox}>
           <div className={`${styles.partyHeader} ${styles.customerHeader}`}>
             <IonIcon icon={personOutline} />
-            <span>ЗАКАЗЧИК (Отправитель)</span>
+            <span>{t('contractPartyCustomer')}</span>
           </div>
           <div className={styles.partyContent}>
             <div className={styles.partyField}>
@@ -285,107 +273,107 @@ export const Agreement: React.FC<AgreementProps> = ({
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                в лице {senderDetails.representative || contractData.customer?.representative || ''}
+                {t('contractInPerson', {
+                  name: senderDetails.representative || contractData.customer?.representative || '',
+                })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                ИНН: {senderDetails.inn || '__________'}
+                {t('contractInn', { value: senderDetails.inn || '__________' })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                ОГРН: {senderDetails.ogrn || '__________'}
+                {t('contractOgrn', { value: senderDetails.ogrn || '__________' })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                действующий на основании: {senderDetails.basis || contractData.customer?.basis || ''}
+                {t('contractOnBasis', {
+                  value: senderDetails.basis || contractData.customer?.basis || '',
+                })}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Получатель (если нужен третий блок) */}
         <div className={styles.partyBox}>
           <div className={`${styles.partyHeader} ${styles.customerHeader}`}>
             <IonIcon icon={personOutline} />
-            <span>ГРУЗОПОЛУЧАТЕЛЬ</span>
+            <span>{t('contractPartyRecipient')}</span>
           </div>
           <div className={styles.partyContent}>
             <div className={styles.partyField}>
+              <span className={styles.placeholder}>{recipientDetails.company_name}</span>
+            </div>
+            <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                {recipientDetails.company_name}
+                {t('contractInPerson', { name: recipientDetails.representative })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                в лице {recipientDetails.representative}
+                {t('contractInn', { value: recipientDetails.inn || '__________' })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                ИНН: {recipientDetails.inn || '__________'}
+                {t('contractOgrn', { value: recipientDetails.ogrn || '__________' })}
               </span>
             </div>
             <div className={styles.partyField}>
               <span className={styles.placeholder}>
-                ОГРН: {recipientDetails.ogrn || '__________'}
-              </span>
-            </div>
-            <div className={styles.partyField}>
-              <span className={styles.placeholder}>
-                действующий на основании: {recipientDetails.basis}
+                {t('contractOnBasis', { value: recipientDetails.basis })}
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Section 1: Subject of Agreement */}
       <div className={styles.section}>
         <div className={`${styles.sectionHeader} ${styles.sectionGreen}`}>
           <IonIcon icon={attachOutline} />
-          <span>1. ПРЕДМЕТ ДОГОВОРА</span>
+          <span>{t('contractSectionSubject')}</span>
         </div>
         <div className={styles.sectionGrid}>
           <div className={styles.infoBox}>
-            <div className={styles.infoLabel}>Наименование груза</div>
+            <div className={styles.infoLabel}>{t('contractCargoName')}</div>
             <div className={styles.infoValue}>
-              {contractData.specification?.cargo_name || 'Не указано'}
+              {contractData.specification?.cargo_name || t('contractNotSpecified')}
             </div>
           </div>
           <div className={styles.infoBox}>
-            <div className={styles.infoLabel}>Характеристики груза</div>
+            <div className={styles.infoLabel}>{t('contractCargoSpecs')}</div>
             <div className={styles.infoValue}>
-              Вес: {cargoQuantity.weight}<br />
-              Объем: {cargoQuantity.volume}
+              {t('contractWeight', { value: cargoQuantity.weight })}
+              <br />
+              {t('contractVolume', { value: cargoQuantity.volume })}
             </div>
           </div>
           <div className={styles.infoBox}>
-            <div className={styles.infoLabel}>Маршрут</div>
+            <div className={styles.infoLabel}>{t('contractRoute')}</div>
             <div className={styles.infoValue}>
-              {contractData.document_info?.city || 'Не указан'} (уточняется)
+              {contractData.document_info?.city
+                ? t('contractRouteTbd', { city: contractData.document_info.city })
+                : t('contractRouteNotSpecified')}
             </div>
           </div>
           <div className={styles.infoBox}>
-            <div className={styles.infoLabel}>Дата договора</div>
-            <div className={styles.infoValue}>
-              {formatContractDate()}
-            </div>
+            <div className={styles.infoLabel}>{t('contractDateLabel')}</div>
+            <div className={styles.infoValue}>{contractDateLabel}</div>
           </div>
         </div>
       </div>
 
-      {/* Section 2: Cost and Payment Procedure */}
       <div className={styles.section}>
         <div className={`${styles.sectionHeader} ${styles.sectionOrange}`}>
           <IonIcon icon={attachOutline} />
-          <span>2. СТОИМОСТЬ И ПОРЯДОК ОПЛАТЫ</span>
+          <span>{t('contractSectionPayment')}</span>
         </div>
         <div className={styles.paymentSection}>
           <div className={styles.totalCostBox}>
-            <div className={styles.totalCostLabel}>Общая стоимость услуг</div>
+            <div className={styles.totalCostLabel}>{t('contractTotalCost')}</div>
             <div className={styles.totalCostValue}>
               {formatPrice(contractData.payment?.amount || '0')}
             </div>
@@ -393,71 +381,64 @@ export const Agreement: React.FC<AgreementProps> = ({
           <div className={styles.paymentGrid}>
             <div className={styles.paymentBox}>
               <div className={styles.paymentLabel}>
-                Предоплата ({payments.prepaymentPercent}%)
+                {t('contractPrepayment', { percent: payments.prepaymentPercent })}
               </div>
               <div className={styles.paymentValue}>
                 {formatPrice(payments.prepayment.toString())}
               </div>
-              <div className={styles.paymentNote}>До начала перевозки</div>
+              <div className={styles.paymentNote}>{t('contractPrepaymentNote')}</div>
             </div>
             <div className={styles.paymentBox}>
-              <div className={styles.paymentLabel}>Остаток</div>
+              <div className={styles.paymentLabel}>{t('contractRemaining')}</div>
               <div className={styles.paymentValue}>
                 {formatPrice(payments.remaining.toString())}
               </div>
-              <div className={styles.paymentNote}>После доставки груза</div>
+              <div className={styles.paymentNote}>{t('contractRemainingNote')}</div>
             </div>
           </div>
           <div className={styles.securePaymentBox}>
             <IonIcon icon={checkmarkCircleOutline} className={styles.checkIcon} />
             <div className={styles.securePaymentContent}>
-              <div className={styles.securePaymentTitle}>
-                Безопасная оплата через платформу
-              </div>
-              <div className={styles.securePaymentText}>
-                Все платежи проходят через специальный счет приложения. 
-                Комиссия платформы 5% обеспечивает защиту обеих сторон и гарантию выполнения сделки.
-              </div>
+              <div className={styles.securePaymentTitle}>{t('contractSecureTitle')}</div>
+              <div className={styles.securePaymentText}>{t('contractSecureText')}</div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Section 3: Rights and Obligations */}
       <div className={styles.section}>
         <div className={`${styles.sectionHeader} ${styles.sectionBlue}`}>
           <IonIcon icon={attachOutline} />
-          <span>3. ПРАВА И ОБЯЗАННОСТИ СТОРОН</span>
+          <span>{t('contractSectionObligations')}</span>
         </div>
         <div className={styles.obligationsContent}>
           <div className={styles.obligationsSection}>
-            <div className={styles.obligationsTitle}>Исполнитель обязан:</div>
+            <div className={styles.obligationsTitle}>{t('contractPerformerMust')}</div>
             <ul className={styles.obligationsList}>
-              <li>Обеспечить сохранность груза</li>
-              <li>Предоставить необходимые документы</li>
-              <li>Соблюдать сроки доставки</li>
+              <li>{t('contractPerformerDuty1')}</li>
+              <li>{t('contractPerformerDuty2')}</li>
+              <li>{t('contractPerformerDuty3')}</li>
             </ul>
           </div>
           <div className={styles.obligationsSection}>
-            <div className={styles.obligationsTitle}>Заказчик обязан:</div>
+            <div className={styles.obligationsTitle}>{t('contractCustomerMust')}</div>
             <ul className={styles.obligationsList}>
-              <li>Обеспечить доступ для погрузки/разгрузки</li>
-              <li>Предоставить необходимые документы</li>
-              <li>Оплатить услуги в установленные сроки</li>
+              <li>{t('contractCustomerDuty1')}</li>
+              <li>{t('contractCustomerDuty2')}</li>
+              <li>{t('contractCustomerDuty3')}</li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* Signature Section */}
       <div className={styles.signatureSection}>
         <div className={styles.signatureBox}>
           <div className={`${styles.signatureHeader} ${styles.performerHeader}`}>
-            Исполнитель
+            {t('contractSignerPerformer')}
           </div>
           <div className={styles.signaturePlace}>
             <IonIcon icon={attachOutline} />
-            <div className={styles.signatureLabel}>Место для подписи</div>
+            <div className={styles.signatureLabel}>{t('contractSignPlace')}</div>
             <div className={styles.signatureName}>
               {carrierDetails.representative || contractData.carrier?.representative || ''}
             </div>
@@ -466,22 +447,20 @@ export const Agreement: React.FC<AgreementProps> = ({
 
         <div className={styles.signatureBox}>
           <div className={`${styles.signatureHeader} ${styles.customerHeader}`}>
-            Заказчик
+            {t('contractSignerCustomer')}
           </div>
           <div className={styles.signaturePlace}>
             <SignField
-              label="Подпись заказчика"
+              label={t('contractSignCustomer')}
               value={customerSignature}
               onChange={(value) => {
-                // SignField возвращает массив [{dataUrl: string, format: "png"}] или пустую строку
                 if (Array.isArray(value) && value.length > 0 && value[0]?.dataUrl) {
-                  const signatureDataUrl = value[0].dataUrl;
-                  setCustomerSignature(signatureDataUrl);
+                  setCustomerSignature(value[0].dataUrl);
                 } else if (value === '' || value === null || value === undefined) {
                   setCustomerSignature('');
                 }
               }}
-              placeholder="Подпись и печать"
+              placeholder={t('contractSignPlaceholder')}
             />
             <div className={styles.signatureName}>
               {senderDetails.representative || contractData.customer?.representative || ''}
@@ -490,44 +469,14 @@ export const Agreement: React.FC<AgreementProps> = ({
         </div>
       </div>
 
-      {/* Bottom Buttons */}
       <div className={styles.buttonsSection}>
-        <IonButton 
-          className={styles.cancelButton}
-          onClick={onCancel}
-          expand="block"
-        >
-          Отменить
+        <IonButton className={styles.cancelButton} onClick={onCancel} expand="block">
+          {t('contractCancel')}
         </IonButton>
-        {/* <IonButton 
-          className={styles.downloadButton}
-          onClick={onDownload}
-          expand="block"
-          fill="outline"
-        >
-          <IonIcon icon={downloadOutline} slot="start" />
-          скачать образец полного договора
-        </IonButton> */}
-        <IonButton 
-          className = { styles.signButton }
-          onClick   = { handleSign }
-          expand    = "block"
-        >
-          Подписать
+        <IonButton className={styles.signButton} onClick={handleSign} expand="block">
+          {t('contractSign')}
         </IonButton>
       </div>
     </div>
   );
 };
-
-// Пример использования с вашими данными:
-// import { Agreement } from './Agreement';
-// 
-// <Agreement
-//   data={responseFromGetContract}
-//   onMenu={() => console.log('Menu clicked')}
-//   onRefresh={() => console.log('Refresh clicked')}
-//   onCancel={() => console.log('Cancel clicked')}
-//   onDownload={() => console.log('Download clicked')}
-//   onSign={() => console.log('Sign clicked')}
-// />

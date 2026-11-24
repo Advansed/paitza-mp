@@ -3,6 +3,8 @@ import { IonButton, IonIcon } from '@ionic/react';
 import { mailOutline, shieldCheckmarkOutline, documentOutline, timeOutline, closeOutline, checkmarkOutline } from 'ionicons/icons';
 import styles from './OfferCard.module.css';
 import { DriverInfo } from '../../../../Store/cargoStore';
+import { moneySign } from '../../../../utils/utils';
+import { useAppPlan } from '../../../../plan';
 
 interface OfferCardProps {
     info: DriverInfo
@@ -21,8 +23,9 @@ export const OfferCard: React.FC<OfferCardProps> = ({
     comment,
     createdAt
 }) => {
+    const basic = useAppPlan() === 'basic';
     const formatPrice = (price: number): string => {
-        return price.toLocaleString('ru-RU').replace(/,/g, ' ');
+        return `${price.toLocaleString('ru-RU').replace(/,/g, ' ')} ${moneySign(info.currency)}`;
     };
 
     return (
@@ -67,9 +70,9 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                 </div>
                 <div className={styles.infoRow}>
                     <div className={styles.infoField}>
-                        <label className={styles.label}> Цена (₽)</label>
+                        <label className={styles.label}> Цена</label>
                         <div className={styles.value}>
-                            {formatPrice(info.price)} (₽)
+                            {formatPrice(info.price)}
                         </div>
                     </div>
                     <div className={styles.infoField}>
@@ -87,7 +90,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                 </div>
             </div>
 
-            {/* Card 3: Secure Payment */}
+            {!basic && (
             <div className={styles.secureCard}>
                 <IonIcon icon={shieldCheckmarkOutline} className={styles.secureIcon} />
                 <h3 className={styles.secureTitle}>Безопасная оплата через платформу</h3>
@@ -95,6 +98,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                     Все платежи проходят через специальный счет приложения. Комиссия платформы 5% обеспечивает защиту обеих сторон и гарантию выполнения сделки.
                 </p>
             </div>
+            )}
 
             {/* Card 4: Comment (optional) */}
             {comment && (
@@ -129,7 +133,7 @@ export const OfferCard: React.FC<OfferCardProps> = ({
                             disabled={isLoading}
                         >
                             <IonIcon icon={checkmarkOutline} slot="start" />
-                            <span>Принять</span>
+                            <span>{basic ? 'Начать рейс' : 'Принять'}</span>
                         </IonButton>
                     )}
                 </div>

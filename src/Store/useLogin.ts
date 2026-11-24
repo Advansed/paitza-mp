@@ -4,7 +4,6 @@ import { useSocket } from './useSocket'
 import { useToast } from '../components/Toast'
 import { AuthResponse, useLoginStore, UserData } from './loginStore'
 import { parseLoginPhone } from '../components/Login/phone'
-import { pushLogout } from '../services/pushNotifications'
 
 // ============================================
 // HOOK
@@ -85,7 +84,6 @@ export function useLogin() {
   }, [isConnected, setLoading, setAuth, setUser, toast, emit, once])
 
   const logout = useCallback(() => {
-    void pushLogout()
     clearAuth()
     toast.success('Выход выполнен')
   }, [clearAuth, toast])

@@ -18,6 +18,7 @@ import {
 import { CargoInfo, CargoStatus, DriverInfo, useCargoStore } from '../../../Store/cargoStore';
 import type { CargoActionResult } from '../hooks/useCargos';
 import { statusUtils, formatters } from '../../../utils/utils';
+import { useAppPlan } from '../../../plan';
 import {
   getCargoActionHint,
   isCargoCompleted,
@@ -93,6 +94,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
   isLoading = false,
 }) => {
   const { t } = useTranslation('cargos');
+  const plan = useAppPlan();
+  const basic = plan === 'basic';
   const cargos = useCargoStore((state) => state.cargos);
   const [actionOpen, setActionOpen] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
@@ -115,8 +118,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
   const canDelete = statusUtils.canDelete(status);
   const invoices = cargoInfo.invoices ?? [];
   const totalInvoices = invoices.length;
-  const actionHint = getCargoActionHint(progressStatus);
-  const publishAlertMessage = 'Опубликовать заказ для поиска водителей?';
+  const actionHint = getCargoActionHint(progressStatus, plan);
+  const publishAlertMessage = t('publishConfirmMessage');
   const completed = isCargoCompleted(progressStatus);
   const problems = isCargoProblems(progressStatus);
   const inExecution = isCargoInExecution(progressStatus);
@@ -153,7 +156,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
     setActionOpen(false);
     const result = await onPublish(cargoInfo.guid);
     if (!result.success) {
-      setPublishError(result.message || 'Не удалось опубликовать заказ');
+      setPublishError(result.message || t('publishFailedFallback'));
     }
   };
 
@@ -210,8 +213,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
           >
             <CloudUpload size={18} strokeWidth={1.75} />
             <span>
-              <span className={styles.actionItemTitle}>Опубликовать груз</span>
-              <span className={styles.actionItemHint}>Открыть заказ для водителей</span>
+              <span className={styles.actionItemTitle}>{t('publishCargo')}</span>
+              <span className={styles.actionItemHint}>{t('publishCargoHint')}</span>
             </span>
           </button>
 
@@ -223,8 +226,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
             >
               <Pencil size={18} strokeWidth={1.75} />
               <span>
-                <span className={styles.actionItemTitle}>Изменить</span>
-                <span className={styles.actionItemHint}>Редактировать параметры заказа</span>
+                <span className={styles.actionItemTitle}>{t('editOrder')}</span>
+                <span className={styles.actionItemHint}>{t('editOrderHint')}</span>
               </span>
             </button>
           )}
@@ -237,8 +240,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
             >
               <Trash2 size={18} strokeWidth={1.75} />
               <span>
-                <span className={styles.actionItemTitle}>Удалить</span>
-                <span className={styles.actionItemHint}>Удалить черновик заказа</span>
+                <span className={styles.actionItemTitle}>{t('deleteOrder')}</span>
+                <span className={styles.actionItemHint}>{t('deleteOrderHint')}</span>
               </span>
             </button>
           )}
@@ -248,8 +251,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
       {status === CargoStatus.WAITING && (
         <div className={styles.waitingBox}>
           <div className={styles.doneNote}>
-            Заказ опубликован. Ожидаем предложения от водителей.
-            {totalInvoices > 0 && ` Уже есть заявок: ${totalInvoices}.`}
+            {t('publishedWaiting')}
+            {totalInvoices > 0 ? ` ${t('publishedWaitingBids', { count: totalInvoices })}` : ''}
           </div>
           <button
             type="button"
@@ -258,8 +261,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
           >
             <XCircle size={18} strokeWidth={1.75} />
             <span>
-              <span className={styles.actionItemTitle}>Снять с публикации</span>
-              <span className={styles.actionItemHint}>Заказ снова станет черновиком</span>
+              <span className={styles.actionItemTitle}>{t('unpublishOrder')}</span>
+              <span className={styles.actionItemHint}>{t('unpublishOrderHint')}</span>
             </span>
           </button>
         </div>
@@ -267,7 +270,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
 
       {problems && (
         <div className={styles.doneNote}>
-          По заявке возникли проблемы. Откройте карточку исполнителя, чтобы разобрать ситуацию.
+          {t('problemsNote')}
         </div>
       )}
 
@@ -282,7 +285,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
   const renderBid = (invoice: DriverInfo, actionable: boolean) => {
     const meta = invoiceStatusMeta(invoice.status, t);
     const StatusIcon = meta.Icon;
-    const truckLine = [invoice.transport, invoice.capacity].filter(Boolean).join(' · ') || 'Транспорт не указан';
+    const truckLine =
+      [invoice.transport, invoice.capacity].filter(Boolean).join(' · ') || t('transportNotSet');
 
     return (
       <article key={invoice.guid} className={styles.bidCard}>
@@ -294,13 +298,13 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
             <div className={styles.bidTop}>
               <div className={styles.bidIdentity}>
                 <div className={styles.bidNameRow}>
-                  <p className={styles.bidName}>{invoice.client || 'Исполнитель'}</p>
+                  <p className={styles.bidName}>{invoice.client || t('carrier')}</p>
                   <ShieldCheck size={14} strokeWidth={2} className={styles.bidVerified} />
                 </div>
                 <p className={styles.bidTruck}>{truckLine}</p>
               </div>
               <div className={styles.bidPriceCol}>
-                <p className={styles.bidPrice}>{formatters.currency(invoice.price)}</p>
+                <p className={styles.bidPrice}>{formatters.currency(invoice.price, cargoInfo.currency || invoice.currency)}</p>
                 <span className={`${styles.bidStatus} ${styles[`bidStatus_${meta.kind}`]}`}>
                   <StatusIcon size={12} strokeWidth={2} />
                   {meta.label}
@@ -326,7 +330,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
                   disabled={isLoading}
                   onClick={() => setAcceptInvoice(invoice)}
                 >
-                  Выбрать исполнителя
+                  {t('selectCarrierBtn')}
                 </button>
                 <button
                   type="button"
@@ -335,7 +339,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
                   onClick={() => onChatInvoice(invoice)}
                 >
                   <MessageSquare size={14} strokeWidth={1.75} />
-                  Написать
+                  {t('messageBtn')}
                 </button>
                 <button
                   type="button"
@@ -344,7 +348,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
                   onClick={() => setRejectInvoice(invoice)}
                 >
                   <XCircle size={14} strokeWidth={1.75} />
-                  Отклонить
+                  {t('rejectBidBtn')}
                 </button>
               </div>
             )}
@@ -395,8 +399,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
         {status === CargoStatus.WAITING && (
           <div className={styles.waitingBox}>
             <div className={styles.doneNote}>
-              Заказ опубликован. Ожидаем предложения от водителей.
-              {totalInvoices > 0 && ` Уже есть заявок: ${totalInvoices}.`}
+              {t('publishedWaiting')}
+              {totalInvoices > 0 ? ` ${t('publishedWaitingBids', { count: totalInvoices })}` : ''}
             </div>
             <button
               type="button"
@@ -405,8 +409,8 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
             >
               <XCircle size={18} strokeWidth={1.75} />
               <span>
-                <span className={styles.actionItemTitle}>Снять с публикации</span>
-                <span className={styles.actionItemHint}>Заказ снова станет черновиком</span>
+                <span className={styles.actionItemTitle}>{t('unpublishOrder')}</span>
+                <span className={styles.actionItemHint}>{t('unpublishOrderHint')}</span>
               </span>
             </button>
           </div>
@@ -442,7 +446,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
               className={styles.actionCta}
               onClick={() => setActionOpen(true)}
             >
-              <span className={styles.actionCtaTitle}>Действие по заказу</span>
+              <span className={styles.actionCtaTitle}>{t('orderAction')}</span>
               <span className={styles.actionCtaHint}>{actionHint}</span>
             </button>
           </div>
@@ -457,14 +461,14 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
         <div className={styles.modalShell}>
           <div className={styles.modalHead}>
             <div>
-              <div className={styles.modalKicker}>Заказ</div>
-              <h2 className={styles.modalTitle}>Действие по заказу</h2>
+              <div className={styles.modalKicker}>{t('orderKicker')}</div>
+              <h2 className={styles.modalTitle}>{t('orderAction')}</h2>
             </div>
             <button
               type="button"
               className={styles.modalClose}
               onClick={() => setActionOpen(false)}
-              aria-label="Закрыть"
+              aria-label={t('close')}
             >
               <X size={20} strokeWidth={2} />
             </button>
@@ -473,6 +477,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
             {showTripActions && selectedInvoice ? (
               <CargoTripAction
                 invoice={selectedInvoice}
+                basic={basic}
                 onChat={onChatInvoice}
                 onStartLoading={handleStartLoading}
                 onSend={handleSend}
@@ -497,40 +502,42 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
             <div className={styles.modalHead}>
               <div>
                 <div className={styles.modalKicker}>Подтверждение</div>
-                <h2 className={styles.modalTitle}>Выбрать исполнителя?</h2>
+                <h2 className={styles.modalTitle}>{t('acceptCarrierTitle')}</h2>
               </div>
               <button
                 type="button"
                 className={styles.modalClose}
                 onClick={() => setAcceptInvoice(null)}
-                aria-label="Закрыть"
+                aria-label={t('close')}
               >
                 <X size={20} strokeWidth={2} />
               </button>
             </div>
             <div className={styles.modalBody}>
-              <p className={styles.confirmText}>
-                После подтверждения заявка будет принята, с исполнителем будет заключён договор.
-              </p>
+              <p className={styles.confirmText}>{t('acceptCarrierText')}</p>
               <div className={styles.confirmCard}>
                 <div className={styles.confirmRow}>
-                  <span className={styles.confirmLabel}>Исполнитель</span>
+                  <span className={styles.confirmLabel}>{t('carrier')}</span>
                   <span className={styles.confirmValue}>
-                    {acceptInvoice.client || 'Исполнитель'}
+                    {acceptInvoice.client || t('carrier')}
                   </span>
                 </div>
                 <div className={styles.confirmRow}>
-                  <span className={styles.confirmLabel}>Транспорт</span>
+                  <span className={styles.confirmLabel}>
+                    {t('tripTransport', { defaultValue: 'Транспорт' })}
+                  </span>
                   <span className={styles.confirmValue}>
                     {[acceptInvoice.transport, acceptInvoice.capacity]
                       .filter(Boolean)
-                      .join(' · ') || 'Не указан'}
+                      .join(' · ') || t('notSpecified')}
                   </span>
                 </div>
                 <div className={styles.confirmRow}>
-                  <span className={styles.confirmLabel}>Ставка</span>
+                  <span className={styles.confirmLabel}>
+                    {t('tripRate', { defaultValue: 'Ставка' })}
+                  </span>
                   <span className={styles.confirmValue}>
-                    {formatters.currency(acceptInvoice.price)}
+                    {formatters.currency(acceptInvoice.price, cargoInfo.currency || acceptInvoice.currency)}
                   </span>
                 </div>
               </div>
@@ -540,7 +547,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
                   className={styles.confirmCancel}
                   onClick={() => setAcceptInvoice(null)}
                 >
-                  Отмена
+                  {t('cancel')}
                 </button>
                 <button
                   type="button"
@@ -548,7 +555,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
                   disabled={isLoading}
                   onClick={handleConfirmAccept}
                 >
-                  Подтвердить выбор
+                  {basic ? t('startTrip', { defaultValue: 'Начать рейс' }) : t('acceptCarrierConfirm')}
                 </button>
               </div>
             </div>
@@ -559,16 +566,16 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
       <IonAlert
         isOpen={showDeleteAlert}
         onDidDismiss={() => setShowDeleteAlert(false)}
-        header="Подтверждение"
-        message="Вы уверены, что хотите удалить этот груз?"
+        header={t('deleteConfirmHeader')}
+        message={t('deleteConfirmMessage')}
         buttons={[
           {
-            text: 'Отмена',
+            text: t('cancel'),
             role: 'cancel',
             handler: () => setShowDeleteAlert(false),
           },
           {
-            text: 'Удалить',
+            text: t('deleteOrder'),
             handler: handleDelete,
           },
         ]}
@@ -577,16 +584,16 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
       <IonAlert
         isOpen={Boolean(rejectInvoice)}
         onDidDismiss={() => setRejectInvoice(null)}
-        header="Отклонить заявку"
-        message="Отклонить заявку этого исполнителя?"
+        header={t('rejectConfirmHeader')}
+        message={t('rejectConfirmMessage')}
         buttons={[
           {
-            text: 'Отмена',
+            text: t('cancel'),
             role: 'cancel',
             handler: () => setRejectInvoice(null),
           },
           {
-            text: 'Отклонить',
+            text: t('rejectConfirmBtn'),
             handler: () => {
               if (rejectInvoice) void onRejectInvoice(rejectInvoice);
             },
@@ -597,16 +604,16 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
       <IonAlert
         isOpen={showUnpublishAlert}
         onDidDismiss={() => setShowUnpublishAlert(false)}
-        header="Снять с публикации"
-        message="Заказ снова станет черновиком и перестанет быть виден водителям. Снять с публикации?"
+        header={t('unpublishConfirmHeader')}
+        message={t('unpublishConfirmMessage')}
         buttons={[
           {
-            text: 'Отмена',
+            text: t('cancel'),
             role: 'cancel',
             handler: () => setShowUnpublishAlert(false),
           },
           {
-            text: 'Снять',
+            text: t('unpublishConfirmBtn'),
             handler: handleUnpublish,
           },
         ]}
@@ -620,14 +627,14 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
         <div className={styles.modalShell}>
           <div className={styles.modalHead}>
             <div>
-              <div className={styles.modalKicker}>Публикация</div>
-              <h2 className={styles.modalTitle}>Публикация неудачна</h2>
+              <div className={styles.modalKicker}>{t('publishFailedKicker')}</div>
+              <h2 className={styles.modalTitle}>{t('publishFailedTitle')}</h2>
             </div>
             <button
               type="button"
               className={styles.modalClose}
               onClick={() => setPublishError(null)}
-              aria-label="Закрыть"
+              aria-label={t('close')}
             >
               <X size={20} strokeWidth={2} />
             </button>
@@ -640,7 +647,7 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
                 className={styles.confirmSubmit}
                 onClick={() => setPublishError(null)}
               >
-                Закрыть
+                {t('close')}
               </button>
             </div>
           </div>
@@ -650,16 +657,16 @@ const CargoViewInner: React.FC<CargoViewProps> = ({
       <IonAlert
         isOpen={showPublishAlert}
         onDidDismiss={() => setShowPublishAlert(false)}
-        header="Публикация груза"
+        header={t('publishConfirmHeader')}
         message={publishAlertMessage}
         buttons={[
           {
-            text: 'Отмена',
+            text: t('cancel'),
             role: 'cancel',
             handler: () => setShowPublishAlert(false),
           },
           {
-            text: 'Опубликовать',
+            text: t('publishConfirmBtn'),
             handler: handlePublish,
           },
         ]}

@@ -2,12 +2,17 @@ import { WorkStatus } from './types';
 import { workFormatters } from './utils';
 import { workStatusLabel } from './statusFlow';
 import i18n, { intlLocale } from '../../i18n';
+import {
+  asTransportType,
+  transportTypeLabel,
+  useTransportStore,
+} from '../../Store/transportStore';
 
 type Payable = { advance?: number | null; price?: number | null };
 type BodySource = {
   body_type?: string;
   transport?: string;
-  transport_type?: string | number | { id?: string | number; name?: string };
+  transport_type?: string | number | { id?: string | number; name?: string; ru?: string; en?: string; zh?: string };
 };
 type FleetSource = { vehicles_total?: number; vehicles_busy?: number };
 type RoutePoints = {
@@ -157,12 +162,27 @@ export function looksLikeGuid(value: string): boolean {
 }
 
 export function resolveBodyType(work: BodySource): string | null {
-  if (work.body_type?.trim()) return work.body_type.trim();
-  const tt = work.transport_type;
-  if (tt && typeof tt === 'object' && !Array.isArray(tt) && tt.name?.trim()) {
-    return tt.name.trim();
+  const lang = i18n.language;
+  const types = useTransportStore.getState().types;
+  const parsed = asTransportType(work.transport_type);
+  if (parsed?.id) {
+    const fromDict = types.find((type) => type.id === parsed.id);
+    if (fromDict) return transportTypeLabel(fromDict, lang);
+    const labeled = transportTypeLabel(parsed, lang);
+    if (labeled && labeled !== parsed.id) return labeled;
   }
-  if (typeof tt === 'string' && tt.trim() && !looksLikeGuid(tt)) return tt.trim();
+  const body = work.body_type?.trim();
+  if (body) {
+    const fromName = types.find((type) => {
+      const ru = (type.ru || type.name || '').toLowerCase();
+      return ru === body.toLowerCase() || type.name.toLowerCase() === body.toLowerCase();
+    });
+    if (fromName) return transportTypeLabel(fromName, lang);
+    return body;
+  }
+  if (typeof work.transport_type === 'string' && work.transport_type.trim() && !looksLikeGuid(work.transport_type)) {
+    return work.transport_type.trim();
+  }
   if (work.transport && !looksLikeGuid(work.transport)) return work.transport;
   return null;
 }
@@ -236,8 +256,8 @@ export function feedStatusKind(status: WorkStatus): 'new' | 'bids' | 'work' | 'd
   return 'work';
 }
 
-export function feedStatusLabel(status: WorkStatus): string {
-  return workStatusLabel(status);
+export function feedStatusLabel(status: WorkStatus, plan?: string): string {
+  return workStatusLabel(status, plan);
 }
 
 export function formatPhonePretty(phone: string): string {

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { useLogin } from '../../Store/useLogin'
 import { LoginForm } from './LoginForm'
-import { LanguageSwitcher } from '../../i18n/LanguageSwitcher'
 import { LoadingSpinner } from './SharedComponents'
 import { RegistrationForm } from './registration'
 import './Login.css'
@@ -46,16 +45,7 @@ const Login: React.FC<LoginProps> = ({
   }
 
   const panel = (
-    <section
-      className={`login-panel${variant === 'modal' ? ' login-panel-modal' : ''}${
-        currentForm === 'login' ? ' login-panel--login' : ''
-      }`}
-    >
-      {currentForm !== 'login' && (
-        <div className="login-lang">
-          <LanguageSwitcher variant="inline" />
-        </div>
-      )}
+    <section className={`login-panel ${variant === 'modal' ? 'login-panel-modal' : ''}`}>
       {variant === 'modal' && (
         <button
           type="button"

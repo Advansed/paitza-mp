@@ -14,6 +14,7 @@ import {
 import { formatters, statusUtils } from '../../../utils/utils';
 import { CargoInfo, CargoStatus } from '../../../Store/cargoStore';
 import { cargoFeedKind, cargoFeedLabel, resolveCargoProgressStatus } from '../cargoStatusFlow';
+import { useAppPlan } from '../../../plan';
 import {
   PAYMENT_LABEL,
   fleetHint,
@@ -98,6 +99,8 @@ const CargoCardInner: React.FC<CargoCardProps> = ({
     companyName: companyLabel,
 }) => {
     const { t } = useTranslation('cargos');
+    const plan = useAppPlan();
+    const basic = plan === 'basic';
     const status = resolveCargoProgressStatus(cargo);
 
     const handleClick = () => {
@@ -110,7 +113,7 @@ const CargoCardInner: React.FC<CargoCardProps> = ({
     const tags: Array<{ text: string; className: string }> = [];
 
     // Гарантированная оплата (если есть предоплата)
-    if (cargo.advance > 0) {
+    if (!basic && cargo.advance > 0) {
         const isFullAdvance = cargo.advance >= cargo.price;
         tags.push({
             text: 'Гарантированная оплата',
@@ -158,7 +161,7 @@ const CargoCardInner: React.FC<CargoCardProps> = ({
                 </div>
                 <div className={styles.topRight}>
                     <IonText className="fs-09 cl-prim">
-                        <b>{formatters.currency(cargo.price)}</b>
+                        <b>{formatters.currency(cargo.price, cargo.currency)}</b>
                     </IonText>
                     {mode === 'view' && (
                         <div className="fs-08 cl-black">
@@ -299,11 +302,11 @@ const CargoCardInner: React.FC<CargoCardProps> = ({
             <div className={feedStyles.feedBody}>
                 <div className={feedStyles.feedTop}>
                     <span className={`${feedStyles.feedBadge} ${BADGE_CLASS[kind]}`}>
-                        {cargoFeedLabel(status)}
+                        {cargoFeedLabel(status, plan)}
                     </span>
                     <span className={feedStyles.feedId}>ЗК-{formatters.shortId(cargo.guid)}</span>
                     <div className={feedStyles.feedPriceCol}>
-                        <span className={feedStyles.feedPrice}>{formatters.currency(cargo.price)}</span>
+                        <span className={feedStyles.feedPrice}>{formatters.currency(cargo.price, cargo.currency)}</span>
                         <span className={`${feedStyles.payBadge} ${PAY_CLASS[payment]}`}>
                             <span className={feedStyles.payDot} />
                             {PAYMENT_LABEL[payment]}

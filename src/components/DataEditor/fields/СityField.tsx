@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { searchCities } from '../../../utils/googlePlaces';
 import type { CityData } from '../types';
 import { PhotonSuggest } from './PhotonSuggest';
@@ -21,6 +22,7 @@ export const CityField: React.FC<CityFieldProps> = ({
   disabled = false,
   error,
 }) => {
+  const { t } = useTranslation('common');
   const display = [value?.city, value?.country].filter(Boolean).join(', ');
 
   return (
@@ -29,7 +31,7 @@ export const CityField: React.FC<CityFieldProps> = ({
       value={display}
       disabled={disabled}
       error={error}
-      placeholder="Начните вводить город"
+      placeholder={t('cityPlaceholder')}
       search={searchCities}
       onSelect={(place) => {
         onChange({
